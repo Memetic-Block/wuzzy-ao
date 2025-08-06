@@ -9,7 +9,8 @@ local WuzzyNest = {
     ---   ARNSSubDomain: string,
     ---   ContentType: string,
     ---   Content: string } }
-    Documents = {}
+    Documents = {},
+    TotalTermCount = 0
   }
 }
 
@@ -35,6 +36,10 @@ function WuzzyNest.init()
       local contentType = msg.Tags['Document-Content-Type']
       local transactionId = msg.Tags['Document-Transaction-Id']
 
+      -- TODO -> Add term count of Content
+      local termCount = #msg.Data
+      WuzzyNest.State.TotalTermCount =
+        WuzzyNest.State.TotalTermCount + termCount
       table.insert(WuzzyNest.State.Documents, {
         SubmittedBy = msg.From,
         TransactionId = transactionId,

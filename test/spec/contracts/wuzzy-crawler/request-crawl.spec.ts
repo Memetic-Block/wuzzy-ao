@@ -2,14 +2,14 @@ import { expect } from 'chai'
 
 import {
   AOTestHandle,
+  ARIO_NETWORK_PROCESS_ID,
   createLoader,
+  NEST_ID,
   OWNER_ADDRESS
 } from '~/test/util/setup'
 
-describe('Wuzzy-Crawler Crawling', () => {
+describe('Wuzzy-Crawler Request-Crawl', () => {
   let handle: AOTestHandle
-  const NEST_ID = 'nestid_'.padEnd(43, '0')
-  const ARIO_NETWORK_PROCESS_ID = 'ario_network_process_id_'.padEnd(43, '0')
 
   beforeEach(async () => {
     handle = (await createLoader(
@@ -22,36 +22,7 @@ describe('Wuzzy-Crawler Crawling', () => {
     )).handle
   })
 
-  // it('should accept crawl requests', async () => {
-  //   const url = 'https://memeticblock.com'
-  //   const result = await handle({
-  //     From: OWNER_ADDRESS,
-  //     Tags: [
-  //       { name: 'Action', value: 'Request-Crawl' },
-  //       { name: 'URL', value: url }
-  //     ]
-  //   })
-
-  //   expect(result.Messages).to.have.lengthOf(2)
-  //   const [ relayRequest, requestCrawlResponse ] = result.Messages
-  //   expect(relayRequest.Target).to.equal(NEST_ID)
-  //   expect(relayRequest.Tags).to.deep.include({
-  //     name: 'device',
-  //     value: 'relay@1.0'
-  //   })
-  //   expect(JSON.parse(relayRequest.Data)).to.deep.equal({
-  //     mode: 'call',
-  //     method: 'GET',
-  //     ['0']: { path: url }
-  //   })
-  //   expect(requestCrawlResponse.Target).to.equal(OWNER_ADDRESS)
-  //   expect(requestCrawlResponse.Tags).to.deep.include({
-  //     name: 'Action',
-  //     value: 'Request-Crawl-Response'
-  //   })
-  //   expect(requestCrawlResponse.Data).to.equal('OK')
-  // })
-  it('should reply that http protocol is not implemented yet', async () => {
+  it('replies that http protocol is not implemented yet', async () => {
     const url = 'http://memeticblock.com'
     const result = await handle({
       From: OWNER_ADDRESS,
@@ -71,7 +42,7 @@ describe('Wuzzy-Crawler Crawling', () => {
       .to.equal('http://|https:// protocol is not implemented yet')
   })
 
-  it('should reply that https protocol is not implemented yet', async () => {
+  it('replies that https protocol is not implemented yet', async () => {
     const url = 'https://memeticblock.com'
     const result = await handle({
       From: OWNER_ADDRESS,
@@ -91,7 +62,7 @@ describe('Wuzzy-Crawler Crawling', () => {
       .to.equal('http://|https:// protocol is not implemented yet')
   })
 
-  it('should reply that arns record request was sent', async () => {
+  it('replies that arns record request was sent', async () => {
     const name = 'memeticblock'
     const url = `arns://${name}`
 
@@ -123,7 +94,7 @@ describe('Wuzzy-Crawler Crawling', () => {
       .to.equal(`Record request sent to ARNS registry: ${name}`)
   })
 
-  it('should reply that ar protocol is not implemented yet', async () => {
+  it('replies that ar protocol is not implemented yet', async () => {
     const txId = 'txid_'.padEnd(43, 'q')
     const url = `ar://${txId}`
     const result = await handle({

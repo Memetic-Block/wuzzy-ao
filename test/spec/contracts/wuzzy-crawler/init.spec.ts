@@ -3,19 +3,18 @@ import { expect } from 'chai'
 import {
   AOTestHandle,
   createLoader,
-  OWNER_ADDRESS,
-  MOCK_WEAVEDRIVE
+  NEST_ID,
+  OWNER_ADDRESS
 } from '~/test/util/setup'
 
 describe('Wuzzy-Crawler Initialization', () => {
   let handle: AOTestHandle
-  const NEST_ID = 'nestid_'.padEnd(43, '0')
 
   beforeEach(async () => {
     handle = (await createLoader(
       'wuzzy-crawler', {
         processTags: [ { name: 'Nest-Id', value: NEST_ID } ],
-        weaveDriveMock: MOCK_WEAVEDRIVE
+        useWeaveDriveMock: true
       }
     )).handle
   })

@@ -1,40 +1,26 @@
 import { expect } from 'chai'
 
 import {
+  ANT_PROCESS_ID,
   AOTestHandle,
+  ARIO_NETWORK_PROCESS_ID,
   createLoader,
-  MOCK_WEAVEDRIVE,
+  NEST_ID,
   OWNER_ADDRESS
 } from '~/test/util/setup'
-import MockTransaction from '~/test/util/mock-transaction.json'
+import MockTransactions from '~/test/util/mock-transactions.json'
 
-describe('Wuzzy-Crawler Record-Notice Handlers', () => {
+describe('Wuzzy-Crawler Record-Notice', () => {
   let handle: AOTestHandle
-  const NEST_ID = 'nestid_'.padEnd(43, '0')
-  const ARIO_NETWORK_PROCESS_ID = 'ario_network_process_id_'.padEnd(43, '0')
-  const ANT_PROCESS_ID = 'ant_process_id_'.padEnd(43, '0')
 
   beforeEach(async () => {
-    const weaveDriveMock = MOCK_WEAVEDRIVE
-      .replace(
-        'local MOCK_WEAVEDRIVE_TXS = {}',
-        `local MOCK_WEAVEDRIVE_TXS = { ` +
-          `['${MockTransaction.tx.id}'] = '${JSON.stringify(MockTransaction.tx)}' ` +
-        `}`
-      )
-      .replace(
-        'local MOCK_WEAVEDRIVE_DATA = {}',
-        `local MOCK_WEAVEDRIVE_DATA = { ` +
-          `['${MockTransaction.tx.id}'] = '${JSON.stringify(MockTransaction.data)}' ` +
-        `}`
-      )
     handle = (await createLoader(
       'wuzzy-crawler', {
         processTags: [
           { name: 'Nest-Id', value: NEST_ID },
           { name: 'Ario-Network-Process-Id', value: ARIO_NETWORK_PROCESS_ID }
         ],
-        weaveDriveMock
+        useWeaveDriveMock: true
       }
     )).handle
   })
@@ -75,14 +61,6 @@ describe('Wuzzy-Crawler Record-Notice Handlers', () => {
       })
     })
 
-    // console.log(`DEBUG - AO EVAL Result `, JSON.stringify({
-    //   Assignments: result.Assignments,
-    //   Messages: result.Messages,
-    //   Output: result.Output,
-    //   Patches: result.Patches,
-    //   Spawns: result.Spawns
-    // }, null, 2))
-
     expect(result.Error).to.be.undefined
     expect(result.Messages).to.have.lengthOf(1)
     expect(result.Messages[0].Target).to.equal(ANT_PROCESS_ID)
@@ -119,15 +97,17 @@ describe('Wuzzy-Crawler Record-Notice Handlers', () => {
     const result = await handle({
       From: ANT_PROCESS_ID,
       Tags: [
-        { name: 'Action', value: 'Record-Notice' },
-        { name: 'Name', value: 'memeticblock' }
+        { name: 'Action', value: 'Record-Notice' }
       ],
       Data: JSON.stringify({
-        transactionId: MockTransaction.tx.id
+        transactionId: MockTransactions[0].tx.id
       })
     })
+    if (result.Error) {
+      console.log(`DEBUG - AO Message Error: ${result.Error}`)
+    }
     expect(result.Error).to.be.undefined
-    expect(result.Messages).to.have.lengthOf(1)
+    expect(result.Messages).to.have.lengthOf(2)
     expect(result.Messages[0].Target).to.equal(OWNER_ADDRESS)
     expect(result.Messages[0].Tags).to.deep.include({
       name: 'Action',
@@ -143,6 +123,6 @@ describe('Wuzzy-Crawler Record-Notice Handlers', () => {
     })
     expect(checkWeaveDriveMockResult.Output?.data).to.exist
     expect(checkWeaveDriveMockResult.Output?.data)
-      .to.include(`_MockWeaveDriveGetTxCalls: ${MockTransaction.tx.id}`)
+      .to.include(`_MockWeaveDriveGetTxCalls: ${MockTransactions[0].tx.id}`)
   })
 })

@@ -27,8 +27,10 @@ export const logger = createLogger({
           timestamp,
           stack
         }) => {
-          return `${timestamp}|${level}|${context}: ` +
-            `${message}${stack ? '\n' + stack : ''}`
+          const _stack = Array.isArray(stack) && stack[0]
+            ? '\n'+stack.join('\n')
+            : ''
+          return `${timestamp}|${level}|${context}: ${message}${_stack}`
         }),
         winston.format.json()
       ),

@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import AoLoader from '@permaweb/ao-loader'
+import MockTransactions from '~/test/util/mock-transactions.json'
 
 export const MODULE_NAME = 'Wuzzy'
 export const OWNER_ADDRESS = ''.padEnd(42, '1')
@@ -12,6 +13,9 @@ export const MODULE_ID = ''.padEnd(43, '3')
 export const DEFAULT_MODULE_ID = ''.padEnd(43, '4')
 export const DEFAULT_TARGET = ''.padEnd(43, '5')
 export const DEFAULT_MESSAGE_ID = ''.padEnd(43, 'f')
+export const NEST_ID = 'nest_'.padEnd(43, '0')
+export const ARIO_NETWORK_PROCESS_ID = 'ario_network_process_'.padEnd(43, '0')
+export const ANT_PROCESS_ID = 'ant_process_'.padEnd(43, '0')
 
 export const AO_ENV = {
   Process: {
@@ -36,13 +40,12 @@ const AOS_WASM = fs.readFileSync(
     // './test/util/aos-cbn0KKrBZH7hdNkNokuXLtGryrWM--PjSTBqIzw9Kkk.wasm'
     // './test/util/aos-Pq2Zftrqut0hdisH_MC2pDOT6S4eQFoxGsFUzR6r350.wasm'
     // './test/util/aos64.wasm'
-    // './test/util/QEgxNlbNwBi10VXu5DbP6XHoRDHcynP_Qbq3lpNC97s.wasm'
-    './test/util/nEjlSFA_8narJlVHApbczDPkMc9znSqYtqtf1iOdoxM.wasm'
+    './test/util/QEgxNlbNwBi10VXu5DbP6XHoRDHcynP_Qbq3lpNC97s.wasm'
+    // './test/util/nEjlSFA_8narJlVHApbczDPkMc9znSqYtqtf1iOdoxM.wasm'
   )
 )
-// format: 'wasm64-unknown-emscripten-draft_2024_02_15'
-// format: 'wasm32-unknown-emscripten-metering'
-const AOS_WASM_FORMAT = 'wasm32-unknown-emscripten-metering'
+const AOS_WASM_FORMAT = 'wasm64-unknown-emscripten-draft_2024_02_15'
+// const AOS_WASM_FORMAT = 'wasm32-unknown-emscripten-metering'
 
 export const DEFAULT_HANDLE_OPTIONS = {
   Id: DEFAULT_MESSAGE_ID,
@@ -84,15 +87,26 @@ export type AOTestHandle = (
 export type AOCreateLoaderOptions = {
   contractSource?: string,
   processTags?: AoLoader.Tag[],
-  weaveDriveMock?: string
+  useWeaveDriveMock?: boolean
 }
 
 const WEAVEDRIVE_MOD_HEADER = '-- module: "..common.weavedrive"'
 const WEAVEDRIVE_MOD_FOOTER = '_G.package.loaded["..common.weavedrive"] = _loaded_mod__common_weavedrive()'
-export const MOCK_WEAVEDRIVE = fs.readFileSync(
+const MOCK_WEAVEDRIVE_SRC = fs.readFileSync(
   path.join(path.resolve(), './test/util/mockweavedrive.lua'),
   'utf-8'
 )
+let mockWeavedriveTxs = 'local MOCK_WEAVEDRIVE_TXS = {\n'
+let mockWeavedriveData = 'local MOCK_WEAVEDRIVE_DATA = {\n'
+for (const { tx, data } of MockTransactions) {
+  mockWeavedriveTxs += `['${tx.id}'] = '${JSON.stringify(tx)}',\n`
+  mockWeavedriveData += `['${tx.id}'] = '${data}',\n`
+}
+mockWeavedriveTxs += '}\n'
+mockWeavedriveData += '}\n'
+const weaveDriveMock = MOCK_WEAVEDRIVE_SRC
+  .replace('local MOCK_WEAVEDRIVE_TXS = {}', mockWeavedriveTxs)
+  .replace('local MOCK_WEAVEDRIVE_DATA = {}', mockWeavedriveData)
 export async function createLoader(
   contractName: string,
   options: AOCreateLoaderOptions = {}
@@ -120,10 +134,10 @@ export async function createLoader(
     let evalData = Data
 
     const includesWeaveDriveHeader = Data.includes(WEAVEDRIVE_MOD_HEADER)
-    if (options.weaveDriveMock && includesWeaveDriveHeader) {
+    if (options.useWeaveDriveMock && includesWeaveDriveHeader) {
       const first = Data.split(WEAVEDRIVE_MOD_HEADER)
       const second = first[1].split(WEAVEDRIVE_MOD_FOOTER)
-      evalData = `${first[0]}${options.weaveDriveMock}${second[1]}`
+      evalData = `${first[0]}${weaveDriveMock}${second[1]}`
     }
 
     const result = await originalHandle(

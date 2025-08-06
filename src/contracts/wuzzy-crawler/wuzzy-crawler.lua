@@ -58,7 +58,7 @@ function WuzzyCrawler.init()
           Data = 'http://|https:// protocol is not implemented yet'
         })
       elseif StringUtils.starts_with(url, 'arns://') then
-        -- TODO -> Handle undernames?
+        -- TODO -> Handle undernames
         local name = string.gsub(url, 'arns://', '')
         WuzzyCrawler.State.CrawlRequests[name] = msg.From
         ao.send({
@@ -92,13 +92,12 @@ function WuzzyCrawler.init()
     'Record-Notice',
     Handlers.utils.hasMatchingTag('Action', 'Record-Notice'),
     function (msg)
-      local name = msg.Tags['Name']
-      if type(name) ~= 'string' or name == '' then return end
-
-      local requestor = WuzzyCrawler.State.CrawlRequests[name]
-      if not requestor then return end
-
       if msg.From == WuzzyCrawler.State.ArioNetworkProcessId then
+        local name = msg.Tags['Name']
+        if type(name) ~= 'string' or name == '' then return end
+        local requestor = WuzzyCrawler.State.CrawlRequests[name]
+        if not requestor then return end
+
         -- TODO -> validate msg.Data as StoredRecord
         --- @class StoredRecord
         --- @field processId string The process id of the record
@@ -108,27 +107,64 @@ function WuzzyCrawler.init()
         --- @field purchasePrice number The purchase price of the record
         --- @field endTimestamp number|nil The end timestamp of the record
         local record = json.decode(msg.Data)
-        WuzzyCrawler.State.AntRecordRequests[name] = record.processId
+        local subdomain = '@' -- TODO -> Handle subdomains
+        WuzzyCrawler.State.AntRecordRequests[record.processId] = {
+          name = name,
+          subdomain = subdomain
+        }
         ao.send({
           Target = record.processId,
           Action = 'Record',
-          ['Sub-Domain'] = '@'
+          ['Sub-Domain'] = subdomain -- TODO -> Handle subdomains
         })
-      elseif msg.From == WuzzyCrawler.State.AntRecordRequests[name] then
+      elseif WuzzyCrawler.State.AntRecordRequests[msg.From] then
+        local request = WuzzyCrawler.State.AntRecordRequests[msg.From]
+        local requestor = WuzzyCrawler.State.CrawlRequests[request.name]
+        if not requestor then return end
+
         -- TODO -> validate msg.Data as AntRecord
         --- @class AntRecord
         --- @field transactionId string The transaction id of the record
         --- @field ttlSeconds number The time-to-live seconds of the record
         --- @field priority integer|nil The sort order of the record - must be nil or 1 or greater
         local record = json.decode(msg.Data)
+        local result, err = WuzzyCrawler.fetchAndParseTransaction(
+          record.transactionId
+        )
+        if not result or err then
+          ao.send({
+            Target = requestor,
+            Action = 'Crawl-Response',
+            Data = 'Crawl request failed: ' .. (err or 'Unknown Error')
+          })
+        else
+          ao.send({
+            Target = requestor,
+            Action = 'Crawl-Response',
+            Data = 'Crawl request successful: ' .. result.message
+          })
 
-        WuzzyCrawler.State.AntRecordRequests[name] = nil
-        WuzzyCrawler.fetchAndParseTransaction(record.transactionId, requestor)
+          -- TODO -> Send to Wuzzy-Nest
+          ao.send({
+            Target = WuzzyCrawler.State.NestId,
+            Action = 'Index',
+            Data = result.content,
+            Tags = {
+              ['Index-Type'] = 'ARNS',
+              ['Document-ARNS-Name'] = request.name,
+              ['Document-ARNS-Sub-Domain'] = '@', -- TODO -> Handle subdomains
+              ['Document-Content-Type'] = result.contentType,
+              ['Document-Transaction-Id'] = record.transactionId
+            }
+          })
+        end
+
+        WuzzyCrawler.State.AntRecordRequests[request.name] = nil
       end
     end
   )
 
-  WuzzyCrawler.fetchAndParseTransaction = function (transactionId, requestor)
+  WuzzyCrawler.fetchAndParseTransaction = function (transactionId)
     --- @class TransactionHeaders
     --- @field tags { [number]: { name: string, value: string } }
     --- @field id string The transaction id
@@ -144,16 +180,11 @@ function WuzzyCrawler.init()
     --- @field reward string The reward of the transaction
     local tx, getTxErr = WeaveDrive.getTx(transactionId)
     if getTxErr then
-      ao.send({
-        Target = requestor,
-        Action = 'Crawl-Response',
-        Data = 'Crawl request failed: Unable to fetch transaction headers: '
-          .. getTxErr
-      })
-      return
+      return nil, 'Unable to fetch transaction headers: ' .. getTxErr
     end
 
     -- TODO -> Validate tx as TransactionHeaders
+    -- TODO -> Don't fetch data if too large
 
     local contentType = 'unknown'
     for _, tag in ipairs(tx.tags) do
@@ -179,62 +210,56 @@ function WuzzyCrawler.init()
     end
 
     -- TODO -> Don't fetch data if contentType is unsupported
-    -- TODO -> Don't fetch data if too large
-
     local txData, getDataErr = WeaveDrive.getData(transactionId)
     if getDataErr then
-      ao.send({
-        Target = requestor,
-        Action = 'Crawl-Response',
-        Data = 'Crawl request failed: Unable to fetch transaction data: '
-          .. getDataErr
-      })
-      return
+      return nil, 'Unable to fetch transaction data: ' .. getDataErr
+    end
+    if not txData or txData == '' then
+      return nil, 'Transaction data is empty'
     end
     if contentType == 'application/x.arweave-manifest+json' then
       -- TODO -> Validate dataMsg.Data as Arweave manifest
+      -- TODO -> Safely decode JSON
       --- @class ArweaveManifest
       --- @field manifest 'arweave/paths' The manifest type
       --- @field version string The manifest version
       --- @field index { path: string } The index file of the manifest
-      --- @field fallback? { id: string } The fallback file of the manifest (optional)
+      --- @field fallback? { id: string } The fallback file of the manifest
       --- @field paths { [string]: { id: string } } The paths of the manifest
       local manifest = json.decode(txData)
       local index = manifest.paths[manifest.index.path]
 
+      -- TODO -> Use fallback.id for 404s
       -- TODO -> Look for robots.txt in the manifest paths
       -- TODO -> Look for sitemap.xml in the manifest paths
       -- TODO -> Crawl index and paths
 
       if index then
-        -- TODO -> Request index by id
-        return WuzzyCrawler.fetchAndParseTransaction(index.id, requestor)
+        -- TODO -> Track that this was a manifest crawl with index info
+        return WuzzyCrawler.fetchAndParseTransaction(index.id)
       end
 
-      ao.send({
-        Target = requestor,
-        Action = 'Crawl-Response',
-        Data = 'Crawl request successful: Arweave manifest received'
-      })
+      -- TODO -> Handle manifest without index
+      return {
+        message = 'Arweave manifest received',
+        contentType = contentType,
+        content = txData
+      }
     elseif contentType == 'text/html' then
-      ao.send({
-        Target = requestor,
-        Action = 'Crawl-Response',
-        Data = 'Crawl request successful: HTML content received'
-      })
+      return {
+        message = 'HTML content received',
+        contentType = contentType,
+        content = txData
+      }
     elseif contentType == 'text/plain' then
-      ao.send({
-        Target = requestor,
-        Action = 'Crawl-Response',
-        Data = 'Crawl request successful: Plain text content received'
-      })
+      return {
+        message = 'Plain text content received: ' .. txData,
+        contentType = contentType,
+        content = txData
+      }
     else
-      ao.send({
-        Target = requestor,
-        Action = 'Crawl-Response',
-        Data = 'Crawl request failed: Unsupported content type: '
-          .. contentType
-      })
+      return nil, 'Crawl request failed: Unsupported content type: '
+        .. contentType
     end
   end
 end
