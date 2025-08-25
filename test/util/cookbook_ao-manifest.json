@@ -1,0 +1,2640 @@
+{
+  "manifest": "arweave/paths",
+  "version": "0.2.0",
+  "index": {
+    "path": "index.html"
+  },
+  "fallback": {
+    "id": "kfdS0cucwVpUFln9-5rOyDLuPVHpWrroQmQx8FoANdc"
+  },
+  "paths": {
+    "404.html": {
+      "id": "kfdS0cucwVpUFln9-5rOyDLuPVHpWrroQmQx8FoANdc"
+    },
+    "ao-effect-game-banner.png": {
+      "id": "H5FzAMJNugzUEF-GeLk69uMgrXOo1oe67hM0mNUSim8"
+    },
+    "ao-logo-grey.svg": {
+      "id": "t6YJ-0WMY5AFHKQLxBS7lI5p9EF60vI1C-r9j-c_OU0"
+    },
+    "ao-pictograph_dark.svg": {
+      "id": "NtbW147JydACLdt2fH0LABMWWfOw1zDN7-jOTNOPnms"
+    },
+    "ao-pictograph_light.svg": {
+      "id": "eRgZNIMUDxdRxyi0CSXNa_UcFpL4rjoo3ntImUILmd0"
+    },
+    "ao_pictograph_darkmode.svg": {
+      "id": "ylynofF6rQJaWCdXf_-rOWmDMZC40EPo1p109vl7jVg"
+    },
+    "ao_pictograph_lightmode.svg": {
+      "id": "9TqRnzWIC69GiYq7tpnhlWngZLt3ut_IuZhfc95dwoo"
+    },
+    "aos-print.png": {
+      "id": "OX4_4WLHnnM6xGrMwzF5mw8K8dJmtJ_GCXU0wfzLC4M"
+    },
+    "assets/CU-diagram.xUaBmhoc.png": {
+      "id": "YVHIzec_5brZQ3YHyhB-4nQ3Z6CyzJr-ZHJBcwdwM4I"
+    },
+    "assets/MU-diagram.C52fffZO.png": {
+      "id": "o4q0WE0dM6BilaUqv8cHRaAyaxiB5tweV8LpQoXcb44"
+    },
+    "assets/SU-diagram.C8BqsDRs.png": {
+      "id": "H6bzBIioMppFNKfrbs3fNYolSGcPCB8puqBjKIDk1z4"
+    },
+    "assets/ao-effect-game-banner.T9zWri8j.png": {
+      "id": "KIKliYB2B30zw1eMsgZ1rmRhl9u4-KeyZEZqmgq5dms"
+    },
+    "assets/aolink-compute-example.B7eB9zGm.png": {
+      "id": "0x_lUgNu0npHV55tNoVViTr-CloUJq0BmscbpDSk3mY"
+    },
+    "assets/aolink-info-handler-example.BIhgOvVo.png": {
+      "id": "NXPPj4GFkMvu8jKiJElrVnsP-jmTsaPjoboeK6We1Cc"
+    },
+    "assets/aolink-linked-message-example.BZsSwPJH.png": {
+      "id": "MFoJLC3tXbZpSgaMQUwBxvMyrngZYjxZTmOO9hr0jCE"
+    },
+    "assets/aolink-list-example.DNdjpqyG.png": {
+      "id": "LixswTWsOc2bj82E3aIvL_A0bOG8P0zw1MvN8oTD36o"
+    },
+    "assets/aolink-message-and-token-example.DOrOvhy7.png": {
+      "id": "kbtILRQez6u3REiQE9LJMVoYt8WuYLTsdYZ4Ate02L8"
+    },
+    "assets/aolink-message-details.DiY7Qyhg.png": {
+      "id": "zORReALI66RWgdw3DzNxA3EjuAIbLtY2b8nGabh5nUg"
+    },
+    "assets/aolink-message-details.DkCtSuQ9.png": {
+      "id": "321lqmBm-oVdfCLtnht-tgXlrb1qO_oOITTE5e_vcqQ"
+    },
+    "assets/aolink-process-details.B4atZZqh.png": {
+      "id": "hucV6vtAs3wA1P3eS5RgFHlqRLHMJ9UjN-M8xtolTAU"
+    },
+    "assets/aolink-process-details.DHGkZgzZ.png": {
+      "id": "JN3WRxEwvb6dZP56UNI9wpbA-6LkXMOzWjW74yUJh-Y"
+    },
+    "assets/aolink.ZIUJKqIw.png": {
+      "id": "Cs9ZN8KoTh81D9R62dr8VV0i-jiobgKtq0lGW9gE_8w"
+    },
+    "assets/aolink.ZnuFzjFG.png": {
+      "id": "Mw1D5OulshJsCtva2Az68ctj09uaW048gWnsV7cwu0E"
+    },
+    "assets/aos-print.CrIR29ou.png": {
+      "id": "mIcQxuNv7bs5d6OlqYAT9ioHDWYbEDfL1DbTNzxGcCI"
+    },
+    "assets/app.D1JAOlo-.js": {
+      "id": "9EQqHvkOAl2Zk68hcbp-u3PT8pfFhh1I-JxfdCSca50"
+    },
+    "assets/chatroom1.DzyXEKXk.png": {
+      "id": "2Q3_E0vYIu7ZkBaNJOXJYhfiHYpl_deRksNfyXFNARQ"
+    },
+    "assets/chatroom2.DmsfqSXL.png": {
+      "id": "G_fxk2wJL-3MCEYdBYjCVDNYoo0gaf5N8zryX9DRemY"
+    },
+    "assets/chatroom3.BO7sX9qV.png": {
+      "id": "5unL33aogBx-6aJtDuVtWDMaZmcE_uy-QN08nXmttjk"
+    },
+    "assets/chatroom4.WxT67Cen.png": {
+      "id": "MfrR5QXVCXjxEfCnAhLdn4fdgFCznq4nPu1aiPQgcAM"
+    },
+    "assets/chatroom5.BALJF4Gu.png": {
+      "id": "5tpBnVgiioeh_uP_bA2e2UP8V1KuODG8Gc5It940nsc"
+    },
+    "assets/chatroom6.BCnKotYI.png": {
+      "id": "y2RERCWgEdv5nHdUbT_Dr1pfCKBcteSEU8Vhyzy2A9Y"
+    },
+    "assets/chatroom7.VmVGPCHV.png": {
+      "id": "IXKGKhAk2WQD7oJ2yMV7LG44_VzSk1b7yFGMpk9gvE0"
+    },
+    "assets/chatroom8.c20GaRoH.png": {
+      "id": "3eA_vjb3_5nDTJubDAua4C4f3s-QdOTeJ4QbpTvctXE"
+    },
+    "assets/chunks/@localSearchIndexja.js": {
+      "id": "0w0cz3-OT_iAF-ds37GRhXwH48RRmF07T1fQnRN1Jec"
+    },
+    "assets/chunks/@localSearchIndexroot.js": {
+      "id": "bpMM1jFq1Sk0xMtscx4O_raD5gd9NhSgLZ1HNKYTS3Q"
+    },
+    "assets/chunks/@localSearchIndexzh.js": {
+      "id": "-nPBFybdbCb5_yTaYnmRXAKa5DpS4E3_iAZzmXmWZvE"
+    },
+    "assets/chunks/VPLocalSearchBox.js": {
+      "id": "6cE9D5d9kTRJSE4WHl0vTqyXJrc0Ch3YDqoUidc0vC4"
+    },
+    "assets/chunks/ao-effect-game-banner.js": {
+      "id": "Ldv_UZ8LNDTe7e4y8Ag9ovInpx16EelbaPaB4xvXxyw"
+    },
+    "assets/chunks/ao-logo-grey.js": {
+      "id": "NKXrvrWCHPmMdWrxlo_ri0cVUdQzmyG3PYU18O9qbFU"
+    },
+    "assets/chunks/aos-print.js": {
+      "id": "ck6cKFAXOOzCsYYuZlkbMorC6VwcfnQ6VFbKdd1GHsU"
+    },
+    "assets/chunks/chatroom8.js": {
+      "id": "tMl0UkFDnDIcQQYv2Rretl_NkLiRvUF1XH1AfDPjRqg"
+    },
+    "assets/chunks/framework.js": {
+      "id": "OUXOtu3DZ4vDbwuFDnAEKqDtAsYYJsDBvmQY5LfDAc0"
+    },
+    "assets/chunks/messaging2.js": {
+      "id": "-UzI5C15wxChIr2jA1QXC5Ni_PU0VU6OVMP9LRhvkos"
+    },
+    "assets/chunks/replRenderer.js": {
+      "id": "KH-CApWj9Ga_4HkJo0dI2PfRhg9i8bNs_mF9PS769So"
+    },
+    "assets/chunks/theme.js": {
+      "id": "JFJorhtwKfbWcHy8dfWWMX9NHEycKPMYbeD75muocXA"
+    },
+    "assets/chunks/token2.js": {
+      "id": "4Q5j2wUQzCC7zKlRmC0T4xRej5yritaBwbomvhGCoE4"
+    },
+    "assets/chunks/token3.js": {
+      "id": "x49eeEq1zMnYTXoNw6_6XCEEQRI8Z0dGOr4Y3nN3I2E"
+    },
+    "assets/chunks/white_rabbit_outline.js": {
+      "id": "tE05gsczfmDHWceRl-3aUXcF-ugoUre3E4u2bH4zd-Y"
+    },
+    "assets/chunks/white_rabbit_outline2.js": {
+      "id": "zIjao1H_Avjd2srXzYq2T_u_5IAjv7s0pJWBhfYTaek"
+    },
+    "assets/concepts_eval.md.7QgRarY2.js": {
+      "id": "C7KfsB4vWr_kFFacV5y6slloPXo7qJHeQQw2etuzgq0"
+    },
+    "assets/concepts_eval.md.7QgRarY2.lean.js": {
+      "id": "z9wYK4YsRZivBDqgZQFWBtSNAwCScvLVO79Ahh0l6nM"
+    },
+    "assets/concepts_holographic-state.md.CTccp4ao.js": {
+      "id": "kVqcmuIGC2UY9glsI4JNG7--1yxiUupqrCKS0SGG81U"
+    },
+    "assets/concepts_holographic-state.md.CTccp4ao.lean.js": {
+      "id": "v13bpZ6_S7ptbnHBJiCx7TVjF4oVWPkEWHaRWDPSv6A"
+    },
+    "assets/concepts_how-it-works.md.Bn3o-iXE.js": {
+      "id": "ZyjfwQZMEV3pCRMnz7wr1tN5j1XAc0sNBZpNCR9CGEc"
+    },
+    "assets/concepts_how-it-works.md.Bn3o-iXE.lean.js": {
+      "id": "4doO3UaslhKIRkHhPnFRShoFsZcsMg_89QzThdky4qw"
+    },
+    "assets/concepts_index.md.y9cYR_7Z.js": {
+      "id": "qmAeWLAULAUZW-MxUx6UjUimeIKa4EQ9qwaNLII1Rdw"
+    },
+    "assets/concepts_index.md.y9cYR_7Z.lean.js": {
+      "id": "-cMasqxbbYPRHSdZJSe5iDhRu-ZVmqA98Q4FI9KSKEE"
+    },
+    "assets/concepts_lua.md.CcXQCq_T.js": {
+      "id": "SQzCDkpGa-VccPUicTVZwFaEmfBdpiN6g9HF3pFusQU"
+    },
+    "assets/concepts_lua.md.CcXQCq_T.lean.js": {
+      "id": "elZrQRWho1qhbawqvbN16WzFo3BaIJV5aePa3wGuWIY"
+    },
+    "assets/concepts_messages.md.BBGlE-bZ.js": {
+      "id": "MNQCvpWXClAmM8cKzuwf6LRKiIi542ctAKnhApgQcI4"
+    },
+    "assets/concepts_messages.md.BBGlE-bZ.lean.js": {
+      "id": "5syu1YB-zlihnuSMGpUTRY34dJ04GN38KamQgwGgdSk"
+    },
+    "assets/concepts_processes.md.BgZyLNtc.js": {
+      "id": "pyeNtqq-ulS875hp-t_I3vznhwBA371xoE_SWHRvnb4"
+    },
+    "assets/concepts_processes.md.BgZyLNtc.lean.js": {
+      "id": "1zHRRGQ1aHx01avWWUeETkIhJAbJL6YMAHgoJNjI8wo"
+    },
+    "assets/concepts_specs.md.CF_T-BEo.js": {
+      "id": "LKspTBTM5HV3O4t-bfoXhlt521OkdOs7X87PFDmEE5A"
+    },
+    "assets/concepts_specs.md.CF_T-BEo.lean.js": {
+      "id": "fdzH9cLWgR_BF67rQTu_tdV1oOVKe-A11etrfeOkQ8o"
+    },
+    "assets/concepts_tour.md.BBbTC-Y6.js": {
+      "id": "zzS2B2fEm8M_Y5EEqawVwnVltBu7KXIeoC9HVHNoid8"
+    },
+    "assets/concepts_tour.md.BBbTC-Y6.lean.js": {
+      "id": "BBK4iWB9WOMUjHWHz6_w2rQ0g4FuA4W-VIPw9VY5OT0"
+    },
+    "assets/concepts_units.md.kQTmcABw.js": {
+      "id": "iJRpq0Fc0IFDmVzpvWArryrXmCYAvJRKZwuHbZjCkOc"
+    },
+    "assets/concepts_units.md.kQTmcABw.lean.js": {
+      "id": "znsGPDvWjqN-s1yP9_O5CY4aWlx9lq_mp2OCfK-_l1Q"
+    },
+    "assets/guides_aoconnect_aoconnect.md.CeWbDBjd.js": {
+      "id": "NOxe-x6uEgylMDuJxwXrtVdrCvnOFbfOlI8AmGOLSCs"
+    },
+    "assets/guides_aoconnect_aoconnect.md.CeWbDBjd.lean.js": {
+      "id": "EgnI49B2rp8ndCYKt60Rbau9oVZYOuEPPkRxhzVwaXM"
+    },
+    "assets/guides_aoconnect_assign-data.md.XTbQgDld.js": {
+      "id": "A7-lMiKBwGi1ZsfnTse6o5cDLEk5irKeudBTu3Dn5kY"
+    },
+    "assets/guides_aoconnect_assign-data.md.XTbQgDld.lean.js": {
+      "id": "xtBDBIJ418Q7IRbunpYV8XEqTEKollIhNO5vYQvFhw8"
+    },
+    "assets/guides_aoconnect_calling-dryrun.md.HyH17lUz.js": {
+      "id": "0Bt369HsGuiOCHS3aO0RBAXpM5rxr48LZUKTuxdsKsA"
+    },
+    "assets/guides_aoconnect_calling-dryrun.md.HyH17lUz.lean.js": {
+      "id": "bR3X6qaZYda6ElvjbxVS8CWijdats1iFcPQVLAbOXnY"
+    },
+    "assets/guides_aoconnect_connecting.md.BC8gMDzJ.js": {
+      "id": "lnD42DXWoTkncUHfRm2TsS84kcJqHBRdnKmQfQ3t0bs"
+    },
+    "assets/guides_aoconnect_connecting.md.BC8gMDzJ.lean.js": {
+      "id": "aQoLN8akhHjJSgrBwmcCh9akGbHlbZrJz-qMg_vZxpg"
+    },
+    "assets/guides_aoconnect_installing-connect.md.DXkG4qeG.js": {
+      "id": "5KdFxIEXdFqd2EKGN3jCYL3kWZnpvyCqaC-PZDzHenA"
+    },
+    "assets/guides_aoconnect_installing-connect.md.DXkG4qeG.lean.js": {
+      "id": "OiIWlYM6sNav3JFK-T_AzsUdOGJmQR4KTc1JsmUwW0A"
+    },
+    "assets/guides_aoconnect_monitoring-cron.md.D1yuzlBg.js": {
+      "id": "uY1CUqRl4x1gUU1Ky31PxnLZ0078QZavy2uXeQ4fyXg"
+    },
+    "assets/guides_aoconnect_monitoring-cron.md.D1yuzlBg.lean.js": {
+      "id": "E2e3_7BDlZJrcqeHba5dPrLAT5f6bY0YO-3JWHO40kg"
+    },
+    "assets/guides_aoconnect_reading-results.md.kYSrAUIC.js": {
+      "id": "2dkQ3AYCSNJB_179efBOmbFf8MkYVqk1NI9COWVwPKg"
+    },
+    "assets/guides_aoconnect_reading-results.md.kYSrAUIC.lean.js": {
+      "id": "1GW2vf1NCRPV3EaYWulkAnGQhwIPSTF0XGA6Nzqi1dI"
+    },
+    "assets/guides_aoconnect_sending-messages.md.C-xDWp5i.js": {
+      "id": "C6TYsyjv5OXDgU3Wq6pOW_xj7szU29Qe4I9KfvC8Psw"
+    },
+    "assets/guides_aoconnect_sending-messages.md.C-xDWp5i.lean.js": {
+      "id": "Cb4F3MNoDinuO3Zjh6uXMeWzVUc-HAlV5nhSfs8AkbY"
+    },
+    "assets/guides_aoconnect_signers.md.BNPeBE_M.js": {
+      "id": "gZPlL3RRzJO8zBJDNxHYOa9ACwyTawpfLc-Eaf3_E_g"
+    },
+    "assets/guides_aoconnect_signers.md.BNPeBE_M.lean.js": {
+      "id": "zgB84Q9InjlA0VMjxIDXB8sNjGnFjdUZYQIZtD2PmHQ"
+    },
+    "assets/guides_aoconnect_spawning-processes.md.uDFT9Ecs.js": {
+      "id": "FtcvGQzOx5zjQrcIKYKVpFVSBr7AI4Quefdmn1PazkI"
+    },
+    "assets/guides_aoconnect_spawning-processes.md.uDFT9Ecs.lean.js": {
+      "id": "fSAm1vpzz0c6CfyhcG74g8oMDYZ3N0sT5RANFsZfg8g"
+    },
+    "assets/guides_aos_blueprints_chatroom.md.kdkmVvX7.js": {
+      "id": "0M614-8hy3Wb-T0fuap9dO3Gb1u2XRCmEwJgbLY57gA"
+    },
+    "assets/guides_aos_blueprints_chatroom.md.kdkmVvX7.lean.js": {
+      "id": "KiXX2Mhwy3hXBewFCdmyGe38kp6vcnMdQMcLfVwn7Uo"
+    },
+    "assets/guides_aos_blueprints_cred-utils.md.CMxskKkX.js": {
+      "id": "aqboAmJ7dyR70l9PXTyruj-k6CZAuDmvszQ8T3rN7UM"
+    },
+    "assets/guides_aos_blueprints_cred-utils.md.CMxskKkX.lean.js": {
+      "id": "oMRY5ifuWjkU5c8fXIKRbb1joOJEEi5uDJ-w31QORiU"
+    },
+    "assets/guides_aos_blueprints_index.md.Bx3BKn7g.js": {
+      "id": "07_aEzynjca2PVt919YL6oeMfqhUGJXQDfrCPDCgtSY"
+    },
+    "assets/guides_aos_blueprints_index.md.Bx3BKn7g.lean.js": {
+      "id": "wFCPjPSGa6ARQfGh7M__z1C_DAbG-uKfPfvURE_XgLg"
+    },
+    "assets/guides_aos_blueprints_staking.md.Cyf71gD1.js": {
+      "id": "MSlK38-qhUTVrVjU_Q9YZ6YXRhfg7paCtKcHAQgxhxg"
+    },
+    "assets/guides_aos_blueprints_staking.md.Cyf71gD1.lean.js": {
+      "id": "ucPBE4m2oH2sTsG26Ks4Ha774DXbsNQs1pBNY-nQEds"
+    },
+    "assets/guides_aos_blueprints_token.md.DusKIlQ-.js": {
+      "id": "PynfISYJpQzzE62AsHfPrpN7XBKc_ZME-AvJ-KaxAN8"
+    },
+    "assets/guides_aos_blueprints_token.md.DusKIlQ-.lean.js": {
+      "id": "nm9j2NKYhoYYCLzLjz0MTHAm1Eemnqp3TnN7qMG6UCA"
+    },
+    "assets/guides_aos_blueprints_voting.md.CzFjQV6W.js": {
+      "id": "nmr9TP3-k8FaEB4-k1_qzAw3NWlx0YEjNQYQPKouHWI"
+    },
+    "assets/guides_aos_blueprints_voting.md.CzFjQV6W.lean.js": {
+      "id": "943nT63G3XvroHxla4u1QHPCI0fovhOK5QMh3Wn6ZIM"
+    },
+    "assets/guides_aos_cli.md.CHHGzgMP.js": {
+      "id": "9AvUhbQ3lj32ut4ZMP7NWUnAdg8f25kF_tVHGnh93KA"
+    },
+    "assets/guides_aos_cli.md.CHHGzgMP.lean.js": {
+      "id": "ePun5b1wQCAoWhAk2l39J3YudyDxd6fEcQyGmlVHr0A"
+    },
+    "assets/guides_aos_editor.md.Jt2m0A1i.js": {
+      "id": "CZO53TajO1rrRSB7EmtgLzkkIwJqChNRigU8hP2WlQ8"
+    },
+    "assets/guides_aos_editor.md.Jt2m0A1i.lean.js": {
+      "id": "ZVfBcNFPKh3U7duijTDR-t2aiufIbYNtg9AFQE7TeiY"
+    },
+    "assets/guides_aos_faq.md.LR4dcMCQ.js": {
+      "id": "Vy7vxE-IkoSm1eN60pMnVZ723gqN_ZNp4UhwIaqx18I"
+    },
+    "assets/guides_aos_faq.md.LR4dcMCQ.lean.js": {
+      "id": "R2kAjRHfWZjgyzuwjScyiStHStLbORE2_kKA1An6bro"
+    },
+    "assets/guides_aos_inbox-and-handlers.md.kCem4DkW.js": {
+      "id": "JUdq_-mfPQ2rbtZyRdHlomEZSn4UpPI1ep10Xsb3koE"
+    },
+    "assets/guides_aos_inbox-and-handlers.md.kCem4DkW.lean.js": {
+      "id": "C3VZ_CRYAjdvDfs-58Ljl_50fOxo0TNz19sVPWMvlgo"
+    },
+    "assets/guides_aos_index.md.Ci9xVOWS.js": {
+      "id": "qyzFNPw2UTaoSJAIjhvE4V09jg_Ox-T3L1UMIIRJltY"
+    },
+    "assets/guides_aos_index.md.Ci9xVOWS.lean.js": {
+      "id": "EVe6OXThpEX1wFpRHt4wlT7hLKZnECy9ndsRascT1-8"
+    },
+    "assets/guides_aos_installing.md.DeooOrdH.js": {
+      "id": "9luz5GxooiG5FX6e-9zY7HJ1u7FH4Ql41ZX234m3U-E"
+    },
+    "assets/guides_aos_installing.md.DeooOrdH.lean.js": {
+      "id": "XffR5PHoICMMcDSepnZrOnlUYrFHAZal7266lel9I7k"
+    },
+    "assets/guides_aos_intro.md.CH1PvowE.js": {
+      "id": "V7ks8GyrXMXa00waUKrzDnYB0HGH8MydGNnR1NUKBmA"
+    },
+    "assets/guides_aos_intro.md.CH1PvowE.lean.js": {
+      "id": "bvQPQljnVebTKZdUayPLGWMd9Tgm2IX0Iq2rOh0VIAk"
+    },
+    "assets/guides_aos_load.md.DebFoZxI.js": {
+      "id": "3FArii0Qvkusyo8c1jc6WhIrHHsi7dm4FVn-o6Y7RaM"
+    },
+    "assets/guides_aos_load.md.DebFoZxI.lean.js": {
+      "id": "dR87ibti9mvAhJN6BptVk3MJteACmqPRQfCMTXVJlzk"
+    },
+    "assets/guides_aos_modules_ao.md.B1RLkEN_.js": {
+      "id": "0TyizyPe_QnjbGXAD6JCjYOhfR54d2_JJDCZ5MmFeKQ"
+    },
+    "assets/guides_aos_modules_ao.md.B1RLkEN_.lean.js": {
+      "id": "50bPwmxHoN88iR1OT94spEMpJ_NjVvziPUpi8xxG5uk"
+    },
+    "assets/guides_aos_modules_base64.md.VKZ4NFvL.js": {
+      "id": "gWIpOTek83TpUBzDy7MOgQL_QJPi55AuBsGOi63xdW4"
+    },
+    "assets/guides_aos_modules_base64.md.VKZ4NFvL.lean.js": {
+      "id": "41IptFrPmdo1fBOVCxwNMAmTKnbDOnX_uEvKsVydGjg"
+    },
+    "assets/guides_aos_modules_crypto.md.DCKwmxN7.js": {
+      "id": "bSSxLNvhgYrbPeMMXzC4B7RcYWZZO_nvjFq4KGJw7bM"
+    },
+    "assets/guides_aos_modules_crypto.md.DCKwmxN7.lean.js": {
+      "id": "eu1k1puh8uDJiJ-xRLNsMokrXSKbZYeoF9JRuCubbX0"
+    },
+    "assets/guides_aos_modules_index.md.BuyVI6Xt.js": {
+      "id": "IWsBdI60vx66eMsk3sXVYvs29ye7exUmGUJ-ccXwjBk"
+    },
+    "assets/guides_aos_modules_index.md.BuyVI6Xt.lean.js": {
+      "id": "PcYq70MYdduCgnHapCwVcZ8PYGhvGo1stjGiu4kkUZw"
+    },
+    "assets/guides_aos_modules_json.md.CoAovSP-.js": {
+      "id": "Ge8Yl7p2_Mk84S-tYtMv9pqW7ZwD9mWun9QRJX9dRRw"
+    },
+    "assets/guides_aos_modules_json.md.CoAovSP-.lean.js": {
+      "id": "E7sGtCezZ9FSeMOz7Bc5vtEOiOk8yBpWLqBiFaGVuDk"
+    },
+    "assets/guides_aos_modules_pretty.md.uOBHO2pj.js": {
+      "id": "7MFM6yMFcJQcRQ6jKnz0MG3RkXPzibVsLPKKxTe3zvQ"
+    },
+    "assets/guides_aos_modules_pretty.md.uOBHO2pj.lean.js": {
+      "id": "dpdhgy07HKgnhMK0YBuNjXeyQ31wkrzoq0-PxGTkpWo"
+    },
+    "assets/guides_aos_modules_utils.md.2Mebr9Qa.js": {
+      "id": "UJxlMp8VTnmVsNk2JdrhGrAuUM7C1nBLq8lR1zGQ-4g"
+    },
+    "assets/guides_aos_modules_utils.md.2Mebr9Qa.lean.js": {
+      "id": "l8ExmvksaKB2G_caWcOXTuCicD0SgCJNsPI1_9nQv6A"
+    },
+    "assets/guides_aos_ownership.md.DFrwSC8B.js": {
+      "id": "65e1N92zJGc0iRtHEcRRpKrIzmlJb-YOKEW-bwNfqrI"
+    },
+    "assets/guides_aos_ownership.md.DFrwSC8B.lean.js": {
+      "id": "RBd60EjXvwzIyGfIoKChd1sL--E-okyrlrCiSh4Kkog"
+    },
+    "assets/guides_aos_pingpong.md.CAO15w7N.js": {
+      "id": "6m_MpwVTa8ZuShs1125RKVfbS_cZfX7aYM1cycrPNVE"
+    },
+    "assets/guides_aos_pingpong.md.CAO15w7N.lean.js": {
+      "id": "VxJJbtobky5S0_wIwvK5PSYokppylTuFpI6_JfidWFY"
+    },
+    "assets/guides_aos_prompt.md.B5jJrp_S.js": {
+      "id": "LeIqinX2ni8ZBe8g8i2bs2ZufgUcMkpZmqxYyjIxmfo"
+    },
+    "assets/guides_aos_prompt.md.B5jJrp_S.lean.js": {
+      "id": "kuwGaW0r46VF7U1JOHmMEmogi77Fg1eDHRltzqftM5A"
+    },
+    "assets/guides_aos_tables-and-json.md.BSRcs_X8.js": {
+      "id": "sfvhBKsrJNhO7NFYtwlh9eN0WTCnLq6ZqXw4cZvmQec"
+    },
+    "assets/guides_aos_tables-and-json.md.BSRcs_X8.lean.js": {
+      "id": "NR5-DrdI9mt3LEuFXpG3-KwNqFQURvK-NOUP27EwrO0"
+    },
+    "assets/guides_aos_token.md.BZ2VKYIy.js": {
+      "id": "f33sry9um8KCrUaYm07oF0KMyJOc7yT6v6LuiwPRgHg"
+    },
+    "assets/guides_aos_token.md.BZ2VKYIy.lean.js": {
+      "id": "YXOVQL7jKIdVrHuoLohNbxRnX32O9eQuhPQzNpp3loI"
+    },
+    "assets/guides_aos_troubleshooting.md.hQpmkkt9.js": {
+      "id": "iZv-650tk9SwqEIj2HERI5uGz5L3o8Wx3dW4jRqLR7I"
+    },
+    "assets/guides_aos_troubleshooting.md.hQpmkkt9.lean.js": {
+      "id": "YKvcS9eiwJxUwes5RdWhd6Z9UFnDglzjQiOnLXblm1k"
+    },
+    "assets/guides_dev-cli_index.md.BzVD7yJY.js": {
+      "id": "0CuoXG97HFdDxp7vPnHkQe1YFeD80SuivjWbKRmoP3c"
+    },
+    "assets/guides_dev-cli_index.md.BzVD7yJY.lean.js": {
+      "id": "cZkgxc0p-HGZWS2JVVTxS_GG4r_zxLYuzTXaQg49LCM"
+    },
+    "assets/guides_index.md.KXDu6C9R.js": {
+      "id": "yTjzfLrj5blrfgS4qa40k6h44-T1p9l0bm1SX_lk-Ds"
+    },
+    "assets/guides_index.md.KXDu6C9R.lean.js": {
+      "id": "pPp9gfNwKe637a9k13loGzzDKDvvUfpYIT_CYGAOD5c"
+    },
+    "assets/guides_migrating-to-hyperbeam_ao-connect.md.uLVKH_oC.js": {
+      "id": "T0UNdrLO7ogje-vNqw_4p1qyXmlBm016iYPEhMFeoX4"
+    },
+    "assets/guides_migrating-to-hyperbeam_ao-connect.md.uLVKH_oC.lean.js": {
+      "id": "kgTcwmBt_yHqXr3VcVpZJzKd8kyKVLEQithXzcjJptw"
+    },
+    "assets/guides_migrating-to-hyperbeam_aos-with-hyperbeam.md.DfX6YBwH.js": {
+      "id": "iSG-FJMmH4Ek7IkJeFBIE-E0vwJ379wBhl0sAfoJNi8"
+    },
+    "assets/guides_migrating-to-hyperbeam_aos-with-hyperbeam.md.DfX6YBwH.lean.js": {
+      "id": "6XifeNjOxjfTYdiJQKH6ByeeZkusneXhuEdiqD6nyxI"
+    },
+    "assets/guides_migrating-to-hyperbeam_exposing-process-state.md.DBUQjF2a.js": {
+      "id": "LbL2zBrvpHDI1HDchns7OFsby-9bDjjfRcCbsLdfwqA"
+    },
+    "assets/guides_migrating-to-hyperbeam_exposing-process-state.md.DBUQjF2a.lean.js": {
+      "id": "gd1cDK7pnkg-EBVTpEsSf24LyVJu_enZ1k8QMwfQS3g"
+    },
+    "assets/guides_migrating-to-hyperbeam_reading-dynamic-state.md.BdtEkvOv.js": {
+      "id": "Nqpmyri3RoH1OxyE0n77wNus3ndjte-2PPBlxvKPpq0"
+    },
+    "assets/guides_migrating-to-hyperbeam_reading-dynamic-state.md.BdtEkvOv.lean.js": {
+      "id": "gAqVtPDM7Ih1IK7vdEyseQeJQrXGtVHGW3SvXHGLMsY"
+    },
+    "assets/guides_migrating-to-hyperbeam_why-migrate.md.CuEChMcM.js": {
+      "id": "2x7asiSGgaPHhK16QyV7E5Vv0OZjDkRcP5nGWb5gLVc"
+    },
+    "assets/guides_migrating-to-hyperbeam_why-migrate.md.CuEChMcM.lean.js": {
+      "id": "6_aK1KL01ScJtnQgJKuBfsxFC_O9Zsbmj6wl3C0fCpE"
+    },
+    "assets/guides_snacks_0rbit_get-request.md.UbQOh7fb.js": {
+      "id": "3467Cl5x5AUG1AyHQqmavPAMS_exVFwoWKFsMD0wb2k"
+    },
+    "assets/guides_snacks_0rbit_get-request.md.UbQOh7fb.lean.js": {
+      "id": "x8iWHtnnVW7ALEptXi0YyVlpnpKrweXwZPyJPUkJtW0"
+    },
+    "assets/guides_snacks_0rbit_index.md.CO64zXGT.js": {
+      "id": "sBaXTh4mHa6B3pLjCBgvi-jVbQJbt4XTZU1Of_dL5jw"
+    },
+    "assets/guides_snacks_0rbit_index.md.CO64zXGT.lean.js": {
+      "id": "yfh8rF6ma1g3muOSN2HHoUOwe_RS5ETghXX7HOQ-8p8"
+    },
+    "assets/guides_snacks_0rbit_post-request.md.C5oQChz3.js": {
+      "id": "u4KTXz51L_Elk6BDbH9g-5oYMOFZb3mDZKF5ggQR5Tk"
+    },
+    "assets/guides_snacks_0rbit_post-request.md.C5oQChz3.lean.js": {
+      "id": "VEtPIWKLEmH9osTWqe8SbuBnU4yd6SC_DR5rbxSOtek"
+    },
+    "assets/guides_snacks_sqlite.md.Buw_E5pI.js": {
+      "id": "kdazDzFKmWMg6Js4O-m8ExFgQELbPOOiF7Q4vNo5wg8"
+    },
+    "assets/guides_snacks_sqlite.md.Buw_E5pI.lean.js": {
+      "id": "sv41iIjLeR8u-iZWgssZhyGSqyQ6KXpuEvjOb05BR2I"
+    },
+    "assets/guides_snacks_weavedrive.md.DQ6JNXoO.js": {
+      "id": "8jkBlLQ7PLE3QkBTXi8DJjLh93X6i4sXm-cDGbRavh8"
+    },
+    "assets/guides_snacks_weavedrive.md.DQ6JNXoO.lean.js": {
+      "id": "J6TUoqFKPMQiMTjBKS-dhRfAoubq7ROKsqgtk5WOdEM"
+    },
+    "assets/handler-diagram.BUPm7rrp.png": {
+      "id": "MGCfW8pzrL60BwQgEe4aXk5Onz_qDehWrIjVnZKBAHE"
+    },
+    "assets/index.md.Rmns_X0u.js": {
+      "id": "HKdkCPYeHAgC-bFEmG2PsPg5Iiars2brpq2ZWfwLwlo"
+    },
+    "assets/index.md.Rmns_X0u.lean.js": {
+      "id": "6reRJSAtUuNTJ--iOq7XGln0RCe72G7Rx-tWb40TBQQ"
+    },
+    "assets/ja_concepts_holographic-state.md.BYJNj5Nc.js": {
+      "id": "Sf18-74ps8iTXHEFFtkp0Y71HFVrTKzrGBqxVVXZcoc"
+    },
+    "assets/ja_concepts_holographic-state.md.BYJNj5Nc.lean.js": {
+      "id": "T36CzMv6PgdH73yoPAV7AZfsX5ixA0vJcs6wRHcUsV4"
+    },
+    "assets/ja_concepts_how-it-works.md.BPRw3aU8.js": {
+      "id": "9xzMGDywL1kRi7EYRB-aSbqcrbB5_No7cFXPOu6R_MI"
+    },
+    "assets/ja_concepts_how-it-works.md.BPRw3aU8.lean.js": {
+      "id": "xeZ8sN9GM-tZhaPVLZkqMbQsNULkga24LK4d2_9Q8mw"
+    },
+    "assets/ja_concepts_index.md.DxT5vSJv.js": {
+      "id": "yQZthUzclsLnIp0McK8pT18Ab3L6cu07D6uF1QQTD7o"
+    },
+    "assets/ja_concepts_index.md.DxT5vSJv.lean.js": {
+      "id": "0FWn9AzLLboQuZO8QlqBAfm1ORt9DU2LEAXlbdEebq4"
+    },
+    "assets/ja_concepts_lua.md.SFjaJTQP.js": {
+      "id": "qn2WS7dD5nHMYgeKTD8uq_DYm6B26uqeghliKyIZIj0"
+    },
+    "assets/ja_concepts_lua.md.SFjaJTQP.lean.js": {
+      "id": "TWZMJYKq984j-fORPN9qjz4sOSNUZaMg5O34anlsQT0"
+    },
+    "assets/ja_concepts_messages.md.xVPjYH_u.js": {
+      "id": "ximttV_2EicdDK4EQcGItCjMmvrfZaKg6kyY9OFbVmQ"
+    },
+    "assets/ja_concepts_messages.md.xVPjYH_u.lean.js": {
+      "id": "IbkVDx7QOJMwEBwLqdb4Qmd30DMSOdO7CH011gqvB6M"
+    },
+    "assets/ja_concepts_processes.md.C7scRmHd.js": {
+      "id": "SrsVOWw3cRyrg9hgyqpRx26_N2Ll6CFytxP6nFYf570"
+    },
+    "assets/ja_concepts_processes.md.C7scRmHd.lean.js": {
+      "id": "YU0YdLt6lHcT3jxD-w7dwLIWIoMtWpimhJLd_8L-KTA"
+    },
+    "assets/ja_concepts_specs.md.AkZydslb.js": {
+      "id": "NLdcZE8sB_GAYp8ZcIM4LQ1BaBevItCMcEguwZ_uCUM"
+    },
+    "assets/ja_concepts_specs.md.AkZydslb.lean.js": {
+      "id": "6rdL5_Qch5SHDkyDifmzVcJgKDJdnKt3o9ZtHZkTXfI"
+    },
+    "assets/ja_concepts_tour.md.SUjmZTT2.js": {
+      "id": "k-knI4ljNIY_3epNxQZQ4uV9w3JkhDQI5fEf4zUu1rg"
+    },
+    "assets/ja_concepts_tour.md.SUjmZTT2.lean.js": {
+      "id": "oH9pK8xKJCpw97jIGmGaW-EBRLMoeK8voW6VlGb3shY"
+    },
+    "assets/ja_concepts_units.md.CKozo3QJ.js": {
+      "id": "6zyCTn8lhg-smI_iowb67XzoyV3L_UolhZuniAWrRWY"
+    },
+    "assets/ja_concepts_units.md.CKozo3QJ.lean.js": {
+      "id": "1rCbQHtiUMrd5pErhAxP9dd9s_F_lZP3w0Rnkoha-bw"
+    },
+    "assets/ja_guides_0rbit_get-request.md.Mi_U7e9o.js": {
+      "id": "UjQn7P9uLau7iO7pLpiHVyKNmLnst2O5p8BKS3KhReY"
+    },
+    "assets/ja_guides_0rbit_get-request.md.Mi_U7e9o.lean.js": {
+      "id": "l0XH92pHXMqmMPlVMvnDmqxonakJhDJ_O8WXSj7Ku9g"
+    },
+    "assets/ja_guides_0rbit_index.md.BUxmiOxK.js": {
+      "id": "r1nzgEcRJjy2mvauEB4HgcIFYKfP39TqLc0Hjk0J_Qg"
+    },
+    "assets/ja_guides_0rbit_index.md.BUxmiOxK.lean.js": {
+      "id": "j2Np_L7IMRfKP1zy3ttuActDV2Hs9-h8b1505HWQ1-I"
+    },
+    "assets/ja_guides_0rbit_post-request.md.CAhVXiEv.js": {
+      "id": "PaMtDb9bRwOC8QLOPpJXkXsZx7m6H_IZuzKBbH4P3mw"
+    },
+    "assets/ja_guides_0rbit_post-request.md.CAhVXiEv.lean.js": {
+      "id": "ClhNxXS0Z8H5mFpBEuE-XKH5z2JmLLZqA71dI7OnUcE"
+    },
+    "assets/ja_guides_aoconnect_aoconnect.md.D8EgDjzz.js": {
+      "id": "XnwcEYWhV9pkJ88Aov9BkF1sZM0PcFUoGTh7t7LK8Mg"
+    },
+    "assets/ja_guides_aoconnect_aoconnect.md.D8EgDjzz.lean.js": {
+      "id": "kPjNF_Ty3Az5k82dowov9dS_WgNeulNQr55zjHnIcFI"
+    },
+    "assets/ja_guides_aoconnect_assign-data.md.Dt6xOder.js": {
+      "id": "i2KNThJSgMjYo8f2TiNKUtOcPkiIjkCruVPfSDRuLPU"
+    },
+    "assets/ja_guides_aoconnect_assign-data.md.Dt6xOder.lean.js": {
+      "id": "ls7b9t1-Y3KEutoCFBzQTRi34NEk-N8Fw3I3yPdD4MI"
+    },
+    "assets/ja_guides_aoconnect_calling-dryrun.md.B3ZK74-9.js": {
+      "id": "6qbd1www5E4S5C3t8KLwV1Z_CuGN16fBZFm9dWbRRmI"
+    },
+    "assets/ja_guides_aoconnect_calling-dryrun.md.B3ZK74-9.lean.js": {
+      "id": "7XjfXmXBr-bp4s_oWfSDUbtzNPIx5MCG1fi7V0W5MqI"
+    },
+    "assets/ja_guides_aoconnect_connecting.md.B662f3vb.js": {
+      "id": "IaGq5bjI2b3NObUL9BjjwcoIww4ONisVbrebkEyfx8I"
+    },
+    "assets/ja_guides_aoconnect_connecting.md.B662f3vb.lean.js": {
+      "id": "QG2OW-QGDqHyXY_sYOPiY0qgWnW1VUZrHNj1eWTP-no"
+    },
+    "assets/ja_guides_aoconnect_installing-connect.md.CNUVC7wJ.js": {
+      "id": "Nznr8V5smbvt45YQ-3NAbM6h2JtZ0xGSHd7wWVDXeJ4"
+    },
+    "assets/ja_guides_aoconnect_installing-connect.md.CNUVC7wJ.lean.js": {
+      "id": "prYOEs13oM410DfJNaDULWrmjZnSE3m0D_O1S_f7WAY"
+    },
+    "assets/ja_guides_aoconnect_monitoring-cron.md.CbmUsDek.js": {
+      "id": "wYuEHiGR153j5gDdjQ2R-d_kctPIyP0Cv-yRuA07FcU"
+    },
+    "assets/ja_guides_aoconnect_monitoring-cron.md.CbmUsDek.lean.js": {
+      "id": "DfzXPyXhDgWSm89Ha_69x1eQcoTQTZGBkG-0IgGd6aI"
+    },
+    "assets/ja_guides_aoconnect_reading-results.md.wUc4qSeE.js": {
+      "id": "xWG3ZKjflVCK5SK7A9Wwl-yhHqTz1z8UQ1QisCsQnOg"
+    },
+    "assets/ja_guides_aoconnect_reading-results.md.wUc4qSeE.lean.js": {
+      "id": "taYdeZRVaHpBdIKuIjJAvP7_6pdsAMM4D-wtt19KrO0"
+    },
+    "assets/ja_guides_aoconnect_sending-messages.md.BdJBQSEz.js": {
+      "id": "mkn6oqi9ZHm2tEz2dSUEhpvg7xVwxSNrCDXhBrOaw1g"
+    },
+    "assets/ja_guides_aoconnect_sending-messages.md.BdJBQSEz.lean.js": {
+      "id": "Rxfe0oi2gLqXmC6N3eNdPDw2iI6ZpeK1c8Gc3gmP-xo"
+    },
+    "assets/ja_guides_aoconnect_spawning-processes.md.0cKJX2p8.js": {
+      "id": "vTN6jNDRpdkKEtx1LuyuqWbFMqK2t-MUSj-lH51gNRY"
+    },
+    "assets/ja_guides_aoconnect_spawning-processes.md.0cKJX2p8.lean.js": {
+      "id": "gNkSg7KRXcEMrAkBD6sGCSfh-2_yXY0wuNDPBxDrN3U"
+    },
+    "assets/ja_guides_aos_blueprints_chatroom.md.BPKS9FaG.js": {
+      "id": "-mjhvt7pP0bG3N-jzLafnzejXc0-X4fgmlatspn8_lA"
+    },
+    "assets/ja_guides_aos_blueprints_chatroom.md.BPKS9FaG.lean.js": {
+      "id": "OZJy92VV8MVgADAQbARDM9rp9u9iDPuU_EIkpu9XcT4"
+    },
+    "assets/ja_guides_aos_blueprints_cred-utils.md.46cWUgXm.js": {
+      "id": "RaQ1cltzjgwFPH13gr2cnhkUxzhFQojeBLg8BtP1TMM"
+    },
+    "assets/ja_guides_aos_blueprints_cred-utils.md.46cWUgXm.lean.js": {
+      "id": "V0-i7zkVDS1tImdSVvHZCxzipTuI_Vzp_OGCSaJNEDc"
+    },
+    "assets/ja_guides_aos_blueprints_index.md.CFLFipvU.js": {
+      "id": "0LGo5l-DAPcBaGI2ihe9NhTPbDFoi6BNr24pPRk5ZoY"
+    },
+    "assets/ja_guides_aos_blueprints_index.md.CFLFipvU.lean.js": {
+      "id": "uv8hTTlBRAJaRXO6kSDjdOe6IEyEKqyN-84EWIAvqBQ"
+    },
+    "assets/ja_guides_aos_blueprints_staking.md.EnQ4XZSE.js": {
+      "id": "quuFr_TtTZkzwVfvmjKZlyrrcp7q42yYEr6RkSOKfbY"
+    },
+    "assets/ja_guides_aos_blueprints_staking.md.EnQ4XZSE.lean.js": {
+      "id": "NV3AsmINzbly4mCk_4YDgvG54_53cIBHyb_SZbmXYFA"
+    },
+    "assets/ja_guides_aos_blueprints_token.md.DQJaYVej.js": {
+      "id": "ykncZDZZAiS2yV611G4PXfwTdK6F6stpqUfJCFDtw7E"
+    },
+    "assets/ja_guides_aos_blueprints_token.md.DQJaYVej.lean.js": {
+      "id": "91wQzu7vYOklCA-Tx6FLytLt7p8facHvmizWYhouQmE"
+    },
+    "assets/ja_guides_aos_blueprints_voting.md.BLuT-l1i.js": {
+      "id": "qnCo0p7084MWlb2Gz97PzFHRbIo6btvpAEUM8PwgavI"
+    },
+    "assets/ja_guides_aos_blueprints_voting.md.BLuT-l1i.lean.js": {
+      "id": "bC5vnuS4EP8Vk6-uCBB9F4oy2mYk6xCRc5aUHnnLdj4"
+    },
+    "assets/ja_guides_aos_cli.md.wLgEiFxW.js": {
+      "id": "Ezm5-SfsFjw1P4SLVje2rQHixgkz8M_idUPPqfUXhLA"
+    },
+    "assets/ja_guides_aos_cli.md.wLgEiFxW.lean.js": {
+      "id": "zJMXssHTXftqkpL0dX6EfthK625RvFjv6oIqM5UcsUw"
+    },
+    "assets/ja_guides_aos_editor.md.vdLBbNZn.js": {
+      "id": "16d4XiSQ9PnJBicvKarga6y-reD4z6-nZTXRLSGnT7g"
+    },
+    "assets/ja_guides_aos_editor.md.vdLBbNZn.lean.js": {
+      "id": "D0WSOiwc6U1lQd_eHUZ59Xxr1I_wdwyOtvj99n8u8FQ"
+    },
+    "assets/ja_guides_aos_faq.md.BIdC9nTO.js": {
+      "id": "US42yM2ocihQUiVbrzE32xYT4eylngaFGpaWszVcqV8"
+    },
+    "assets/ja_guides_aos_faq.md.BIdC9nTO.lean.js": {
+      "id": "aHrURgMfozRCGg9NJKxksFgdp6U-LOFZQZDsdArrGi4"
+    },
+    "assets/ja_guides_aos_inbox-and-handlers.md.CCW5tpxN.js": {
+      "id": "TV-DlOcqSPp3Vjify1YlkD7yPA63xvdE42q95dlP8JM"
+    },
+    "assets/ja_guides_aos_inbox-and-handlers.md.CCW5tpxN.lean.js": {
+      "id": "wMUgg2C4xo5ZXW-19SFjM70467S9_S0lk8diCpxjJZo"
+    },
+    "assets/ja_guides_aos_index.md.BijxZtJ8.js": {
+      "id": "x7pChe_zFkYXuJSrGXWsoHYcplyyihnJwEsqIkw9_xQ"
+    },
+    "assets/ja_guides_aos_index.md.BijxZtJ8.lean.js": {
+      "id": "15VpEKkxvzg-JmVUUrbgXAFE50IBQIAvmkjn8G7I6Aw"
+    },
+    "assets/ja_guides_aos_installing.md.CO-wzi2U.js": {
+      "id": "HF92c2UTndQnnxx8Yq-QcOBsZGlLXHcAf8dXP-ttKl4"
+    },
+    "assets/ja_guides_aos_installing.md.CO-wzi2U.lean.js": {
+      "id": "TGgkAxquHup_AFMuyjtNpEcclHo6Ramc5PknQBzZ5hM"
+    },
+    "assets/ja_guides_aos_intro.md.DR1rO755.js": {
+      "id": "srz2--AhRA1Yz6mE2bvIk2atLCjdNd5ikcDbBfbjkHQ"
+    },
+    "assets/ja_guides_aos_intro.md.DR1rO755.lean.js": {
+      "id": "XJWSw4fLnSdscFvg0dX6rqHIY6zjROQLiJh7fFRGa7E"
+    },
+    "assets/ja_guides_aos_load.md.DEc3Wwou.js": {
+      "id": "WyW7tYY7oWt7Y9e506xGfYLF8gNNCvDeRI4vKKIETJ8"
+    },
+    "assets/ja_guides_aos_load.md.DEc3Wwou.lean.js": {
+      "id": "vaDtZtbKuZTjU7vOl-xyuQgD_zPkxMn6GrUo0apn5HI"
+    },
+    "assets/ja_guides_aos_modules_ao.md._QCHmgpO.js": {
+      "id": "NRAJT42rLHYejf7ez_9ekhp_usomFU3tde5fxsRs4l4"
+    },
+    "assets/ja_guides_aos_modules_ao.md._QCHmgpO.lean.js": {
+      "id": "IIwvwzvKMfSNg2XxYfYQ0fq9_KzQNrGclZSWyUIBgSA"
+    },
+    "assets/ja_guides_aos_modules_base64.md.BzYq-UfJ.js": {
+      "id": "vkZVG6czZSHuGfAkXkeE4wlbdxHDRpIQhXD2IbJY1p0"
+    },
+    "assets/ja_guides_aos_modules_base64.md.BzYq-UfJ.lean.js": {
+      "id": "so5CrQjASUDXtxDIcPmp9UbR2lYfLSQUG9Lu-IAYnck"
+    },
+    "assets/ja_guides_aos_modules_crypto.md.Ca0VtJBj.js": {
+      "id": "E6kZpIlgpU5NQtXvwNUWK4KYSdla_wdp9H5vUUKLHl8"
+    },
+    "assets/ja_guides_aos_modules_crypto.md.Ca0VtJBj.lean.js": {
+      "id": "uUBrf6P2qh3j8BS9Otp-X8_IuB-_nwrVRQS4shtL9F4"
+    },
+    "assets/ja_guides_aos_modules_index.md.DKC6kdrf.js": {
+      "id": "ZAgbEOvbFfYxvExsuz8Cw7CJVz0kQz6kysVuzI3XVRc"
+    },
+    "assets/ja_guides_aos_modules_index.md.DKC6kdrf.lean.js": {
+      "id": "5ma7Bxg6zhrkhujW1cGihf8XgXCu7ZGA1M82Xjw1JoU"
+    },
+    "assets/ja_guides_aos_modules_json.md.1dJbeUqZ.js": {
+      "id": "p0KUTz3yNqfudaucyT4geAvKmMRFvevz7rCWJSJ4y6I"
+    },
+    "assets/ja_guides_aos_modules_json.md.1dJbeUqZ.lean.js": {
+      "id": "7B7fHX_27IfL2yTBfWzrN2alIBnOcnpNZROYrAmq_RM"
+    },
+    "assets/ja_guides_aos_modules_pretty.md.CeMuz2e0.js": {
+      "id": "AtgJ3IYd4XoNJBbgHlVi2j-goApZi7z1iTPDpw5IOdg"
+    },
+    "assets/ja_guides_aos_modules_pretty.md.CeMuz2e0.lean.js": {
+      "id": "D5g9fqereFbe1StrFLnFlkVSfrIY59VhiTVlwNWV0Uo"
+    },
+    "assets/ja_guides_aos_modules_utils.md.CuSHC-WN.js": {
+      "id": "6yjuoL82dFbDf1oSk12wI4V48GE3GzTUF0VPRDovNJc"
+    },
+    "assets/ja_guides_aos_modules_utils.md.CuSHC-WN.lean.js": {
+      "id": "n8LDSsGEugBm3hwEMG48m9MJP18JSLciUl0ZmUcLo_4"
+    },
+    "assets/ja_guides_aos_ownership.md.CYs8I7He.js": {
+      "id": "50jscMUiKRKvowBGlxZMEwzhVuZyyXOzTlmS4sRnFEw"
+    },
+    "assets/ja_guides_aos_ownership.md.CYs8I7He.lean.js": {
+      "id": "WUsOUOZcVYs7yxoGRosYu6hTQDH6Wvk8DixJs-QYJfQ"
+    },
+    "assets/ja_guides_aos_pingpong.md.CB-qqCTX.js": {
+      "id": "avoRQxR6hy6UO1170rRS_BW9sjrTJyD2vqlLJ0r7yd0"
+    },
+    "assets/ja_guides_aos_pingpong.md.CB-qqCTX.lean.js": {
+      "id": "nTGl7uEsErilTom_fWbY-5jU7su5VE1SikBjxlIKCco"
+    },
+    "assets/ja_guides_aos_prompt.md.BGGGkoTd.js": {
+      "id": "t1wHfJX7y3oZA5Bf288zsUEfFRL48ui-KdnEcLeqHNA"
+    },
+    "assets/ja_guides_aos_prompt.md.BGGGkoTd.lean.js": {
+      "id": "EVOrYZDI5PonPZH9Co-f3oHgGAgQ9qhSYu-PyU4nTjQ"
+    },
+    "assets/ja_guides_aos_tables-and-json.md.CL_OtxNs.js": {
+      "id": "DF7PEk8u8RBvgEzKWc4woSH1XncRk9UiGgGIsrf5s6A"
+    },
+    "assets/ja_guides_aos_tables-and-json.md.CL_OtxNs.lean.js": {
+      "id": "xR0pOjL9Ol6E0KhCLhEX_Efl38OSBh1AWRgI3Jq1i8Y"
+    },
+    "assets/ja_guides_aos_token.md.DH4GqF2q.js": {
+      "id": "mOKahs2VsAn2sBNzkUxNojH9uHpDGHphIm5Mbub9u3s"
+    },
+    "assets/ja_guides_aos_token.md.DH4GqF2q.lean.js": {
+      "id": "vagResLysjiPNRskCUwD__KPJTZSXaGF9kDP4aOSED4"
+    },
+    "assets/ja_guides_aos_troubleshooting.md.BmtTGwF4.js": {
+      "id": "UZf1ACUPO86fG6AxfbtZGnkL9mcwDKIqTwOH_dRmsWo"
+    },
+    "assets/ja_guides_aos_troubleshooting.md.BmtTGwF4.lean.js": {
+      "id": "3slPgi9yDW0gd3UaKwdqlecmTOWFRgsrsZcyQ9-oKzE"
+    },
+    "assets/ja_guides_betteridea_index.md.ByvnfXSx.js": {
+      "id": "EhbRapGjhxJzxqNBKd7lJ0dbCb7u41P8bVi6QanTF_o"
+    },
+    "assets/ja_guides_betteridea_index.md.ByvnfXSx.lean.js": {
+      "id": "W7hdgp4URS_YAdxjVo77ahCG_IJ5p6TiRcrloQgcT18"
+    },
+    "assets/ja_guides_index.md.o0XtP78m.js": {
+      "id": "LytlNqoVOO6hlOewxEjOUQkgBSLh-HuqFm9OO5l1Kx8"
+    },
+    "assets/ja_guides_index.md.o0XtP78m.lean.js": {
+      "id": "-Es_nH47zqHzvl6eCaR-wnfe7KaNNwyfxbvJbVUP4pI"
+    },
+    "assets/ja_index.md.DrZbMglm.js": {
+      "id": "eT-5c6inM4qptkGmZqqgwMokBj4XH8nx1z8MEhZI9DI"
+    },
+    "assets/ja_index.md.DrZbMglm.lean.js": {
+      "id": "Ftketr9E7zSkmSm5we6Bgj-m74Le_lEA_ns0FxAGbks"
+    },
+    "assets/ja_llms-explanation.md.B-pbQ29c.js": {
+      "id": "yU0yaypTgA5CJhZN0uRyojCesZc6MK4fLemlXKrmXMI"
+    },
+    "assets/ja_llms-explanation.md.B-pbQ29c.lean.js": {
+      "id": "R_5m2n4PJHCMm54ShH8OXfrXck5hypdwv3SJvuVkBLA"
+    },
+    "assets/ja_references_ao.md.DxCnCts-.js": {
+      "id": "WPEUxqT9x5qF3IGM5IM4zolnykkLCtNwzkGVQQy012A"
+    },
+    "assets/ja_references_ao.md.DxCnCts-.lean.js": {
+      "id": "uhSicP5yT_3My0rZyy9C5BlLDN-AA8krLxjnjOAsWpg"
+    },
+    "assets/ja_references_community.md.DNMzUCpR.js": {
+      "id": "cF0jiFI1ZejNvJ7cF8H6ND3szjZ0mxi5P7Bf5Lrsl60"
+    },
+    "assets/ja_references_community.md.DNMzUCpR.lean.js": {
+      "id": "82VJuNkXuxoSNHG9TzZRzSALvMbAUmKKwDJy5kTO5mE"
+    },
+    "assets/ja_references_cron.md.0I4xSW-E.js": {
+      "id": "TwdYLi2CQB1ZRhsyA6QiQljpQZcdUryK38gwmkepzr4"
+    },
+    "assets/ja_references_cron.md.0I4xSW-E.lean.js": {
+      "id": "a801KarmPPqTcXPsST50nB6mkpepMIYaCij7oG8Wh-o"
+    },
+    "assets/ja_references_data.md.BMRtJ3nO.js": {
+      "id": "m_Z6i4E0pXSlnWz62Ga4wqQ2bqM5pDVoJoilo-62mX0"
+    },
+    "assets/ja_references_data.md.BMRtJ3nO.lean.js": {
+      "id": "ZYez9iQkYwtQ6VZwYK9kfKuHzVzKGqB1osc0NFJNdC4"
+    },
+    "assets/ja_references_editor-setup.md.C5hx_mS8.js": {
+      "id": "8xu5s5iVEUs7ecnYc7lryiJF0hL2oAQziKsCULnv4yc"
+    },
+    "assets/ja_references_editor-setup.md.C5hx_mS8.lean.js": {
+      "id": "TT2R99-4IG72VHswtlRUIywaJHTXm0sAnXJWxqWH7YU"
+    },
+    "assets/ja_references_eval.md.TAq_jx_J.js": {
+      "id": "Muc-n2EgwxJSQ1Pb7h3OmeRq-o0LxTFC_k8WB6hWxyI"
+    },
+    "assets/ja_references_eval.md.TAq_jx_J.lean.js": {
+      "id": "TrkWBF0GG_hl5Jc8oCTiy3GAgVmY6LBsLFziVwMDIQs"
+    },
+    "assets/ja_references_handlers.md.njjA9N-7.js": {
+      "id": "JiCS-oVbrYFuMSDP06X5RSjl0lINN6qt3iGoqODglC8"
+    },
+    "assets/ja_references_handlers.md.njjA9N-7.lean.js": {
+      "id": "mFrprxs4FhbtvcziSF6E76boshM_AXcvScZFUV0U1uA"
+    },
+    "assets/ja_references_index.md.L9lVF6RR.js": {
+      "id": "yjeUS-QAnxAIcYkeZ5e0UUQkHa1RgsePePPAkVk4HPQ"
+    },
+    "assets/ja_references_index.md.L9lVF6RR.lean.js": {
+      "id": "32zx_hPOFkHoogj3kDHMv52SXLezmpohB8WAwGNdeOc"
+    },
+    "assets/ja_references_lua.md.66Hfkupc.js": {
+      "id": "HNE-dRyfPS4CzbYEdI2lapday0VbjVHbOPIQdV0uh8k"
+    },
+    "assets/ja_references_lua.md.66Hfkupc.lean.js": {
+      "id": "QE9m38m6gZZsksZZO6pB3lAyVpqLN-mdm2cwbUYH_2w"
+    },
+    "assets/ja_references_token.md.BMuEM6ce.js": {
+      "id": "Ii-dRCEFMTIR6lmqE1NzEvQoAvpNVSsHnJmx3SBbDBQ"
+    },
+    "assets/ja_references_token.md.BMuEM6ce.lean.js": {
+      "id": "5v9meTUAHOKdhMp0isYsW4AcQG82dFifWxasAV1XyC0"
+    },
+    "assets/ja_references_wasm.md.CWAWrAsB.js": {
+      "id": "lwO8DIffM4KgDh2Ek11oM5jCd2lbugE4u8i8Re0iFsg"
+    },
+    "assets/ja_references_wasm.md.CWAWrAsB.lean.js": {
+      "id": "aaZQUz0Gf4Lr0wRj73ke3wHKm_koPP2FnRx9TGOwJe0"
+    },
+    "assets/ja_tutorials_begin_chatroom.md.Chnuojv9.js": {
+      "id": "CKzfpwNa1fJdwqV39dRER0L_uguVdCgU6BgaWOfzwjE"
+    },
+    "assets/ja_tutorials_begin_chatroom.md.Chnuojv9.lean.js": {
+      "id": "MGk7j259xXekzfiuhUmUeop9iAjhneV5XLfFufKXV9M"
+    },
+    "assets/ja_tutorials_begin_dao.md.BdpXw3Kd.js": {
+      "id": "nd0rcVILSabGvn8HJ-YM5Hd2cC2NE4fHUVHyIoyAY2U"
+    },
+    "assets/ja_tutorials_begin_dao.md.BdpXw3Kd.lean.js": {
+      "id": "zhZEUkWodOmd4OdHCS8pKJfBiGopLXBdOmVw2zleeoA"
+    },
+    "assets/ja_tutorials_begin_index.md.BHys0HIt.js": {
+      "id": "tWHAlrjc7CQnXp5bGPEwxhmKPt5dR98FJ27hZy8heAs"
+    },
+    "assets/ja_tutorials_begin_index.md.BHys0HIt.lean.js": {
+      "id": "rRbOBg7Yp12og3OfZpYubzEPWOaw93C6lxtV-WvGsr8"
+    },
+    "assets/ja_tutorials_begin_messaging.md.DALEcGQk.js": {
+      "id": "0A82t4V4EdrwJKIcVcN1OYkJjSbbxDMANamLpJpbGJ4"
+    },
+    "assets/ja_tutorials_begin_messaging.md.DALEcGQk.lean.js": {
+      "id": "UasiukhQp6i9i_EgbhkwddqmpCyLA2Mp2pSQP8DHLxY"
+    },
+    "assets/ja_tutorials_begin_preparations.md.D6VikeL3.js": {
+      "id": "Ipb_ZoHNwhXh1fKjMRnAGoIHhPH8BpwdAFPPTaTidc0"
+    },
+    "assets/ja_tutorials_begin_preparations.md.D6VikeL3.lean.js": {
+      "id": "wyJOZPcTTxnyobbivAf1_F299SiJHl5qkz29Z2FRqug"
+    },
+    "assets/ja_tutorials_begin_rabbithole.md.d32EIDuE.js": {
+      "id": "LDdpC7ASeDpo9vBVhtdLPeaGOLu3m9eoLeqET5IynXk"
+    },
+    "assets/ja_tutorials_begin_rabbithole.md.d32EIDuE.lean.js": {
+      "id": "KgjgmmC0qAp0druM5OUSf7i0nlkSuU2uiq0i7GnA2ZA"
+    },
+    "assets/ja_tutorials_begin_token.md.CufZWXat.js": {
+      "id": "hm24qAsbnmlCwOoPvTAzEOB-Hpt9tfxm7Nz6hkNS-Dg"
+    },
+    "assets/ja_tutorials_begin_token.md.CufZWXat.lean.js": {
+      "id": "1fwliz_bnPZYg0wBE7sgSReJEMgwRt8feo1CNX4moTc"
+    },
+    "assets/ja_tutorials_begin_tokengating.md.BQK3nBk2.js": {
+      "id": "q4yHwi5oE6YpQ49-glPX0Ox4ctku6g8fIF-sH9cyLZU"
+    },
+    "assets/ja_tutorials_begin_tokengating.md.BQK3nBk2.lean.js": {
+      "id": "1GSfWYf3j6vGzNm9JcDc106xdx5bgw0DRKw6iRfYNF0"
+    },
+    "assets/ja_tutorials_bots-and-games_announcements.md.CNuLxcPY.js": {
+      "id": "d_vmGgNa249JWVK77RRNJcUMPiP03Ad8ScvdVL1Q0Bc"
+    },
+    "assets/ja_tutorials_bots-and-games_announcements.md.CNuLxcPY.lean.js": {
+      "id": "qTxbMalAStsVKOXSqUgmP5AkDCJak1gUTY6xqNxBL_k"
+    },
+    "assets/ja_tutorials_bots-and-games_ao-effect.md.DSGp6MmV.js": {
+      "id": "_CTrDYl_bRp_FyjeqvRKnBwfRcMYifLbU4ypCqsCZIs"
+    },
+    "assets/ja_tutorials_bots-and-games_ao-effect.md.DSGp6MmV.lean.js": {
+      "id": "hR-bejTGbxCm7nZmeF7FdMT2kG02fk5zpxbzFg7SSqM"
+    },
+    "assets/ja_tutorials_bots-and-games_arena-mechanics.md.BffVT9qM.js": {
+      "id": "s2L8-jzeBghc3NUt7EMEmj-0-aQs20Zy6zZHTGJeznI"
+    },
+    "assets/ja_tutorials_bots-and-games_arena-mechanics.md.BffVT9qM.lean.js": {
+      "id": "aBp5KwJJFcGtGtRSMCM5gDftsFFUQMjXFanGFZWhvAQ"
+    },
+    "assets/ja_tutorials_bots-and-games_attacking.md.Cp6QQcwC.js": {
+      "id": "rmX35Q2VaUcuTfZHGnYGF0h2nLY4uaqGw70OFDuuidE"
+    },
+    "assets/ja_tutorials_bots-and-games_attacking.md.Cp6QQcwC.lean.js": {
+      "id": "RYM9xWttNHlv0vEUdmXR0evE9XcqMzc8iIWN2Zf_S9o"
+    },
+    "assets/ja_tutorials_bots-and-games_bringing-together.md.D2yHlnIv.js": {
+      "id": "Co8735u7yPtki5UbMOKISGWKDtFHuzUvsawvet5D2Zw"
+    },
+    "assets/ja_tutorials_bots-and-games_bringing-together.md.D2yHlnIv.lean.js": {
+      "id": "ig-Z3pjSKHx_fazILUTOzMr8XIeX1a0q4eRqGGi7D2Q"
+    },
+    "assets/ja_tutorials_bots-and-games_build-game.md.C31eYmtJ.js": {
+      "id": "YTsu0q0okGQfOVlPZmVkIGesP4_xDUhpwUveJ3EZNMQ"
+    },
+    "assets/ja_tutorials_bots-and-games_build-game.md.C31eYmtJ.lean.js": {
+      "id": "-HFlzQSWLqgbM35EUelh68EtGMbKOVTNKHIoeHj3ZJw"
+    },
+    "assets/ja_tutorials_bots-and-games_decisions.md.DrlWETdY.js": {
+      "id": "4cMeZdh3Tv9nYCH8vUbjsh9wF_y5s_25fD6NqJJy8gw"
+    },
+    "assets/ja_tutorials_bots-and-games_decisions.md.DrlWETdY.lean.js": {
+      "id": "ltJ19ZXK5E5eulez9IjRFhTAJ3q5sEDUaFdzubBUAKc"
+    },
+    "assets/ja_tutorials_bots-and-games_game-state.md.Bgfypxu0.js": {
+      "id": "m4R0bk1AOP-Up9cjDrsb5507KLOQtIiVcDF_eoosafI"
+    },
+    "assets/ja_tutorials_bots-and-games_game-state.md.Bgfypxu0.lean.js": {
+      "id": "rnya6i2wYSKK9-jfkOCTIi-hMARUpZAp7xjmrBbpJL8"
+    },
+    "assets/ja_tutorials_bots-and-games_index.md.C-QbftYP.js": {
+      "id": "O5hZGnDCfN-eHeAmjCg37CSJ4MsV3FkuD2F2XSHic4I"
+    },
+    "assets/ja_tutorials_bots-and-games_index.md.C-QbftYP.lean.js": {
+      "id": "BDFMbsrEVr4izvCyxw0Na0d3dCIf6KUdfm4uIJAFVa0"
+    },
+    "assets/ja_tutorials_index.md.D98W_Asv.js": {
+      "id": "_fATHXqRirWm-inu2FuyBdfiT21U9mc-UQJZbMxF12c"
+    },
+    "assets/ja_tutorials_index.md.D98W_Asv.lean.js": {
+      "id": "Z7nrH3IflwRSj9JJSWBRtRMS35iSZ2IqJB4exsxtSEw"
+    },
+    "assets/ja_welcome_getting-started.md.C7lXUOUW.js": {
+      "id": "J9Qyls4y18z8kX04-CEaUPV2vJlb8T5RtUcv5VX_lnM"
+    },
+    "assets/ja_welcome_getting-started.md.C7lXUOUW.lean.js": {
+      "id": "ZfqdPSgIJPhD6rc6IWB4YJp59fn5Hb7Q8mAeDhFlyaE"
+    },
+    "assets/ja_welcome_index.md.BAbiH-Dn.js": {
+      "id": "cLrNXdgeYwkPY_9mLKZvp-ugB8sc-RqCeOGYY2zZp1E"
+    },
+    "assets/ja_welcome_index.md.BAbiH-Dn.lean.js": {
+      "id": "3eL3B4RmYZalgziLxhePGck1KkWpEwFTuzWRmsHetaI"
+    },
+    "assets/ja_welcome_testnet-info_index.md.BKKhgczr.js": {
+      "id": "ECyjdQyBplvUD6Y1viSn6HmdaZWHBW1j3VsZnFK_7dc"
+    },
+    "assets/ja_welcome_testnet-info_index.md.BKKhgczr.lean.js": {
+      "id": "-IF0H8I2ckxohoD5643tXf30z9aFjZQ6Z2rpPl-MVeE"
+    },
+    "assets/ja_welcome_testnet-info_quests.md.DreJ206a.js": {
+      "id": "cH-5QNaZfLWf9f3W0j1URrpiBu25-pjC-2xsjRWpM8A"
+    },
+    "assets/ja_welcome_testnet-info_quests.md.DreJ206a.lean.js": {
+      "id": "M4uuXhMoIkPfHSoYS8cB63Qle9hShM9nn-dkXDrEhaM"
+    },
+    "assets/llms-explanation.md.D52d6vxW.js": {
+      "id": "h1CxswDD1pgP2oLw2gUdfYDNCBZ8QFbk60gB-PSvfok"
+    },
+    "assets/llms-explanation.md.D52d6vxW.lean.js": {
+      "id": "L0FXCLzGqW1SN3--e5ike3VhWhrK7agIhTqKnQ8eRk0"
+    },
+    "assets/message-workflow-diagram.HJJzRH_4.png": {
+      "id": "tqvKPwluIRXlBz4dAurV56ZI5qc6BUvlTxa643fxqpc"
+    },
+    "assets/messaging2.CiCrFDD-.png": {
+      "id": "gLzPwqA_rQUmyeIW-0zHgFIE-H2-9AaqVe3gPwsNF1k"
+    },
+    "assets/process-diagram.BS_layHt.png": {
+      "id": "XD9-XG4j9kZ9TkgrZ9rJkY8w6mJq2MSiZC8AUNpYuKQ"
+    },
+    "assets/references_ao.md.CBCl756F.js": {
+      "id": "GY8cuAHln0ylg15SZ_ewyPd67WuifsbdDgpg-huSIDA"
+    },
+    "assets/references_ao.md.CBCl756F.lean.js": {
+      "id": "p5YkVw6t5rGerqR4iYacp8P794OOSEVWNYiH8wMe-AQ"
+    },
+    "assets/references_betteridea_index.md.JLKgYCaS.js": {
+      "id": "NT968LJ7r-KMp2ujr1R6UpaKDnO5tUZCmw_ap3kiUq8"
+    },
+    "assets/references_betteridea_index.md.JLKgYCaS.lean.js": {
+      "id": "vE3iVEpJEmZRVYGZ3P0_UMTKbGdKshBnoRaC-iGAhl8"
+    },
+    "assets/references_community.md.D29WUcFV.js": {
+      "id": "KDaxYKCO4i-IvVwHhbgy38UqkpOcNHfDMBVXufw8tC0"
+    },
+    "assets/references_community.md.D29WUcFV.lean.js": {
+      "id": "VWr7OPbTRgV2CBvWo_Hr0JzxSVrbUrTXkfYFE6kULfw"
+    },
+    "assets/references_cron.md.Vazx1itZ.js": {
+      "id": "9Sj9gtF_beVJVD2TZFmIvDsFzHdC0Y2KL_2WdxcuUDc"
+    },
+    "assets/references_cron.md.Vazx1itZ.lean.js": {
+      "id": "izO8G6fLuM8BGSRPIHcoA1YW4WizAOyfiChFr1wrX-c"
+    },
+    "assets/references_data.md.D6pepnf0.js": {
+      "id": "SgS-RmqHv-I9Inj6dNZVU3xoUwGM4HRKNKnPOcItFRI"
+    },
+    "assets/references_data.md.D6pepnf0.lean.js": {
+      "id": "8bAb5xGJ9rq6Kjfh2LMo5wZ6pfBJOEb1EffCoe59DpE"
+    },
+    "assets/references_editor-setup.md.q3BzKJBj.js": {
+      "id": "NhvlOoDxmLLlP03ZSWlIT_R2Y01A_O4wkL6n9bipHrM"
+    },
+    "assets/references_editor-setup.md.q3BzKJBj.lean.js": {
+      "id": "obuNN51KdMOAlJOoaXvRLtGuj12tsNPUT7_N7BAngbk"
+    },
+    "assets/references_glossary.md.BvxejBJc.js": {
+      "id": "Qbe3Fn52eNkpZU-9UkG9EuJGWG_IAobLS8_UxSqtBsM"
+    },
+    "assets/references_glossary.md.BvxejBJc.lean.js": {
+      "id": "vriQrS82_d2LdZHQMvzvG4pJYN-K9fwNco8vkQUH_Bc"
+    },
+    "assets/references_handlers.md.6IJRTf_9.js": {
+      "id": "RXDjC4GTiBy4-hfenK3ru3sdzlzBOZG1WbAnbltK5-g"
+    },
+    "assets/references_handlers.md.6IJRTf_9.lean.js": {
+      "id": "r_V95EHKOoNkosMni57re6OILU4axLfTehMN4kQgObQ"
+    },
+    "assets/references_index.md.B5oDyD4o.js": {
+      "id": "3KbmM54HpskaIVC59d_HsCfT__Bkhf1tYNlMcWqgDag"
+    },
+    "assets/references_index.md.B5oDyD4o.lean.js": {
+      "id": "_lHrsix9eRg_ZDwO00Ei5CufchJz9ajPhar6JETACuk"
+    },
+    "assets/references_lua-optimization.md.D7fYlD1b.js": {
+      "id": "--5yCdvJWWYKntP5BDwF8EbdSfxgWPWEfZuMnpQSx6M"
+    },
+    "assets/references_lua-optimization.md.D7fYlD1b.lean.js": {
+      "id": "wADvtpf5l2rgAYHzkPgc3XRJfer2lhhx8dii67mri6Q"
+    },
+    "assets/references_lua.md.BXnDFJPP.js": {
+      "id": "FLLdZSGjq-ljjzuBpvgomhL8Bs2oax3CLZaTZ9gfejI"
+    },
+    "assets/references_lua.md.BXnDFJPP.lean.js": {
+      "id": "Bt8VFfM4M-sVk2tmx1FaXrq5SbXLuPiSVspEcQshosY"
+    },
+    "assets/references_messaging.md.BxAqSKNV.js": {
+      "id": "MDq67xMhVcRF-fdLCXnjZuW7xgr_besPBT_md1oGsEk"
+    },
+    "assets/references_messaging.md.BxAqSKNV.lean.js": {
+      "id": "iJNZ-NweVvdXk4duyahzdE4bJCT9Mo59tmG7FUf77S4"
+    },
+    "assets/references_token.md.BqIwoes7.js": {
+      "id": "nXPGjWX6iOU1ESh-MGnXqIa0eYa_JKepS3FBrX6lhC0"
+    },
+    "assets/references_token.md.BqIwoes7.lean.js": {
+      "id": "uu6ndG4f4pQZIa1qlBQF9zMmZrWV5S4gb2lQFc7pKhI"
+    },
+    "assets/references_wasm.md.Ds3i-d49.js": {
+      "id": "vWrg5k3p5GEFC3WoNk58FKPfG9DxOdeSjj_CGd3OiBQ"
+    },
+    "assets/references_wasm.md.Ds3i-d49.lean.js": {
+      "id": "k67R1q6Tcu20FazRtD8M1GKGvRJBIHtZrAbw46wSAQQ"
+    },
+    "assets/releasenotes_aos-2_0_0.md.Dn1hIQPl.js": {
+      "id": "5xmP1GxmONLy6pJxjIv7aAqR7VM02_budApUIIv8C0A"
+    },
+    "assets/releasenotes_aos-2_0_0.md.Dn1hIQPl.lean.js": {
+      "id": "CPIJ52vJbkUxpsodYS8AG29uvFCWxQ4x5MX40Y32Jbw"
+    },
+    "assets/releasenotes_aos-2_0_1.md.CWS9m2_o.js": {
+      "id": "FivjosBqQdMqdIz6VBKOOEMD-n8UHzhvNOxmyGFISEg"
+    },
+    "assets/releasenotes_aos-2_0_1.md.CWS9m2_o.lean.js": {
+      "id": "7nJsYDPYE4dqP0l25yfqejNRsWS0l9UN47NSQygf45w"
+    },
+    "assets/releasenotes_aos-2_0_2.md.55sWJE9Z.js": {
+      "id": "CUWD4efBX3SLeyCVFlxunZzRI9LE2Gk5WDJoGWxp2fw"
+    },
+    "assets/releasenotes_aos-2_0_2.md.55sWJE9Z.lean.js": {
+      "id": "wzHUcXGdPSDM7NlT0UPG6-QkQsLd0RdLS3gpq3VoIMI"
+    },
+    "assets/releasenotes_index.md.C9Kh80uy.js": {
+      "id": "bjFClJTvoYEAEQOfY3m7aclsOGcLDrFHP33nkntlKks"
+    },
+    "assets/releasenotes_index.md.C9Kh80uy.lean.js": {
+      "id": "Cu41KK2938cXmytDkTTBA4cCErkNouPaF4-Zi6X2b6k"
+    },
+    "assets/style.ClJjzE4n.css": {
+      "id": "RZ7bGEeSeztMtoHp4Kshd9BjiZ47C0wREGLTDamPN6Y"
+    },
+    "assets/token1.CcL1vB3T.png": {
+      "id": "1qNmQIR64Bsa4_zfSxEOKGfOI7Cg4MKdqccL2FtGG1Y"
+    },
+    "assets/token2.B5XI9EvQ.png": {
+      "id": "PBOuAnftdQZ3sYXj6dQWao0YF-L5RUNuBa1vsjKvUIA"
+    },
+    "assets/token3.BEdF26wG.png": {
+      "id": "k7raUsGT5SKOiGmDLNStiMVy2sqvJciogx6YOYRldx4"
+    },
+    "assets/tutorials_begin_chatroom.md.BvJw9Qmo.js": {
+      "id": "jxp3K2M2bW8Dx5UKPF9zqs5MWmaggrXnkpSSFDyrCy4"
+    },
+    "assets/tutorials_begin_chatroom.md.BvJw9Qmo.lean.js": {
+      "id": "5HTBe10Q6uitfH2e6dsSlKR9WXdvlqSacyBOg0pqzuM"
+    },
+    "assets/tutorials_begin_dao.md.CLqeaPEN.js": {
+      "id": "A2RC1DhOuKEAUuAMCKTbfymLXgnAtfdyKKGxc5ju3XA"
+    },
+    "assets/tutorials_begin_dao.md.CLqeaPEN.lean.js": {
+      "id": "ceIonl_W3MInTsLwHusxp4ByNlqhb7o4JuYcDHMhuV4"
+    },
+    "assets/tutorials_begin_index.md.DEIpq7P5.js": {
+      "id": "0L4k3PIKNxk9gWtiBwatmZ-D3kE_acyVKZPLcw2uaXA"
+    },
+    "assets/tutorials_begin_index.md.DEIpq7P5.lean.js": {
+      "id": "dmTccjxSxaosEF1rn8ia_C7Zh_K5URO9T6ncaOqZOjA"
+    },
+    "assets/tutorials_begin_messaging.md.CfdJUReH.js": {
+      "id": "ilRHECWJocx987Joj9G-DQ1OsfmN9UkjWE67bWOElkY"
+    },
+    "assets/tutorials_begin_messaging.md.CfdJUReH.lean.js": {
+      "id": "8je9ZoycA33Y_rOujW-oqWE5OhbEly7vmq_IVFTUqOg"
+    },
+    "assets/tutorials_begin_preparations.md.BZTUYN5S.js": {
+      "id": "7nj29zAnAJiHlExxy9dOvlKC7lRs5ABmlirDikaGk0k"
+    },
+    "assets/tutorials_begin_preparations.md.BZTUYN5S.lean.js": {
+      "id": "9O7mX323pIT2n5VVY_MUdSNiEahNt33zyTgQrXLM9mw"
+    },
+    "assets/tutorials_begin_rabbithole.md.D7B81F8E.js": {
+      "id": "CF2HePaiDnKjUCb8zNdoS25LpdSUn_CzKNLlosPcWLk"
+    },
+    "assets/tutorials_begin_rabbithole.md.D7B81F8E.lean.js": {
+      "id": "xbeIFlVeVcmET2S4EjvRiYsFBwgul-b41a2haq9WOCI"
+    },
+    "assets/tutorials_begin_token.md.C5803ljo.js": {
+      "id": "KdmAKRHAQclj7AzLxpIwRI0R33r2QNIDMgrhj4bguQk"
+    },
+    "assets/tutorials_begin_token.md.C5803ljo.lean.js": {
+      "id": "o-Xf68BP0V4bpC3w1DJ9IXpoFjn1qI5WWJ_PHnKRq3o"
+    },
+    "assets/tutorials_begin_tokengating.md.DMwdaXCC.js": {
+      "id": "hU_2LAsFsjDn_2yTOH9Xs6cg5lj-ZLXZTeCHCE15Gvk"
+    },
+    "assets/tutorials_begin_tokengating.md.DMwdaXCC.lean.js": {
+      "id": "pXSEw24hGPpjp4QzNC0u81uNnSjQS4X3tz1Ve5uhkeo"
+    },
+    "assets/tutorials_bots-and-games_announcements.md.B1ctNK8r.js": {
+      "id": "nckSqrRLwYEVVC3RJJNBKmzwooCy4gr5fBeVgusfNd8"
+    },
+    "assets/tutorials_bots-and-games_announcements.md.B1ctNK8r.lean.js": {
+      "id": "Uf11uKctFdQB64954-bfYd-kgW1LeMxhxmoiWRA3ZdU"
+    },
+    "assets/tutorials_bots-and-games_ao-effect.md.BVUSSbO9.js": {
+      "id": "k1Lv7T0nAZ_nYCDbBrtqqoPxvhXl8vr1B1PafR3E-Kg"
+    },
+    "assets/tutorials_bots-and-games_ao-effect.md.BVUSSbO9.lean.js": {
+      "id": "AeLJ-gc__UmwRXTNCQTfJNdUPhy-tEhE1ZULMuWIhf8"
+    },
+    "assets/tutorials_bots-and-games_arena-mechanics.md.LOkDp7Z5.js": {
+      "id": "R1KDGQNI_GiHmwnDl5c6iBtE4_MYrKjCaMYqIafilDc"
+    },
+    "assets/tutorials_bots-and-games_arena-mechanics.md.LOkDp7Z5.lean.js": {
+      "id": "qe3HmPPdh9HmIOJ0B-hibZRsN0_yWPinRb-hfMklWzw"
+    },
+    "assets/tutorials_bots-and-games_attacking.md.-56YAQzO.js": {
+      "id": "pzDGEl-5pd5mycirhH-p6LTy44n9-WIFASvOgoV6bRM"
+    },
+    "assets/tutorials_bots-and-games_attacking.md.-56YAQzO.lean.js": {
+      "id": "O_2sItuMsP6_sbB7iW_RA6XJTSUdn0R2uy04NTWiUnU"
+    },
+    "assets/tutorials_bots-and-games_bringing-together.md.CIrLNozz.js": {
+      "id": "hau0kdAy2DGfu78S9kh39MJr4RctNPLh0r8wwbAjmDI"
+    },
+    "assets/tutorials_bots-and-games_bringing-together.md.CIrLNozz.lean.js": {
+      "id": "tItYnQ5fqGE65J4IvN5y2vmia1-ueAgLRLGfB1Y6gbA"
+    },
+    "assets/tutorials_bots-and-games_build-game.md.C92nUyha.js": {
+      "id": "K950RPSMfdt2xRJEtlldkU1MNDvROTZlulYACyHqS-E"
+    },
+    "assets/tutorials_bots-and-games_build-game.md.C92nUyha.lean.js": {
+      "id": "wP5WYCgoTqxRKZ6INHT7cuqozyebgborD4b5TYOqJbI"
+    },
+    "assets/tutorials_bots-and-games_decisions.md.COCVXTGk.js": {
+      "id": "x0_s3q4P7XxIozMEjYBuO2MyYNfxqaVWaXWo7SBEGfs"
+    },
+    "assets/tutorials_bots-and-games_decisions.md.COCVXTGk.lean.js": {
+      "id": "DX21fJQFEJa5H1JlaY6IycaF2Ylm1afqnillYABNAQM"
+    },
+    "assets/tutorials_bots-and-games_game-state.md.B51EBuYG.js": {
+      "id": "xKbMP0tRCKcGxcMt6KRb38ds2x0TcaPksJJ7qJvShWY"
+    },
+    "assets/tutorials_bots-and-games_game-state.md.B51EBuYG.lean.js": {
+      "id": "kTJVFoRpdrzrH2JTgWKzdg2ubpixiZT1arB96xZHLZk"
+    },
+    "assets/tutorials_bots-and-games_index.md.DzsL628q.js": {
+      "id": "pO9iAPppRJO7jOEvgRJUaIijRPUXjY6mhWZ2WvdGw2g"
+    },
+    "assets/tutorials_bots-and-games_index.md.DzsL628q.lean.js": {
+      "id": "0OW3NSwOeI8BYew4IJKkhgpw8dxk1G9UhxJrln7p4WQ"
+    },
+    "assets/tutorials_index.md.DmDFo5OP.js": {
+      "id": "cd-cVP6CkoeBCooyat78t26buImYV9UehOpAmhpNJaI"
+    },
+    "assets/tutorials_index.md.DmDFo5OP.lean.js": {
+      "id": "plTFhrXMQlBNwEukEp_9_dN9jaaEK7TN3N9GGRHTErg"
+    },
+    "assets/welcome_ao-core-introduction.md.DC4Iz5Hx.js": {
+      "id": "AtArC6Vo8EknwzvDDRMbk6TRTzTT8CzZZEjpEDFuuNM"
+    },
+    "assets/welcome_ao-core-introduction.md.DC4Iz5Hx.lean.js": {
+      "id": "M6FN1d9QqhSbbAYkJ6ZC4SEjPfr1RBZs4M_Gsv3SG6Q"
+    },
+    "assets/welcome_ao-processes.md.DIBILMBr.js": {
+      "id": "rMky-C8DYwu07k5T3t17uXLP_p3vZgcQ4DBucWpdwLo"
+    },
+    "assets/welcome_ao-processes.md.DIBILMBr.lean.js": {
+      "id": "Vq-sSVC_bkdqfBFRR-dwcQG3BDWrx7yuOc_oXYwWkcA"
+    },
+    "assets/welcome_getting-started.md.DcB7l1zn.js": {
+      "id": "uXVd-aLwzy23NXv0A48uoyWwkYyHQDfh9MGIbOBgRSo"
+    },
+    "assets/welcome_getting-started.md.DcB7l1zn.lean.js": {
+      "id": "mQj5v-qqlQ_mByOoEw7xKyvLdHxxeSSXZV-zBDD29Gk"
+    },
+    "assets/welcome_index.md.yr35zFZt.js": {
+      "id": "cJwThUp8vQytEo3LHIP5OLqI8qQ6k1ref9WXPsusyJc"
+    },
+    "assets/welcome_index.md.yr35zFZt.lean.js": {
+      "id": "QqN7Eq9QJojKtQbN6gaL4Pt3knq6qdCijuj06xnb5Yg"
+    },
+    "assets/welcome_legacynet-info_index.md.BHbMxEXa.js": {
+      "id": "Xkk95q3cDD2HybMTM_5pZe-Bm5Wd55Qha_lNYGP56ms"
+    },
+    "assets/welcome_legacynet-info_index.md.BHbMxEXa.lean.js": {
+      "id": "1zvGKHdsO8P4RfIWAwE1sQUb7OVJPbbRNUrwLA0AwnY"
+    },
+    "assets/welcome_legacynet-info_quests.md.DcmLj7o0.js": {
+      "id": "zDH1PvTagmQMVghg9aB8OSPR2m-aOQZFRE_FdK_03Fc"
+    },
+    "assets/welcome_legacynet-info_quests.md.DcmLj7o0.lean.js": {
+      "id": "7c_yKmzLlhXzZevDvFEYQn7a2IYKPZ4tErgk0AX2DG4"
+    },
+    "assets/zh_concepts_holographic-state.md.B_RDinDM.js": {
+      "id": "a5Ub780z6mdidi48W3LmrcMaguk_n66EvuYLxhuh3O0"
+    },
+    "assets/zh_concepts_holographic-state.md.B_RDinDM.lean.js": {
+      "id": "p3Gmbj2n_6p5A7m5dQ5yIdB6Y9nGJLzMtBhlSShhYWY"
+    },
+    "assets/zh_concepts_how-it-works.md.DsMss97O.js": {
+      "id": "WUdVDAg2hRGlVfyXLqt_ffiYzXrxHngUn-ZbjQIElLo"
+    },
+    "assets/zh_concepts_how-it-works.md.DsMss97O.lean.js": {
+      "id": "1tLXYyL1wecC_CG8PtpY6mBApNyS4xswjkUT35vtnL0"
+    },
+    "assets/zh_concepts_index.md.CkD1Bvix.js": {
+      "id": "5Rq2uny7ixYzzv6gYVSjFQOCH2vRLjPTbgCkh9B_qOY"
+    },
+    "assets/zh_concepts_index.md.CkD1Bvix.lean.js": {
+      "id": "FPE3SHW9fJJwW4fT_NP47qosj5i3pOSq5nSwfgpsruM"
+    },
+    "assets/zh_concepts_lua.md.DB_W9zfl.js": {
+      "id": "LD2Henm537t7tPWBQYYVG41wUEtVw2ZmmBkfDwyWRF0"
+    },
+    "assets/zh_concepts_lua.md.DB_W9zfl.lean.js": {
+      "id": "W2jS_FkPV4joOWQ6r3JPX0XmAPIbF-qBkDMW65sp7ds"
+    },
+    "assets/zh_concepts_messages.md.BLmCQy-B.js": {
+      "id": "QSlQKeIGU9X_pG-p7ebsTjhxKQKcqacR8h33i4AbeZ0"
+    },
+    "assets/zh_concepts_messages.md.BLmCQy-B.lean.js": {
+      "id": "HUHBeivzfTePv1xOI5mc82Le3WIrGotKOLCdatNI0Qw"
+    },
+    "assets/zh_concepts_processes.md.DzAQwszF.js": {
+      "id": "tijaPPK9lIKwVibN1VZL05HUgZh1F2czyKhSNfxaY4Y"
+    },
+    "assets/zh_concepts_processes.md.DzAQwszF.lean.js": {
+      "id": "-LahAUzyNB5W3deVJ92kKVRCWQRiJlz9faNAVjFhcTI"
+    },
+    "assets/zh_concepts_specs.md.3B3buFgy.js": {
+      "id": "rf8-VtOL4F2KmU6DFdJg6m27LVVWH_P5Ek9Y_63q5kA"
+    },
+    "assets/zh_concepts_specs.md.3B3buFgy.lean.js": {
+      "id": "nbetGFPgjI4HvPYUlc21-wGe9hGlRnDypT5qNgxkGuw"
+    },
+    "assets/zh_concepts_tour.md.Bp0sgK5b.js": {
+      "id": "FQrTYQ95iX-SJm7smdATCQOGJziQTif6claavn8uKnE"
+    },
+    "assets/zh_concepts_tour.md.Bp0sgK5b.lean.js": {
+      "id": "u2aJmsyN63_qyG1ql3XTQXQwsvttjB7bwRGGEqpCfTs"
+    },
+    "assets/zh_concepts_units.md.D5Rj2tSV.js": {
+      "id": "GS3LjFSqxh2dIk57FZk9GBy1Ksq7g4_4DRln7GeX834"
+    },
+    "assets/zh_concepts_units.md.D5Rj2tSV.lean.js": {
+      "id": "P8DaVfJahoRl_SWsbArcUATDofR29PmIXkxc7sCNVHc"
+    },
+    "assets/zh_guides_aoconnect_aoconnect.md.JrlGxzy5.js": {
+      "id": "h_-Pkuc4yu2osoe_rmjMeD66Ao5PCVmCBV3mi-834gk"
+    },
+    "assets/zh_guides_aoconnect_aoconnect.md.JrlGxzy5.lean.js": {
+      "id": "0Eoswngeb3ZVfH99OxUK7gryKOcKshBi_brCn41bPgo"
+    },
+    "assets/zh_guides_aoconnect_calling-dryrun.md.C02wqY0M.js": {
+      "id": "ClHC4zrVk9oQbklQTCoogb6fZB2o1L18jlZVgGUAt8I"
+    },
+    "assets/zh_guides_aoconnect_calling-dryrun.md.C02wqY0M.lean.js": {
+      "id": "w4ST2Mwal_cIiX7pSEXL0nhzmQbf_znNo-ih9-veb34"
+    },
+    "assets/zh_guides_aoconnect_connecting.md.CXn5DQnX.js": {
+      "id": "jz61eyrc8d8O7oaeLJ8QsMidKJodRbZQ4vk3ZkI4skk"
+    },
+    "assets/zh_guides_aoconnect_connecting.md.CXn5DQnX.lean.js": {
+      "id": "hWOmp4YIyI4vdbcjIa4FIVPQ7_MhMKqXe8uVFJfxxx4"
+    },
+    "assets/zh_guides_aoconnect_installing-connect.md.CqJp68lW.js": {
+      "id": "z077EYKGkvHxJZVAyMXog_V7HUZabnc8gFEspj7q4D0"
+    },
+    "assets/zh_guides_aoconnect_installing-connect.md.CqJp68lW.lean.js": {
+      "id": "AOs1rFQ9J9MBdNlrNcpdvif8S_lbViWY150m5kg3VH4"
+    },
+    "assets/zh_guides_aoconnect_monitoring-cron.md.Du0q6FI4.js": {
+      "id": "hkKuyn_Bp4UtOvehkDogsqGap3JW2yKfC6KdsDNqwwM"
+    },
+    "assets/zh_guides_aoconnect_monitoring-cron.md.Du0q6FI4.lean.js": {
+      "id": "3AVCV7hETsjDwt4EhLQyoGCXtTRS-lbD5xxir0KSvTQ"
+    },
+    "assets/zh_guides_aoconnect_reading-results.md.KhGuWLna.js": {
+      "id": "PY6y68_lfV38QcNVEIPwLsHmxCydouH0IQrzWyzztsw"
+    },
+    "assets/zh_guides_aoconnect_reading-results.md.KhGuWLna.lean.js": {
+      "id": "gK5b9A4yWRNZG5JaOac2mApiFDFMa8i01UlAtHxS1Q4"
+    },
+    "assets/zh_guides_aoconnect_sending-messages.md.DNAsiYNc.js": {
+      "id": "MUEu2vHxMEG-_n5YykppC7iic9205ZHzQW7GVs1ZZ5A"
+    },
+    "assets/zh_guides_aoconnect_sending-messages.md.DNAsiYNc.lean.js": {
+      "id": "lqRq2QzQIAk6vtiRF6UtbzDSLr6-OJwVfuYEt_vHPtw"
+    },
+    "assets/zh_guides_aoconnect_spawning-processes.md.CJnW1zVi.js": {
+      "id": "i2anGCxAXXB3kULe8BXwNLUbSAflf6hw1GwJIWkTr9w"
+    },
+    "assets/zh_guides_aoconnect_spawning-processes.md.CJnW1zVi.lean.js": {
+      "id": "cruOpE1Db_LBV452uqTDo90zmkohk-yTFyemzvXJPG0"
+    },
+    "assets/zh_guides_aos_blueprints_chatroom.md.sHhweLpC.js": {
+      "id": "F8A2u7CHRV2vTqZ2JRylEZxlCsc0rBjZI5WDHXWXDPA"
+    },
+    "assets/zh_guides_aos_blueprints_chatroom.md.sHhweLpC.lean.js": {
+      "id": "Z5b_jlIOPRbcd20ymWA67KqMviDZ6u-Gb9be1Q7X1GQ"
+    },
+    "assets/zh_guides_aos_blueprints_cred-utils.md.1uICP9Dj.js": {
+      "id": "P2Kc5dGlgy-XS5YGgPYmWBbM8eQC5wujqqF0NA1Rzv8"
+    },
+    "assets/zh_guides_aos_blueprints_cred-utils.md.1uICP9Dj.lean.js": {
+      "id": "J_zpmQJzCohYKY5AOb4FcmPAn8vgdyPJzQYWLFbdX-0"
+    },
+    "assets/zh_guides_aos_blueprints_index.md.CC4Xkrz5.js": {
+      "id": "b8cPdQNQZXo07rSpCtnxZI2OvgIKS19IGheZdP-YtpQ"
+    },
+    "assets/zh_guides_aos_blueprints_index.md.CC4Xkrz5.lean.js": {
+      "id": "Rd1-QMKVq-1KkVJLXeIkf2WtCF6rayXL1nAi-eX8iFY"
+    },
+    "assets/zh_guides_aos_blueprints_staking.md.D9zpeFHX.js": {
+      "id": "LjDwYHS1iRMxr6FxnLVp1QXeCL4khmUivTNIvj0zo9E"
+    },
+    "assets/zh_guides_aos_blueprints_staking.md.D9zpeFHX.lean.js": {
+      "id": "hkKJsULeUVx22K251vcDOd7PyPbgIr9Gmy2nIkWRFQc"
+    },
+    "assets/zh_guides_aos_blueprints_token.md.CBhsHS_v.js": {
+      "id": "XVaWPRuQY2SxENyX4mvWQuekmXEm4O93eQIskCgSq4g"
+    },
+    "assets/zh_guides_aos_blueprints_token.md.CBhsHS_v.lean.js": {
+      "id": "4Ac7xSi1bToZVks-npjtVPQANJEvuDz0aE4ldV1yWm4"
+    },
+    "assets/zh_guides_aos_blueprints_voting.md.D3aG3k9C.js": {
+      "id": "8Etf2bhHyAak-rGjKKt5qvqEjJjxbKUC-TVY4ioaAyo"
+    },
+    "assets/zh_guides_aos_blueprints_voting.md.D3aG3k9C.lean.js": {
+      "id": "ORv9bT2LZlJmVHUuyY0Xx3PpRh3X3gWM3RhT4jVTqvU"
+    },
+    "assets/zh_guides_aos_cli.md.BcysmUZK.js": {
+      "id": "IkoqPeqbHKJJilB6ggbo35Q4_IktPIe2ZpfsaqUYKOE"
+    },
+    "assets/zh_guides_aos_cli.md.BcysmUZK.lean.js": {
+      "id": "8DHNQGIaqK3IKwOUx-XBOHxjt8iZ_cgG9IBM1lJArIU"
+    },
+    "assets/zh_guides_aos_editor.md.DOcnRY0f.js": {
+      "id": "kxRPSdSk3ESppAvVjvzawjbs35ri-MVDVj3maMetxx8"
+    },
+    "assets/zh_guides_aos_editor.md.DOcnRY0f.lean.js": {
+      "id": "5j5Etg35_D4iXBYjhHsYs3SlOxnjmTvhJDRr35wtr2k"
+    },
+    "assets/zh_guides_aos_faq.md.DNNDBghz.js": {
+      "id": "bJ0JfTRHClpBS62NLi_MCj4utLuy6RPh2Q2H-8a0enQ"
+    },
+    "assets/zh_guides_aos_faq.md.DNNDBghz.lean.js": {
+      "id": "SkNfB-br7BnZKLWjPW0YbQnpWQR9ZaWR1WgMUGK0SN0"
+    },
+    "assets/zh_guides_aos_inbox-and-handlers.md.CCdokugz.js": {
+      "id": "sGlml2pO5VqC0NNFzfiqDRJRrauXiPXTe3RC88Chqt4"
+    },
+    "assets/zh_guides_aos_inbox-and-handlers.md.CCdokugz.lean.js": {
+      "id": "WsDMMBmT6zgYE9vovwAY4MOavwrXSuflwrwEaKQAhk8"
+    },
+    "assets/zh_guides_aos_index.md.v06Se0nl.js": {
+      "id": "gxe6WBl7LGvPO9wYOpm2CrRIXRreWq_htsQtRrSA3nY"
+    },
+    "assets/zh_guides_aos_index.md.v06Se0nl.lean.js": {
+      "id": "gfRwXG-8HuyP_pIOIxGkDOfnrRqB83Ldx3FGKCXzb-0"
+    },
+    "assets/zh_guides_aos_installing.md.pcmiKHDx.js": {
+      "id": "Q8fLvXeX-g4KsoFxaCkYN8o1tHT56XpxTP4H3wkBcLQ"
+    },
+    "assets/zh_guides_aos_installing.md.pcmiKHDx.lean.js": {
+      "id": "dY0m-Lo08smLhxzd3Ls90HDmUIeA4MRC--iosEnmtvA"
+    },
+    "assets/zh_guides_aos_intro.md.78oveyxd.js": {
+      "id": "5VN7Fz-M34DmH4qQxcOUoCjBy0yfhNV5RVZipobEKc0"
+    },
+    "assets/zh_guides_aos_intro.md.78oveyxd.lean.js": {
+      "id": "RMtgU3n_O-S4GOCUbR_kByCAxUt5nAbfGw_IeHg5_yw"
+    },
+    "assets/zh_guides_aos_load.md.uT0K2Dyd.js": {
+      "id": "K58tlFmD3Ve-yXD2L42WAifNCZ7ioDLTy0HIypdgxbY"
+    },
+    "assets/zh_guides_aos_load.md.uT0K2Dyd.lean.js": {
+      "id": "1hV8w13pJBD0_1KQNqd0jIkMo4wxRntrxdtuLSIo-Kw"
+    },
+    "assets/zh_guides_aos_modules_ao.md.Yw5bpFZS.js": {
+      "id": "_j3CfPbha9oySMm10L3qFAn5MBPBtL7dj-MQweEUNcA"
+    },
+    "assets/zh_guides_aos_modules_ao.md.Yw5bpFZS.lean.js": {
+      "id": "86_GhYm7TQ98josEGPIMrYi3mBDotYNiLL5IGleIufQ"
+    },
+    "assets/zh_guides_aos_modules_base64.md.DNwy4hja.js": {
+      "id": "cMvU8_k-Wc-QVRQECHERkwB-oVdLvJ6OpnodYg_E-oM"
+    },
+    "assets/zh_guides_aos_modules_base64.md.DNwy4hja.lean.js": {
+      "id": "bMC3x2eQzXqHyiRg3Fbf71r1KLt1OoVCD6pZOWBd7jY"
+    },
+    "assets/zh_guides_aos_modules_index.md.R7FNnDyA.js": {
+      "id": "jWGzSed0e2_KupVUOwGHrSTEHdL104Mabrf5M4FYgJA"
+    },
+    "assets/zh_guides_aos_modules_index.md.R7FNnDyA.lean.js": {
+      "id": "JMCivsDhKBxYoHn-9J1tBCpwXVSYCOecLJte_mGTnnE"
+    },
+    "assets/zh_guides_aos_modules_json.md.DXk4Yj91.js": {
+      "id": "xQwna9prUgsyvoQY__1YWHyCrf6EE03vdbt7SikPpjY"
+    },
+    "assets/zh_guides_aos_modules_json.md.DXk4Yj91.lean.js": {
+      "id": "IBSo_uCo35ypcVRlNg8SeSqk4ATvtF7IvIN_S76eRGA"
+    },
+    "assets/zh_guides_aos_modules_pretty.md.DasLWXT2.js": {
+      "id": "JO5YF3JRzpYDrhjVOqhes4fawZ_eDtxVe_zKJL17RWo"
+    },
+    "assets/zh_guides_aos_modules_pretty.md.DasLWXT2.lean.js": {
+      "id": "_dk4GWIHQ_CvQvCbz50KiLm0a4hRUWxRownGIBNo9OI"
+    },
+    "assets/zh_guides_aos_modules_utils.md.DGKik_Y4.js": {
+      "id": "Z4y0NFofbjW0mbzFsA9OnCwsfhLXxucbD0hY5dWxjeE"
+    },
+    "assets/zh_guides_aos_modules_utils.md.DGKik_Y4.lean.js": {
+      "id": "LVC5EohQOrd6HBEVZBKlLpwJqu4Nn8EEtNBi3cIh9iY"
+    },
+    "assets/zh_guides_aos_ownership.md.BEB6tHle.js": {
+      "id": "_m8l19Au6OJLsYAtJ9TpioF8Vcb_MRwfl9iIo0I7z3k"
+    },
+    "assets/zh_guides_aos_ownership.md.BEB6tHle.lean.js": {
+      "id": "3aul1YfwN918hsVq5kC4A6xieO-yJQSPGtFv0rQ9onU"
+    },
+    "assets/zh_guides_aos_pingpong.md.CtiDHyMP.js": {
+      "id": "pqXyKiiUXep4Qtx6L2UiNJP3SVE84YJgb2YFTyndLJA"
+    },
+    "assets/zh_guides_aos_pingpong.md.CtiDHyMP.lean.js": {
+      "id": "ZU47XjdbtgCwUwzhsHIvJDhFe0574autx9FkApVrcaI"
+    },
+    "assets/zh_guides_aos_prompt.md.CwbRSDyH.js": {
+      "id": "7Uhdhb_3_OegmRQf34mMafy_FTJlqerHiYhNQdWUq30"
+    },
+    "assets/zh_guides_aos_prompt.md.CwbRSDyH.lean.js": {
+      "id": "G6fnYbvOoEEUNrDKAzBc31TVwzDoUwNvScRhbnXTWuU"
+    },
+    "assets/zh_guides_aos_tables-and-json.md.BHtAYu5X.js": {
+      "id": "DYVnp0CXvyOX2IdHyVf8AgT9GKuP_y2t1M9LVEXKFm8"
+    },
+    "assets/zh_guides_aos_tables-and-json.md.BHtAYu5X.lean.js": {
+      "id": "lWX0RfGggLZ38EdQTHHwlEXE_Lzczu20xP1p8Hf0V04"
+    },
+    "assets/zh_guides_aos_token.md.DoX6_L5J.js": {
+      "id": "JwVdRj1KMaLV0HxRWPEtPwOYySSODGkNCTHT9sT7G-U"
+    },
+    "assets/zh_guides_aos_token.md.DoX6_L5J.lean.js": {
+      "id": "DFazY3m4NygeX9lud3skGOSmmzmuCH10f3mD7z4tAqo"
+    },
+    "assets/zh_guides_aos_troubleshooting.md.15gyHo8O.js": {
+      "id": "U9gXiTK_bPscX8tLsVkjr7TN84GnJkebYMe6bIkRNbg"
+    },
+    "assets/zh_guides_aos_troubleshooting.md.15gyHo8O.lean.js": {
+      "id": "oBQnzLci6IjZ6OouISbVyZ7ioFOOYDezxKJi8PeoXnU"
+    },
+    "assets/zh_guides_index.md.Da6PVhed.js": {
+      "id": "Wj8-VVVWGHBLktppaD3RtslL3oXiF3KXjMJ2c8gUcow"
+    },
+    "assets/zh_guides_index.md.Da6PVhed.lean.js": {
+      "id": "PQuWpEUutLBozmAAjbzroZae6QyOmxSmGctthO-Y_jE"
+    },
+    "assets/zh_index.md.BcKeeFgu.js": {
+      "id": "NDTPlFUh6HzfJZwoQSi_-cl4-ODSHmgBdXfdEJu-bWU"
+    },
+    "assets/zh_index.md.BcKeeFgu.lean.js": {
+      "id": "rfSbriZVZLNDRpB_SyKHYMSKc1SMdcB5OdawsxGacj4"
+    },
+    "assets/zh_llms-explanation.md.D9MxgVQI.js": {
+      "id": "xc9v1LUQsj7MV2eRWl3hEhmuTpaj4pLry4T2xiqTq0o"
+    },
+    "assets/zh_llms-explanation.md.D9MxgVQI.lean.js": {
+      "id": "b3To17Xuk7Hd2ha_eV6ryRQvBxLfowSjxjo7xEmSBpw"
+    },
+    "assets/zh_references_ao.md.DvlRJS1z.js": {
+      "id": "9e0-m7gKjzodEPA3gIz2mW3CWFbR3vvedrPnGAiLsqU"
+    },
+    "assets/zh_references_ao.md.DvlRJS1z.lean.js": {
+      "id": "ZSzjS4QyjnAj1bjFPlWBNMiK66M2HDgfJ7GksdRHSM4"
+    },
+    "assets/zh_references_community.md.Dw9-5vP2.js": {
+      "id": "oHaOfob_JR3G_97rjFWCzDa0BEZMoJ5niQNijG3bLbA"
+    },
+    "assets/zh_references_community.md.Dw9-5vP2.lean.js": {
+      "id": "tAGYiiEoEOQOB2dlb_T8SCEB2U35uXluONP_3X6Y16I"
+    },
+    "assets/zh_references_cron.md.Cgdw_p7S.js": {
+      "id": "kJbWmGfj6gZ1lrOrDgdq12_C5nWnitzBsAVFb8nlBQU"
+    },
+    "assets/zh_references_cron.md.Cgdw_p7S.lean.js": {
+      "id": "NK0bbAW_dB93G3ux5tvWd7ArbLscxE22gtg3UZObjdg"
+    },
+    "assets/zh_references_data.md.BdZGfiMK.js": {
+      "id": "P7RDAeBOZxksOC7t9Z9R3GvHUUsMWMEF_N9OHh9yZKE"
+    },
+    "assets/zh_references_data.md.BdZGfiMK.lean.js": {
+      "id": "tJqXismExI9fptXq03hsvBr8RjOpLWcPoyOomkOaPLE"
+    },
+    "assets/zh_references_editor-setup.md.CfCWwD2F.js": {
+      "id": "aLZwi7RP5507f6RZ6NHAnG2N4D46ujmvCpT9k-1r0uE"
+    },
+    "assets/zh_references_editor-setup.md.CfCWwD2F.lean.js": {
+      "id": "XluG5Pp7qPnGM5Vm4JDmqZbfWi9On-rVQerEHy9rVL0"
+    },
+    "assets/zh_references_handlers.md.XmkQjSWq.js": {
+      "id": "GgUb7mxA3gO50pWmmZf7gkAofKrx82p3YmjwMSz5T-U"
+    },
+    "assets/zh_references_handlers.md.XmkQjSWq.lean.js": {
+      "id": "VpqfJHtvHsqOWU0m4sz9d2y-mcHaFKcD54jhpY33uUg"
+    },
+    "assets/zh_references_index.md.DvhzQBzB.js": {
+      "id": "0Usv0_ySMwWHWFN9iBJ1ipatS331pYXWZX8L-xYDLkg"
+    },
+    "assets/zh_references_index.md.DvhzQBzB.lean.js": {
+      "id": "nixuHQVH44-P7egOacFYZG41vj9oYoQDURHvMbOI-A0"
+    },
+    "assets/zh_references_lua.md.CBB-AD_-.js": {
+      "id": "uchIK8vQQWh9ZKLlqnAQVjZeXBrkrUhm5NwTyLendI8"
+    },
+    "assets/zh_references_lua.md.CBB-AD_-.lean.js": {
+      "id": "HzE8W-81NmXnTP12Fsw2juqfsbAqjhSQhi0j9w4L6zw"
+    },
+    "assets/zh_references_token.md.2uEK663s.js": {
+      "id": "R78tvzO4x_ujpWQra0hyK6RJwPrh-cvQfADZjRHZRkw"
+    },
+    "assets/zh_references_token.md.2uEK663s.lean.js": {
+      "id": "3k0kcCgR_hp6Q8FrRM9aq4kJJfSCHdqZUm8a1eagCFM"
+    },
+    "assets/zh_references_wasm.md.C2HkPQgj.js": {
+      "id": "sNY-W-0obRIxYmFQZx9qSfMcnc5kMF1Aq-pa2tNHSO4"
+    },
+    "assets/zh_references_wasm.md.C2HkPQgj.lean.js": {
+      "id": "vZD5HBqOViQqpzSHAl4H-hN0X4nuh_p90mmSL8urb3s"
+    },
+    "assets/zh_tutorials_begin_chatroom.md.ViPF7gK8.js": {
+      "id": "P-46qXRjXDHRT7ihRAB1MdCf2mthzQMWiI-JlNtKYGk"
+    },
+    "assets/zh_tutorials_begin_chatroom.md.ViPF7gK8.lean.js": {
+      "id": "-sVxIlEWkpr7_FOtY8B5lzrgeSFTWYK1o-FZEVz-OB4"
+    },
+    "assets/zh_tutorials_begin_dao.md.BuMYE-k8.js": {
+      "id": "PLCmOAlOj2LmohH4yN8T-1zZtrhGCSMRG8Ej-vy41_Q"
+    },
+    "assets/zh_tutorials_begin_dao.md.BuMYE-k8.lean.js": {
+      "id": "XqpbvvR_R6a0cwI8ZyB7KCpzs1r80q7qNPu2s9BiPtI"
+    },
+    "assets/zh_tutorials_begin_index.md.DBikeuRS.js": {
+      "id": "ysfIUDexPQ5SacpaYxbs8ZT2TjouajBAccKqGiDLMzM"
+    },
+    "assets/zh_tutorials_begin_index.md.DBikeuRS.lean.js": {
+      "id": "hV3SQyb18sKnzoiunNMDWwgCfywqKg-xrjqeBhxUsLQ"
+    },
+    "assets/zh_tutorials_begin_messaging.md.Dey3kY91.js": {
+      "id": "hbTA4BPSho6x7_7Cqk3ziWVZBWaVY8DcPEIvmvWm3kk"
+    },
+    "assets/zh_tutorials_begin_messaging.md.Dey3kY91.lean.js": {
+      "id": "eUHFC81wVOZb6_0JZTM9Y_deUhdqCpsDTC4bu0OETqw"
+    },
+    "assets/zh_tutorials_begin_preparations.md.DqyOJMp-.js": {
+      "id": "eOlCLCaIyeg1ZCJmYpcGCwI458Y3C9AP3ZIsF6RtEkI"
+    },
+    "assets/zh_tutorials_begin_preparations.md.DqyOJMp-.lean.js": {
+      "id": "SNS1WT_Da6r7bWt2kmyNVbr-9SACpb5xLmynfnMIgsA"
+    },
+    "assets/zh_tutorials_begin_rabbithole.md.CaSmCezm.js": {
+      "id": "i9IJHqLjZw8NPE6tMnoNqP2owh4gvLr3w3_p_bFfz8A"
+    },
+    "assets/zh_tutorials_begin_rabbithole.md.CaSmCezm.lean.js": {
+      "id": "eGDXuyaXQBXlXR4V0P31fPK_DhDgO91hbJe0zMAaTNc"
+    },
+    "assets/zh_tutorials_begin_token.md.Dvlehe4l.js": {
+      "id": "a7jPnt-VVqFiw1K_k5z9mbKIcmOEpI83ZNXvVQGS1Vo"
+    },
+    "assets/zh_tutorials_begin_token.md.Dvlehe4l.lean.js": {
+      "id": "dULW76UueuRN41OjYO_2fxy6OA587quPYyBA83D8HQw"
+    },
+    "assets/zh_tutorials_begin_tokengating.md.DsJ3DCuK.js": {
+      "id": "XRch_Bl_JoVqBZZpphAFNvyZ-njWiUGtpVkO2YtO6oQ"
+    },
+    "assets/zh_tutorials_begin_tokengating.md.DsJ3DCuK.lean.js": {
+      "id": "veFR5JkuPbXS3UqM97xHap3RRkme6lym0K9o69qDtZM"
+    },
+    "assets/zh_tutorials_bots-and-games_announcements.md.CtDwWxa5.js": {
+      "id": "KaN-eBaCYlIhO_LCJ2lp1Pbr_o8ACMlwDMZZrC1zerM"
+    },
+    "assets/zh_tutorials_bots-and-games_announcements.md.CtDwWxa5.lean.js": {
+      "id": "0n4l_jjQwH2VjzYzePYFo6BVHuDJoy-SqBuvid7gpqw"
+    },
+    "assets/zh_tutorials_bots-and-games_ao-effect.md.Dkg7KU5w.js": {
+      "id": "VQ80mayRgPqPbvkvxa0eslNo7AZthwrvY4GAwN1zRLA"
+    },
+    "assets/zh_tutorials_bots-and-games_ao-effect.md.Dkg7KU5w.lean.js": {
+      "id": "VoEhVT0u9-A2YoAyadrf-6NpXEE1U1XTPMUWnyXRjdg"
+    },
+    "assets/zh_tutorials_bots-and-games_arena-mechanics.md.BruAq8P1.js": {
+      "id": "avfVwtWLjja4s_zOdPPeCPCV9zTlrm8XMNvqW-TEt0s"
+    },
+    "assets/zh_tutorials_bots-and-games_arena-mechanics.md.BruAq8P1.lean.js": {
+      "id": "qW1HV3edwBZnFhT9ZfM6Lr3nn0axWkX6svvRrx__ZdI"
+    },
+    "assets/zh_tutorials_bots-and-games_attacking.md.DveOipKf.js": {
+      "id": "m1-XqjgUC85RfD2zQGPDfmjOWFxNgpFZtw9172gKzGU"
+    },
+    "assets/zh_tutorials_bots-and-games_attacking.md.DveOipKf.lean.js": {
+      "id": "ys0jkdq3rdFlij4aNiUyt6Ix0v3GRDCZUjzpsJl0bv0"
+    },
+    "assets/zh_tutorials_bots-and-games_bringing-together.md.SA4abwpF.js": {
+      "id": "hkL1sANmlA7KJ23rfEYBw14Fxns2_Jvbuz-mJk_HX7c"
+    },
+    "assets/zh_tutorials_bots-and-games_bringing-together.md.SA4abwpF.lean.js": {
+      "id": "q3DXq4XF84i5jskK_to-2Rd0bgI5KNz36DRcrM1JIy0"
+    },
+    "assets/zh_tutorials_bots-and-games_build-game.md.Czrkfcis.js": {
+      "id": "vGeT50nInFptOpUbX3_IrGYccqe0O2g-hfQ6amQfPCU"
+    },
+    "assets/zh_tutorials_bots-and-games_build-game.md.Czrkfcis.lean.js": {
+      "id": "eXA8ETGIOu_0rRvAvC78IcTUgXw1GItQJgrXlh85028"
+    },
+    "assets/zh_tutorials_bots-and-games_decisions.md.BoSLOsTJ.js": {
+      "id": "ko82QXMAikv0jBTjpL0rXuAN_8ldWppXAcZfPvZVv0s"
+    },
+    "assets/zh_tutorials_bots-and-games_decisions.md.BoSLOsTJ.lean.js": {
+      "id": "85fMp-fx_c8E22ZtKYT3o2yrShwAzkPNF9pLV38bNh4"
+    },
+    "assets/zh_tutorials_bots-and-games_game-state.md.CNa8pp5b.js": {
+      "id": "dejYfvDFtleZb47ctpYeWQvc-73xQl61XBlRY0dY_HQ"
+    },
+    "assets/zh_tutorials_bots-and-games_game-state.md.CNa8pp5b.lean.js": {
+      "id": "eGpkOopvJIqZYEOhWv3d6IzfedI0K1tupJyhxTgAvss"
+    },
+    "assets/zh_tutorials_bots-and-games_index.md.DyDP9mz7.js": {
+      "id": "GYtH0Rrutiyw78nnh-blHhsPldELm5LaHIjWD0-17HU"
+    },
+    "assets/zh_tutorials_bots-and-games_index.md.DyDP9mz7.lean.js": {
+      "id": "BeeNdv_ApwABvB9h72xMjSt9dvAjNN3DjoMHHhBMKZQ"
+    },
+    "assets/zh_tutorials_index.md.9Rm1QMCb.js": {
+      "id": "Nd4ttwjSZ-lWTH2Z1I_suB5_WK_Rq4Pu39wr4XLYQX8"
+    },
+    "assets/zh_tutorials_index.md.9Rm1QMCb.lean.js": {
+      "id": "wTUahw9bUWDKQwzHRSGjp0-3Xoa4xC7aNdnksq80sOk"
+    },
+    "assets/zh_welcome_getting-started.md.BWN4OFH1.js": {
+      "id": "Qj6RBQmcIZQ2Y6YD1Xo0iiaKsXeyPdUtWY4JyhkKj4c"
+    },
+    "assets/zh_welcome_getting-started.md.BWN4OFH1.lean.js": {
+      "id": "r97T_960UZY_5tZG-X5AzXIlUL8YvDslMJpvficyaAs"
+    },
+    "assets/zh_welcome_index.md.Dz7kgn5u.js": {
+      "id": "geWxsliyoJaYre8HNlvXTQqdWJUXC0PtigmFdEuD3s0"
+    },
+    "assets/zh_welcome_index.md.Dz7kgn5u.lean.js": {
+      "id": "n9X99nIk9jCLHYN7KQf43AZRUOyS6W-o10Ag-IfbbMo"
+    },
+    "assets/zh_welcome_testnet-info_cred-and-quests.md.CShi7jWy.js": {
+      "id": "sIYLyLJHfLSXhuK0NJQTuRbnqeMJ0GfXNb7AynsxlH8"
+    },
+    "assets/zh_welcome_testnet-info_cred-and-quests.md.CShi7jWy.lean.js": {
+      "id": "M5DKnN4fNiikZF9z_T6wtKxZbYk-Mv6GoLCDX5DgE1Y"
+    },
+    "assets/zh_welcome_testnet-info_index.md.CxggVssQ.js": {
+      "id": "Kb3y7v2V7N6_5bZIkKvM4dfuHtm33HYBzVtu5KyUL9Y"
+    },
+    "assets/zh_welcome_testnet-info_index.md.CxggVssQ.lean.js": {
+      "id": "Hv2zTx3WtsB0nmFnS0vz2X2JgMestxyjybPnVUjGX1c"
+    },
+    "chatroom1.png": {
+      "id": "nqXua_nqp6JmBEmDKqlrcAhm-pdYEJI_lqGdovSJ3IQ"
+    },
+    "chatroom2.png": {
+      "id": "IlJ1I4goLLlC5mxK3Lqy77DjrMER5VQLbP7s8XlilL0"
+    },
+    "chatroom3.png": {
+      "id": "VQ1G4bfC4SmGL4oUI8QHIJp_8fRXnZ4UQ8uIynHjpbY"
+    },
+    "chatroom4.png": {
+      "id": "rE9qp6azk6dod4eef-_VvChXa4oXzmP3iQQNIBywU0o"
+    },
+    "chatroom5.png": {
+      "id": "2lIZwH1QR-rx87F1t5IO-N-8u9kA40XC8bxSuOERXC8"
+    },
+    "chatroom6.png": {
+      "id": "Heu26cLh-qVidrlPPDZGXNE1F6mmMuCstG0J32tM7as"
+    },
+    "chatroom7.png": {
+      "id": "0J8_HyWxfNUnO_zf-Bsdxbcs7v8wJJCfGHqooyxiR84"
+    },
+    "chatroom8.png": {
+      "id": "umHcDXdqjOnUBoFddcrAHX_hFs7iSf-_Tcme0-2r89E"
+    },
+    "concepts/eval.html": {
+      "id": "4d_LDgujUHXc4gcrOmkxbQcSsNvz_tXpS3_p1-PgS-I"
+    },
+    "concepts/holographic-state.html": {
+      "id": "eOHy0G-h7d3JNeYbBFi8MQzFJhOJ9_thjMjV-TMSGIw"
+    },
+    "concepts/how-it-works.html": {
+      "id": "8HofC7Cl1Dj0NsPdAHtZhQ3UCbvRv3EoPE8uZabRPTg"
+    },
+    "concepts/index.html": {
+      "id": "ouGJUs3XHFo4PXUgl1AqsfI3NtwqU5Z6fWY3pCUgDMc"
+    },
+    "concepts/lua.html": {
+      "id": "lO_AGiv_FT5_AeFTNmwbIwaivuDgJZu4YcQgv5uvH3g"
+    },
+    "concepts/messages.html": {
+      "id": "DUBR0ikml55t07wCrup9OrF6E3plX9XWZDTzQY0yTYA"
+    },
+    "concepts/processes.html": {
+      "id": "DwiU-tT9jTqnm7jmfsL3gwxvQa8GCtPm2pJKAuiE6gU"
+    },
+    "concepts/specs.html": {
+      "id": "QZeLmS3tua6pKASgiJxp6fo8uQ5gQjTjo8Df4QC5LR8"
+    },
+    "concepts/tour.html": {
+      "id": "gVp3T4JJzeFOSlQi9vCWfewutz1_JyqSCrRsrfWXejg"
+    },
+    "concepts/units.html": {
+      "id": "WojpJQfOtAhyJfPwbxDv4jum48O8zkxT3WaY9P9qIVs"
+    },
+    "guides/aoconnect/aoconnect.html": {
+      "id": "ftSI1ECs_UIlAYBzy65Yc_ooTAwd98Gt0QVEVY1hE0k"
+    },
+    "guides/aoconnect/assign-data.html": {
+      "id": "VxOa87B7xDbLKYvQfivbp_hoKW5CTG072Mdb8LIGB3o"
+    },
+    "guides/aoconnect/calling-dryrun.html": {
+      "id": "VTzjhbs5gePtDJxUVOJMmlTCr4O-mD736MEU9onvCPs"
+    },
+    "guides/aoconnect/connecting.html": {
+      "id": "cIj5-JU8rQs3tyUGbxfdb7UTjBPvHxSxjgG_m463wzs"
+    },
+    "guides/aoconnect/installing-connect.html": {
+      "id": "2neHjWugzpO2ChP1a8fQSH0UFuWmZy8un9p91i2XdFI"
+    },
+    "guides/aoconnect/monitoring-cron.html": {
+      "id": "vD_j5sd1dZzCrJYupxBfmJJGbAzHG6R3wdW7y3kKeoA"
+    },
+    "guides/aoconnect/reading-results.html": {
+      "id": "4hy7Xo8ARiBhfxG2t_s15zV_NKPzZHqFZjmDoIY-rNU"
+    },
+    "guides/aoconnect/sending-messages.html": {
+      "id": "U_3YHLAzM6tvFv5jADYLtAbHIqp_Et30A2562HPSufg"
+    },
+    "guides/aoconnect/signers.html": {
+      "id": "9TABnXiqnuTjQKCwDl6vF5Lr2UPOHZ23o7MZZQMEF5I"
+    },
+    "guides/aoconnect/spawning-processes.html": {
+      "id": "G1ImaK93P7JmxyWCHKJGo0upqRKL2vbgcDxD7exEDNc"
+    },
+    "guides/aos/blueprints/chatroom.html": {
+      "id": "ODwpeUuHnBNIu4J8MstDZJD02fE2Yv8ZjiM2wJtrbwM"
+    },
+    "guides/aos/blueprints/cred-utils.html": {
+      "id": "K1g-cMARs8IFuVDWKl8ROrBAvA8fhHzGcm6jFH7QHlU"
+    },
+    "guides/aos/blueprints/index.html": {
+      "id": "x4lWCM5HcGiXEXFiFzsF3sgoAK4bwT2D3t8N0eo1keI"
+    },
+    "guides/aos/blueprints/staking.html": {
+      "id": "IgXY2v9fmuw0oTchQUaesMMGfLiSpLic9HqT6IB-Cw0"
+    },
+    "guides/aos/blueprints/token.html": {
+      "id": "tnWbkPb-huYxbyfsnaSBlsaYYOEU0I0NWg_VMvVbd-g"
+    },
+    "guides/aos/blueprints/voting.html": {
+      "id": "a43jmFipjTwOvW5ML1TIHRMVuuMzcg3-FNysh2F-1SY"
+    },
+    "guides/aos/cli.html": {
+      "id": "5MTWWl4uluZXafnpubodYs7z18XecN33tdVKZIAJtVg"
+    },
+    "guides/aos/editor.html": {
+      "id": "RTvYcuCzLhRs4gVBlyyis-F8N-nznRyqNQIjUjvDBI8"
+    },
+    "guides/aos/faq.html": {
+      "id": "DCUavs7wEX6vghv8N8PpLqJSDPEEhzuNPrgrmwvDnls"
+    },
+    "guides/aos/inbox-and-handlers.html": {
+      "id": "897c0cJm1K4_Qxnq2N59vEBtOitzavV1crBjXNX7UdY"
+    },
+    "guides/aos/index.html": {
+      "id": "PcYJTB0dEnoA-GEDCTqhEVxK0k35-mxUGcq-vnCfC4c"
+    },
+    "guides/aos/installing.html": {
+      "id": "5rVTHNqoWOrki_ihuox7cDv8il0sWMK62KHJ3VZE8Xk"
+    },
+    "guides/aos/intro.html": {
+      "id": "4cmste9U2kkNwwMjFJKQ1l46hGJdN1ydrpQj5fufBEY"
+    },
+    "guides/aos/load.html": {
+      "id": "ww9-XRjg8CWborx91U2mpCNeQqoHOg1G7qjwj_Bgu-0"
+    },
+    "guides/aos/modules/ao.html": {
+      "id": "y9S02zbHzZpzOUQl-o336ErYNNu_jbBYoQxGCB_-fR8"
+    },
+    "guides/aos/modules/base64.html": {
+      "id": "IGD9mUXC161PZWf1OHoFo4EOZQdroDttvy19Z7NwrDY"
+    },
+    "guides/aos/modules/crypto.html": {
+      "id": "8EPuOrv_YzhkahPtAV4mZXFfD6xzhQ3-gqzYDTM1Dgo"
+    },
+    "guides/aos/modules/index.html": {
+      "id": "8cIn9CP2pF86oJ-L9ocuLONBULuOdWyEly_KMD6K_8M"
+    },
+    "guides/aos/modules/json.html": {
+      "id": "ppdlMsAWRadrmH5iK-RarJLVgxYsKXWVFvA43zl3jQE"
+    },
+    "guides/aos/modules/pretty.html": {
+      "id": "N7_iVVK0k5TcuA80n1GTIfp4YrmwkgReRghhK_3jaac"
+    },
+    "guides/aos/modules/utils.html": {
+      "id": "n15eoX02xyqwUJuuLiQDJnyGGHmETaRKHJP6_yg2q0I"
+    },
+    "guides/aos/ownership.html": {
+      "id": "G-SsXKn3ckVIJFuQml0k_YEpQV-Iz9zXSt-NaCC3k4I"
+    },
+    "guides/aos/pingpong.html": {
+      "id": "U8wFTi8TpEECf_94bzJOVXSjHI9a-C1fHtnwiypULqE"
+    },
+    "guides/aos/prompt.html": {
+      "id": "x0QsZUyxZDRlqHSvdmgyVgN9iDxghBTmMFuNBLQI1Ic"
+    },
+    "guides/aos/tables-and-json.html": {
+      "id": "_uLJI4E2tv8q0Uy8OIhwS9Cr4koi9mfuZMBiTkGYNhE"
+    },
+    "guides/aos/token.html": {
+      "id": "DQTZSMDbTPo4h1H79IeIkt39KmzvNz2oBPxVQxp0KH4"
+    },
+    "guides/aos/troubleshooting.html": {
+      "id": "FdqNDK50462BmKcVyyz_UvEawbYMQsnmJYno-G-q0OE"
+    },
+    "guides/dev-cli/index.html": {
+      "id": "ANLPzVWEOvawdedOea9vtrrUY_TK126v_EG8dM8Jky0"
+    },
+    "guides/index.html": {
+      "id": "cmcZrHcP9eMcrwpEVIXQ_g7wovq5XksMI21IBt_Urhs"
+    },
+    "guides/migrating-to-hyperbeam/ao-connect.html": {
+      "id": "-uGTJM9atp-8vX9KhVkHJl9_DSWYzFJSAFS6RFMAGi0"
+    },
+    "guides/migrating-to-hyperbeam/aos-with-hyperbeam.html": {
+      "id": "DXHa6DUBjvnxIlakjlcqFDUi_ULDkmJu9Xjj9IhN8Wc"
+    },
+    "guides/migrating-to-hyperbeam/exposing-process-state.html": {
+      "id": "QL535gi2WlvlaYkQLPZ8FTldE0V-9CQVt-3hgf5lie4"
+    },
+    "guides/migrating-to-hyperbeam/reading-dynamic-state.html": {
+      "id": "zf51fz5TYq4JOSpq_s2cHqxUCeL4hGDSanMMWSTvzOA"
+    },
+    "guides/migrating-to-hyperbeam/why-migrate.html": {
+      "id": "uSovhRycqZLqpqkLs2G_Scr7MOSGDFMgmYZQp7u8qf0"
+    },
+    "guides/snacks/0rbit/get-request.html": {
+      "id": "0N-AylNYpc4cChez_B1EV5LFxp2caq23j2XNhr81ZEs"
+    },
+    "guides/snacks/0rbit/index.html": {
+      "id": "rSiD9NtaTP7kan3uFZrOO5omVwrps5Wljn1kRAwhetM"
+    },
+    "guides/snacks/0rbit/post-request.html": {
+      "id": "BaS3flNJo3_Nw-ldkxxA8w8Mugn1ueBgT-cl1qYDzn4"
+    },
+    "guides/snacks/sqlite.html": {
+      "id": "wO20zfdGgQAx12_JWYOac9KHq5UtxR4L9fA2_UMKJvU"
+    },
+    "guides/snacks/weavedrive.html": {
+      "id": "xtf08Wgw8TJvpL2YWvD_5SM_IF-n6tWcDvJoVntnUFc"
+    },
+    "hashmap.json": {
+      "id": "3QtHq_-wF1p_OKv_0u8mnbbhDJYFIb3E5s-YaOiV4cA"
+    },
+    "index.html": {
+      "id": "iOwerJJ102xJwOZ8BU6Eu4QaA5iqsuQbL4qDlFvFrQs"
+    },
+    "ja/concepts/holographic-state.html": {
+      "id": "JfW3t1SL3_dYkB6htg6kIIqO8c9cm6tUXr1xI6ylLXI"
+    },
+    "ja/concepts/how-it-works.html": {
+      "id": "q66JMD11FctvEFikYGMaOY6OeV4oSS75D9ll7lFy0jU"
+    },
+    "ja/concepts/index.html": {
+      "id": "wjG-deo_AHqQ-GiM7im24cUTV-peFLwmg4hg_H995M0"
+    },
+    "ja/concepts/lua.html": {
+      "id": "UGN2V7TB1ujms_mRV_lVvGaZgWVNaj5USiczoCAm0O0"
+    },
+    "ja/concepts/messages.html": {
+      "id": "Ff5RfBlNrsCdt18WxxPfQlcY2pDfvhchvA9qLQqpKF0"
+    },
+    "ja/concepts/processes.html": {
+      "id": "1xqk5c102-NHeSabHVrp4CnHVwCgFaAtz-ndHE-_KAA"
+    },
+    "ja/concepts/specs.html": {
+      "id": "QpVJ4zhqBEZuWbc-k8-FDXXQa5QMOa_fMNdS27FJ02c"
+    },
+    "ja/concepts/tour.html": {
+      "id": "0HsYBk67PhMgAbMETIo1WzT1nhc2J9JC3OqTsK48Fjk"
+    },
+    "ja/concepts/units.html": {
+      "id": "JfQY9PGdN2735ULxox_2LT3uvSMJK91NpaSIOJaW0HA"
+    },
+    "ja/guides/0rbit/get-request.html": {
+      "id": "lw7c94hKLGk-amT8SU9WIuqQM_ixh85zVb1MAssEI_c"
+    },
+    "ja/guides/0rbit/index.html": {
+      "id": "OW4v5WOOBamFFq7U4Rz_EYSSfxLaVVe9szCqt7QhsDg"
+    },
+    "ja/guides/0rbit/post-request.html": {
+      "id": "17chWdCvlFs8wCba6yTeQ7W6k3KTuOEVFaDtfuc-eDY"
+    },
+    "ja/guides/aoconnect/aoconnect.html": {
+      "id": "dHN5kMiw-BXgMJWWFsfaqPr_JcIeeTx5CBmCF-kIWwY"
+    },
+    "ja/guides/aoconnect/assign-data.html": {
+      "id": "Wvh-4mebgb8VAAe6IPGLCL9TN2ubZuec4TRVRQbm6YU"
+    },
+    "ja/guides/aoconnect/calling-dryrun.html": {
+      "id": "fR_LI51gxabty8FvJcLLpwegvXAAEzS5lKqYIhHHvb8"
+    },
+    "ja/guides/aoconnect/connecting.html": {
+      "id": "YJQyakK8Yuha7V0RwJA1P9rRjH2vz2PQQMGUQ8ZHqSI"
+    },
+    "ja/guides/aoconnect/installing-connect.html": {
+      "id": "qsAVGhiVPhZfkeO3zno5ASTT7a8K2OnfzoJctjXeds0"
+    },
+    "ja/guides/aoconnect/monitoring-cron.html": {
+      "id": "NepzqHY7Viedaq_A4D9jdkUikfPcL__r398uga_cjmg"
+    },
+    "ja/guides/aoconnect/reading-results.html": {
+      "id": "-a7e65r0UHVq-7K6WiSjDCwNCibpu4gBbtrcrZqcWc4"
+    },
+    "ja/guides/aoconnect/sending-messages.html": {
+      "id": "_SZ3VLjZHldhjUyYxYodxzCjYVIYXYq_NoLfcE5VqFE"
+    },
+    "ja/guides/aoconnect/spawning-processes.html": {
+      "id": "e10TXEFO4HWQ__-2cSpvVI1x1MXhuLY5Yt_YRsicCL4"
+    },
+    "ja/guides/aos/blueprints/chatroom.html": {
+      "id": "j6WI115qRm60be-wQ27ATzY5Yc7fbD83_jGBbBjxXQs"
+    },
+    "ja/guides/aos/blueprints/cred-utils.html": {
+      "id": "Y2zYA-r6JRXKHC1BL10flfZpyjtN_lUOuGPcTf2bIP4"
+    },
+    "ja/guides/aos/blueprints/index.html": {
+      "id": "J4ZKJ8xOoP4OMMTK9PjH_tIVqaSCqFvo5sDg2BjlVWM"
+    },
+    "ja/guides/aos/blueprints/staking.html": {
+      "id": "9Ok77407bQULO0VXBQMJm3LIi610ia6DiTDPl1q60Qk"
+    },
+    "ja/guides/aos/blueprints/token.html": {
+      "id": "wmBq-WXHGAlttLmf7uHjHq0nzt9VOkP0bdpiQR8_Q5E"
+    },
+    "ja/guides/aos/blueprints/voting.html": {
+      "id": "tu_8xdfuCtXeDUrGmbgqttujldibOoRHCayE4DpIlug"
+    },
+    "ja/guides/aos/cli.html": {
+      "id": "nIJcSBltC7Oy6DvNqDrxGNJAbsl07lJS6oLdm0k4xjY"
+    },
+    "ja/guides/aos/editor.html": {
+      "id": "tTSQOJ2eGJbaD9gOKG8bzX0DufjwdmWSw3hgcdYdrYM"
+    },
+    "ja/guides/aos/faq.html": {
+      "id": "RROREo-xaJyWpKW4xyshLRCV__81S23OKVN76PcFzOY"
+    },
+    "ja/guides/aos/inbox-and-handlers.html": {
+      "id": "GyoRYAKxiERGMNmo8z2q7jyfYz0PsJ1UWqyxHi3D4Tg"
+    },
+    "ja/guides/aos/index.html": {
+      "id": "rlugEZJZq7zw8hvLY3Cqax1e_heIycFVFB2-Dr0GsaA"
+    },
+    "ja/guides/aos/installing.html": {
+      "id": "XVSx7WkoGD3C5AAV1U_tUCMbuT3fKE4G9PPvlOH3BLY"
+    },
+    "ja/guides/aos/intro.html": {
+      "id": "ANiKlexxzsu9w0UviGhlhbOzbRpVv_Sgbp9rUXQOz8g"
+    },
+    "ja/guides/aos/load.html": {
+      "id": "AowO_quPwQOQOM0kgWxQ9XmRbDDGo7PPTyyRr_4BeCM"
+    },
+    "ja/guides/aos/modules/ao.html": {
+      "id": "6rLf_BxobPeXt9Jm5ybIby9_jr_URANVy3BArVlvJUs"
+    },
+    "ja/guides/aos/modules/base64.html": {
+      "id": "puv_eQ6ixXWAW2KZ3dYGEVCFPGHSa4Tl_NeMQhPfYCg"
+    },
+    "ja/guides/aos/modules/crypto.html": {
+      "id": "9VltWasqOlkMvuY644XOVgixpfZKPicSDe-H_iImcsM"
+    },
+    "ja/guides/aos/modules/index.html": {
+      "id": "J1ummj-rb1JGQG5l8yqpW-XBX2v9KotrGx7nOwbSCLk"
+    },
+    "ja/guides/aos/modules/json.html": {
+      "id": "FbAqs7VuC_PY5XqHCICX-HGgBS09JC3khSCiHWdoGOk"
+    },
+    "ja/guides/aos/modules/pretty.html": {
+      "id": "R-g0hXDSQ4zd_X19Hy98ECz1fBWL_1OHDRCSDXi6xIA"
+    },
+    "ja/guides/aos/modules/utils.html": {
+      "id": "ZWTlofmpWToE6h4QTOM5ZzGiSgi1ETknDrciFCjUx_w"
+    },
+    "ja/guides/aos/ownership.html": {
+      "id": "v0qIvPxWfJbqseCh6cPOL_7K6258399obNOb47mVH6Q"
+    },
+    "ja/guides/aos/pingpong.html": {
+      "id": "ltr26ed8h3zkEAvQGz5sOAYOCISl77NKffu4wHdUpIY"
+    },
+    "ja/guides/aos/prompt.html": {
+      "id": "trBHtYjYavLbKagYsJ-bZCnw8kzwJfI0DYmrreAGocc"
+    },
+    "ja/guides/aos/tables-and-json.html": {
+      "id": "hbs-rWwuCIYRJfu2oUIn7777-JZOz1QUoejAetJZUOI"
+    },
+    "ja/guides/aos/token.html": {
+      "id": "UOOTI8GyfrXwO4-5uliYmH_XfXWg7qw2ggyaENoXWRw"
+    },
+    "ja/guides/aos/troubleshooting.html": {
+      "id": "bmnaXV-EN4itwSTJ9jn4A3ILw-cSaUKVljUxcgvkGe0"
+    },
+    "ja/guides/betteridea/index.html": {
+      "id": "mwRN78BOxOPsaoW4VE3WkrmYAh9CJunYiS5zxBAXLT8"
+    },
+    "ja/guides/index.html": {
+      "id": "IJbFvFaIS238u-EpLv8OaYqlZ3yTxuADfzXPMZlZHIQ"
+    },
+    "ja/index.html": {
+      "id": "_gKKlkEUl62jKZ7qJQk8NY-daQOnYZtyo4nD8PaLG8E"
+    },
+    "ja/llms-explanation.html": {
+      "id": "pmZS2AJGIA8l6asPbFP7MnhYBxzOaAaQdEW0p1ag4Hg"
+    },
+    "ja/llms-full.txt": {
+      "id": "cOp7uC0D5XVYDq67HZDnJTXY_jt8H6EXZI9Fj8TzIgQ"
+    },
+    "ja/llms.txt": {
+      "id": "hXphxKq5WmbvdBrMPejeNfXAZkvlXqX3kioqwos9LHk"
+    },
+    "ja/references/ao.html": {
+      "id": "VY4aRfcL6XiZbyTOkqRQeQyNXIdOqfvL_7A_FS6TUIM"
+    },
+    "ja/references/community.html": {
+      "id": "ThyeR2J-wPyTlH6kdjkHSTbhq3eErewq6qEUZ9-5mP4"
+    },
+    "ja/references/cron.html": {
+      "id": "QdAIUrvpITT7kh6Hk7J4uMczTxvTs1PoSCxFF758XGw"
+    },
+    "ja/references/data.html": {
+      "id": "2X-QffnDZhW2ZE4dbnSMCbYGeifeM5-zTDqsWRuSrL8"
+    },
+    "ja/references/editor-setup.html": {
+      "id": "xX0Y0H7EnOtY5MswrzHOQpgWr-9krS1iLzIUkWHCnW0"
+    },
+    "ja/references/eval.html": {
+      "id": "tpszKvfS4nR6ki2O9bqRaYFTxZYieJSXbzskzgioRlw"
+    },
+    "ja/references/handlers.html": {
+      "id": "CqxUJpCa9nyXP9qnQrofN6SlMk1_aJyMVPgboVSmzXQ"
+    },
+    "ja/references/index.html": {
+      "id": "HM7vyjz2sAbYqNApEUZQEPOjK70XIvt12Vh3li1kTiI"
+    },
+    "ja/references/lua.html": {
+      "id": "jy0vku7xNSobzNPTehViN65VBSvj9h_ezb9j24U9mnI"
+    },
+    "ja/references/token.html": {
+      "id": "WKB-J9eiRv940s1uKXlRJsxppDXxq1fUK_fGbwucRaE"
+    },
+    "ja/references/wasm.html": {
+      "id": "9F3YsiKu_lHCm86qWkqzNWblwco_QZJY4vzImUG5mc4"
+    },
+    "ja/tutorials/begin/chatroom.html": {
+      "id": "P53qAFhylzJX3VPpqyEalBNSLEWYgf1mjl33j_U0Dxg"
+    },
+    "ja/tutorials/begin/dao.html": {
+      "id": "HL90jxMZylw4i0HoEU7SwH9vSgpRl0BLNKlY4O-keeU"
+    },
+    "ja/tutorials/begin/index.html": {
+      "id": "vElCzlVb8ATc-TCCiy7b2XC3hnG2wipvy9kALlCSjaQ"
+    },
+    "ja/tutorials/begin/messaging.html": {
+      "id": "gJiey1SxwQ_ieBnpk-XbOrFPEmnnsqnR_aVN4O1In7k"
+    },
+    "ja/tutorials/begin/preparations.html": {
+      "id": "pDtZhRiPj6cUWPJ2IjLZPi0kMta1dUTBmckpOW1qJco"
+    },
+    "ja/tutorials/begin/rabbithole.html": {
+      "id": "XReDBemCaXZW3uhxBGysIPwRD1OHjsLpwRBJVMSw4kc"
+    },
+    "ja/tutorials/begin/token.html": {
+      "id": "QItW-YTbVDrHTi7fLhP3VA0EW25EhXLrYyiasbUl4nk"
+    },
+    "ja/tutorials/begin/tokengating.html": {
+      "id": "lF_EeGOZkajJsU7Vh9CM5E8JibFRa7ePAV8cyroRuNc"
+    },
+    "ja/tutorials/bots-and-games/announcements.html": {
+      "id": "BujDAndj30Ax9psYS_zlWkdxamVTcS8Hvf89JOumCz4"
+    },
+    "ja/tutorials/bots-and-games/ao-effect.html": {
+      "id": "iaUDGZ9ubL3w0m0MBLpiAMur06KWBolZnFAtl9grQOA"
+    },
+    "ja/tutorials/bots-and-games/arena-mechanics.html": {
+      "id": "VrFqzzw2fCsjwj0bKjvYzhxtA2Wl11cWGjo62ADBl9E"
+    },
+    "ja/tutorials/bots-and-games/attacking.html": {
+      "id": "DwbTIiup72V9s9H4CcfXyUQWA6Jv4Dxnk6UkJSmzqW0"
+    },
+    "ja/tutorials/bots-and-games/bringing-together.html": {
+      "id": "ml4yrbyoZorSAFpDjWZD9p0_0E4vreRSVx7KeeR826A"
+    },
+    "ja/tutorials/bots-and-games/build-game.html": {
+      "id": "Dpdwocvg5X8jQA1V2I5n7594SMYz_tT_iLdLm04UKS4"
+    },
+    "ja/tutorials/bots-and-games/decisions.html": {
+      "id": "Q3KzC4JjbLkgxbMkJaNJIoiRwdaX0lWYSzvOQXp1quc"
+    },
+    "ja/tutorials/bots-and-games/game-state.html": {
+      "id": "JvFDAHnn4_09PFqBfXB01VsoRlYiK08gKsF0IV4LQpY"
+    },
+    "ja/tutorials/bots-and-games/index.html": {
+      "id": "Z7BohIBIUsi96m9Fh2kFt4zsRcDkApK9G23PGa8Xx9A"
+    },
+    "ja/tutorials/index.html": {
+      "id": "zG5gzJAGGoEDFWmLPj5rVZWbnxvKTkXTnKjVf9xIsuM"
+    },
+    "ja/welcome/getting-started.html": {
+      "id": "VJKy7MEAjYCQ5I1f-GkyWR_eyujvQcy4B_cKPxz3FNY"
+    },
+    "ja/welcome/index.html": {
+      "id": "VpGJWKu8cTnFq6IBJ2wfvWkdV36AaNYyiyHiP6tchNs"
+    },
+    "ja/welcome/testnet-info/index.html": {
+      "id": "PAnEr0LvvmWcW1PDekmBS-6fQsDpk7Z99_3IGLoeu4w"
+    },
+    "ja/welcome/testnet-info/quests.html": {
+      "id": "NyWg2NpBXOqcKOzOOZOEWhizWHqOVdpMyfw2I33JRiI"
+    },
+    "llms-explanation.html": {
+      "id": "3LiP7iWdEdHnUCea3NVqElZs7S09ieV-63ZSmUaVOAs"
+    },
+    "llms-full.txt": {
+      "id": "1O3OYKMGFggY-2Gqbx9Y3g4o0cV0TzYlksfHD19pESs"
+    },
+    "llms.txt": {
+      "id": "DxuodcaNq0B5WtKPcH-ANk0TzQqPA4hEe5GctrsJT88"
+    },
+    "messaging1.png": {
+      "id": "BS6XaNKno7DlcSikQsalakcGSphcaB2X4Jg6PcCmLLk"
+    },
+    "messaging2.png": {
+      "id": "seSes-TR4Gi_4baf_ecH329jJ6FNvCCMO84JYMmwGA8"
+    },
+    "references/ao.html": {
+      "id": "wSLWcgVOvsI80M8vJesrku-JZ0GV_OnAVLJiFow-f-0"
+    },
+    "references/betteridea/index.html": {
+      "id": "tx2zlOMFPWhDhW5VSg0IXbGSkJsKXBl1w_D6_b0YFV0"
+    },
+    "references/community.html": {
+      "id": "qQQKEdRQ6y7etN4G79EX3EHZ9gyADZo9cP7xiflYXXs"
+    },
+    "references/cron.html": {
+      "id": "BzwkQAUtmcYgbJXa2CXIyqfnmNMJUIege94o8VowMNI"
+    },
+    "references/data.html": {
+      "id": "yQJY_dxINZUPXPbzuh_SKNe_FTOiu9t-6b1Y4d-nDho"
+    },
+    "references/editor-setup.html": {
+      "id": "8sBvso18WRUNTMSofqmIj1z_D8M6xjzer0jkNCBfwVY"
+    },
+    "references/glossary.html": {
+      "id": "PqPsUGMabp3Gv7VsO55cHvtvdwkq8Lu-njOVTXmb-1Y"
+    },
+    "references/handlers.html": {
+      "id": "PmPRHVfn9DQzVaLPM8y_ccwr_k66IdOWX_83KITzCHw"
+    },
+    "references/index.html": {
+      "id": "an90p6XbhXSjtGfImmdeWhZqfWaINiFME0jXmYnHS78"
+    },
+    "references/lua-optimization.html": {
+      "id": "IRi20pShtptWuPUVrktWMPqeglShGTHnTmPDixGyTXE"
+    },
+    "references/lua.html": {
+      "id": "SpCCCqD_ct-iJB8j7mXhp9A-ic8qyeiTBCh3c2A1H6U"
+    },
+    "references/messaging.html": {
+      "id": "Z-s_I4adOGW6m6tGshikSUaTbfWm_LFHOPlVC9DnsEY"
+    },
+    "references/token.html": {
+      "id": "qX5vujwhFHACqFu8IakK-8pceoz8Lt6IY_lZsMsF8wU"
+    },
+    "references/wasm.html": {
+      "id": "ktDboZLc8OjiiHngfv2sH4-9_xHoFwB1mBKy178-Ezc"
+    },
+    "releasenotes/aos-2_0_0.html": {
+      "id": "9qfatAjbyUrTvnabLrVah2wl3cuWncbLifhTds_HYCY"
+    },
+    "releasenotes/aos-2_0_1.html": {
+      "id": "7RDijQ5nWLFInfh6kI-rP300Es7hS1mkpk5xLhnKiQw"
+    },
+    "releasenotes/aos-2_0_2.html": {
+      "id": "ub_AqQTeo0fNO3e-pZzv1-wyyBEWBDvMv8v4UDxibTg"
+    },
+    "releasenotes/index.html": {
+      "id": "L5EGKENm5V7r7SrOOWrVBbsjOma7zwT4UjiKjRbJdEo"
+    },
+    "token1.png": {
+      "id": "W55K3ifafW9IB7JUOCuncJN5xL31fZ90--RzfkzMh-8"
+    },
+    "token2.png": {
+      "id": "h6ek8c-iXOB7ChfxG_oK6tVACJ0Qv-Q-Ck0geTJjO44"
+    },
+    "token3.png": {
+      "id": "Z2gTq2ee_vkmIDL2652PQs6464sXcmLPGlswkFSZ-lw"
+    },
+    "tutorials/begin/chatroom.html": {
+      "id": "xjWd-1lhx3K9UmQ8jV4H4syqAOqA_o0-dvTvnrhRprA"
+    },
+    "tutorials/begin/dao.html": {
+      "id": "KQ-o3CfZlt63esDAC8MV3WoEOZgNmey4kdl4_iAWvkI"
+    },
+    "tutorials/begin/index.html": {
+      "id": "KhQP0LwhvK-QtU79WfKzOF_-2eEOsGxdrkqV0_g2J1s"
+    },
+    "tutorials/begin/messaging.html": {
+      "id": "YtM3ItY7BNBK5PMZKbfKUvFxMDeuG9rp6IDaQSXPQsA"
+    },
+    "tutorials/begin/preparations.html": {
+      "id": "tSXFK_4x39s5CIDob-ppbvm1gXFHd78sGj8KPzlOLBQ"
+    },
+    "tutorials/begin/rabbithole.html": {
+      "id": "KX71omWBTUf1JBkBy3wS_9rSQxfwMkAdyYqi_3E5x2o"
+    },
+    "tutorials/begin/token.html": {
+      "id": "kMZbNejMjvYY9QfdNu8aAalXluwPIw7JT4xTTIskvBM"
+    },
+    "tutorials/begin/tokengating.html": {
+      "id": "PHoaq1YwztyG2bixz29sV0iVhMWN9BRKm22hDDrDYgI"
+    },
+    "tutorials/bots-and-games/announcements.html": {
+      "id": "Z0yGXRTwNWfNW8mqTP8EulSBHYVK43D7M38EDjA3Ub0"
+    },
+    "tutorials/bots-and-games/ao-effect.html": {
+      "id": "zlNXvVBVx1hD6iDAwHi4wXNfuUAdxACbU9NnrDC2mnc"
+    },
+    "tutorials/bots-and-games/arena-mechanics.html": {
+      "id": "PtJYbqFIpSeU2fbiid72167tn5nYYLAwuD9KqGEd2SI"
+    },
+    "tutorials/bots-and-games/attacking.html": {
+      "id": "I4xyNXDGHS3lIVFOTElU79FXerU1FfFewKRO-FRVBCk"
+    },
+    "tutorials/bots-and-games/bringing-together.html": {
+      "id": "GqhKsTypFYw7Kd22qGdhV70nweaV9f_tVyVYKRQyeg4"
+    },
+    "tutorials/bots-and-games/build-game.html": {
+      "id": "Aog_93sis1rBjxCq2X0szq1nchzPPH9kljvIIdu4qds"
+    },
+    "tutorials/bots-and-games/decisions.html": {
+      "id": "doDNTN5vIe5cLAW7jdOxhMgLM_KMxNgM4CKlAWz-_oE"
+    },
+    "tutorials/bots-and-games/game-state.html": {
+      "id": "R1RjV33H31hx4FaSc3mQPwjH6sBCPTtfGWm7Z08Gd74"
+    },
+    "tutorials/bots-and-games/index.html": {
+      "id": "jHwX5xzq_bABFk4Vll5Z2xq5ZGef9LZg8n2xRTcK9ps"
+    },
+    "tutorials/index.html": {
+      "id": "PzsJzjetBOZMRDYJTshEXlRT_48oAVAvIwlXgpGIVEc"
+    },
+    "welcome/ao-core-introduction.html": {
+      "id": "SF2ozzv_t9p4Wtmz2zvPFisR-BS0CdGp3Pq1C6A3N9s"
+    },
+    "welcome/ao-processes.html": {
+      "id": "MtIqzQphBjuWxvlsqkKwmsqtrzDEok8ZlfxGrfH8bqM"
+    },
+    "welcome/getting-started.html": {
+      "id": "k7AMfdyauQBCTaNooa_AgihH3XgVbBiOQStH2aZtsrY"
+    },
+    "welcome/index.html": {
+      "id": "ycgMurcsQ2M4oiF9ntA7ahD_YrIAO9onhIO4v0KRHWk"
+    },
+    "welcome/legacynet-info/index.html": {
+      "id": "YrqH8aZEMih5zaWvNPAfFjQCeK6hE4Dra6wkxsR41i0"
+    },
+    "welcome/legacynet-info/quests.html": {
+      "id": "pmbY_bos_WDAflHD1QH42I-bd8DGxZwVtllQuwjl32c"
+    },
+    "white_rabbit_outline.svg": {
+      "id": "vQ8xAO3dsiTXw1tu9h74i-TvsQB4QksPZ9-TacLWyt8"
+    },
+    "zh/concepts/holographic-state.html": {
+      "id": "NtH7zf7f_ixRtHVb38dTF-iMZLDOKw2jvw0ZWa_nBkE"
+    },
+    "zh/concepts/how-it-works.html": {
+      "id": "4AjEjQP8wE1RomhvMrxsUsfg_x2gpRpdPJ07kS2E6Ao"
+    },
+    "zh/concepts/index.html": {
+      "id": "eK7Nt5RhpDMBZ-lHoT-LcZMtc6AXqYCi0jtca4HjpFk"
+    },
+    "zh/concepts/lua.html": {
+      "id": "HkROMxPITBcKpKygq17dwov42AU8k6xGHkA9lloEL98"
+    },
+    "zh/concepts/messages.html": {
+      "id": "NQzoWegEcIfBasdLyCoZ3CHXWv_jmjSY-Oql2fACLAc"
+    },
+    "zh/concepts/processes.html": {
+      "id": "zyAi1BRn9IPAGld7-tNs6EzF4G3zoMOw6OJ8UbWUwmc"
+    },
+    "zh/concepts/specs.html": {
+      "id": "trTG687K9yQk9Xsx78r9NrCmBW6eBQrDmCJL8VuNdbs"
+    },
+    "zh/concepts/tour.html": {
+      "id": "kp-TGzrNy676dPL3K5Nsi2kVDAi-ZMivHu-YR5fyl_o"
+    },
+    "zh/concepts/units.html": {
+      "id": "FpqqQDOvNTKGuUQ7z5ylbukPUVJNqf3pZjWGGBSJe70"
+    },
+    "zh/guides/aoconnect/aoconnect.html": {
+      "id": "WJhkSiRVsugEs1mZ29kWhcQBNJBUgO0naiyGMyufV5Q"
+    },
+    "zh/guides/aoconnect/calling-dryrun.html": {
+      "id": "gk9uGYlU58nu6oZ9ubgfmRcETRUjR9rX75pnfCsk6ro"
+    },
+    "zh/guides/aoconnect/connecting.html": {
+      "id": "ohudP6V0gYZVoWbcZPY62xC_lw2qRx4h4YJbnk6mdTs"
+    },
+    "zh/guides/aoconnect/installing-connect.html": {
+      "id": "YkyDyO9ihQym2eWd7610a-SLDAvx1ZOVE1gBdT57Ejc"
+    },
+    "zh/guides/aoconnect/monitoring-cron.html": {
+      "id": "diW5QUS9zaA2LqMbUXc438PnSZLHxQHGo2vFs4QmzkA"
+    },
+    "zh/guides/aoconnect/reading-results.html": {
+      "id": "NNYTvMOkkf5ov9_0bG7YSxzRo78_LCJn-tsmcSx2cqw"
+    },
+    "zh/guides/aoconnect/sending-messages.html": {
+      "id": "KIA6xhA3m7YYlXhyQAKCoGcE_0nIbsMNhZkIL51RK7c"
+    },
+    "zh/guides/aoconnect/spawning-processes.html": {
+      "id": "3Y2rOV-8Cw_SZWVSQAnOEwGgJkcm2Zy-3UDhpM0V1J4"
+    },
+    "zh/guides/aos/blueprints/chatroom.html": {
+      "id": "bdqmEufALYXPaQBqeXlZ0v9U7-bbGKQX4zm_4IQk78c"
+    },
+    "zh/guides/aos/blueprints/cred-utils.html": {
+      "id": "6uapL0M5AhLU_u7CZFX1e8juemolR0eGNu9_nUmyfR4"
+    },
+    "zh/guides/aos/blueprints/index.html": {
+      "id": "oa--HTcng_2TD0Ho860-zabDQbXEQudTmXj2GNDyNnw"
+    },
+    "zh/guides/aos/blueprints/staking.html": {
+      "id": "_VctWLTM7USkIMBtA9Wp2FeRsddTawCbu1FeA5DN43k"
+    },
+    "zh/guides/aos/blueprints/token.html": {
+      "id": "3H7_kEWgVOgaVSHQoZ8KJCPW6PcimgR8yL7v-NhKZl8"
+    },
+    "zh/guides/aos/blueprints/voting.html": {
+      "id": "OB3qt5pg8SxtVVno3f5hjcmtr2_pnEsgqKmz0xL_ztk"
+    },
+    "zh/guides/aos/cli.html": {
+      "id": "fR22P2WV0zl2fqN-db98AMBDU1avLtfVm3ienTRgEks"
+    },
+    "zh/guides/aos/editor.html": {
+      "id": "0XmwJpPM1RGg9dQPPbUYujOo5vyFqQNk7razqheQ72k"
+    },
+    "zh/guides/aos/faq.html": {
+      "id": "eumAX3SjOrvbur_S8-TAAfpGeQn3_STQ58Hu6L8C0Zs"
+    },
+    "zh/guides/aos/inbox-and-handlers.html": {
+      "id": "6I3sFG10J2XrT332pCl2rE-sj--5nzKf9qLXZf8_t_k"
+    },
+    "zh/guides/aos/index.html": {
+      "id": "wXJCkpHAUCBiRT9H06MeKUUKUGHrzi2476uNlKAc5yU"
+    },
+    "zh/guides/aos/installing.html": {
+      "id": "ft6UEHLPt5YbT46DPzTiMNSbdV72VPN-BKHnPu5EQnM"
+    },
+    "zh/guides/aos/intro.html": {
+      "id": "SCDWZbkILWan60L4ph8o77MJGqCuBRoyt2c2ZNYctBM"
+    },
+    "zh/guides/aos/load.html": {
+      "id": "FGjMy-vPN0zB7l3RwBOSut1eZnPJe6KfkBjJajrCChU"
+    },
+    "zh/guides/aos/modules/ao.html": {
+      "id": "1YQJ1riOqtuWUQ7g5X45RGK0PlurK8Gfk9EvLh4NnHk"
+    },
+    "zh/guides/aos/modules/base64.html": {
+      "id": "rTd-XOyvBQ55AH0yP8QZ6Bcwd3MPGfI5JS59JdRC1d0"
+    },
+    "zh/guides/aos/modules/index.html": {
+      "id": "AgFNJ_lAhpw5s8zRh4z2i-EHsE8zrGQYhfbGAcZ2wvA"
+    },
+    "zh/guides/aos/modules/json.html": {
+      "id": "qctScYyEw5YCyCHgWqX14HBhewUIo2aEiacO5y9s3DQ"
+    },
+    "zh/guides/aos/modules/pretty.html": {
+      "id": "9cV6JeHLTdX6enMjPx31-NXcu7bzsqMYMectlnYRo8U"
+    },
+    "zh/guides/aos/modules/utils.html": {
+      "id": "yVOIskHWW68vAufkpjlTN-1KuBeWhpTVKlxuXFLmTag"
+    },
+    "zh/guides/aos/ownership.html": {
+      "id": "Q9ApfXVEuZK-QotCyobGO0e8ImOy1mU8Y8DGkcIBkQY"
+    },
+    "zh/guides/aos/pingpong.html": {
+      "id": "NuFJjT8fLkZ5W-WcLSFbrpQ2PUnMlfoH4RENgds2ph4"
+    },
+    "zh/guides/aos/prompt.html": {
+      "id": "v3BVonGyc3bQM4X1JYvyKm81bc6kU1xuogc9D3zRcPA"
+    },
+    "zh/guides/aos/tables-and-json.html": {
+      "id": "iDu8UhbhpGJHBG3NpjU5weTlZey1bpMkYyb6Rbtuv9A"
+    },
+    "zh/guides/aos/token.html": {
+      "id": "c-qwqcSQk74GJQF2lUjbUxv7SONTNdMBDJlAb7YybKg"
+    },
+    "zh/guides/aos/troubleshooting.html": {
+      "id": "AIPa1sFhHPsiGUXz7PlNqsgUqOk0QjrtQRKszohnLSQ"
+    },
+    "zh/guides/index.html": {
+      "id": "8zunGUk7cYxXgIzKH0xFwu8n7kAiVwSVCzwomjvZ1Fk"
+    },
+    "zh/index.html": {
+      "id": "7To3qjJLWanNH1vYlYiQ9FryAtShys69EbSvO3UWvE8"
+    },
+    "zh/llms-explanation.html": {
+      "id": "HyOHzkgHAqL3-XQtasMCoRYV75s2aNU8OS1uXgQaPPQ"
+    },
+    "zh/llms-full.txt": {
+      "id": "hP19xuyX6pyDTZS2k0lNVW7dYKfM7sXtCuh-qWY5oLU"
+    },
+    "zh/llms.txt": {
+      "id": "AyiraDYe5J7pdyyQj61jnQXKaChUx35FrybxQwhnvcs"
+    },
+    "zh/references/ao.html": {
+      "id": "QRpciMThd3ol237K5GTv5xTr0p3GQjsete66rC3znzY"
+    },
+    "zh/references/community.html": {
+      "id": "twYkUPmLEfYM4rjPDgCAYH16fNmMNcAeXDda69f4I-g"
+    },
+    "zh/references/cron.html": {
+      "id": "n3COPCnWSsvdP1w4_JVhMt96ayzU28ojPqPAVp66ECo"
+    },
+    "zh/references/data.html": {
+      "id": "sRb_1ydoQE2tj_zOlRIYdwHm4zrdYA7rQVXWUu5bjCI"
+    },
+    "zh/references/editor-setup.html": {
+      "id": "fDj3cFZLBEGTxkmDEZvQu6MAeYhpU0v-59MaAbsPAto"
+    },
+    "zh/references/handlers.html": {
+      "id": "Y4BAhTedjCFzGKrF-X8GR1cYEuM2VxSuETUm8-Va7v4"
+    },
+    "zh/references/index.html": {
+      "id": "MbvcgbzjwtuXyZLkQW6gNvbOAQLnbCOUdquCXL7-gBg"
+    },
+    "zh/references/lua.html": {
+      "id": "RwrjLaSsNin4LJTR8vaQyEeQLCCzrIY87Hql3L19RYs"
+    },
+    "zh/references/token.html": {
+      "id": "rFdvupKxa9aVy7AwlclOOlyJUtqb9oyknLNoqGUg6mQ"
+    },
+    "zh/references/wasm.html": {
+      "id": "aKFMgrHpkQH4KEnuYAEgyuGZwZ29KNhb7y9IE6N5gGY"
+    },
+    "zh/tutorials/begin/chatroom.html": {
+      "id": "7XiVCTjxIz4m_fgpzIfZVWB44Z4WcBCp1NkgfAfOLGI"
+    },
+    "zh/tutorials/begin/dao.html": {
+      "id": "sgbl0MhJcRF0faob9COyKhQlBt-OKAXt5WuZznNSNKE"
+    },
+    "zh/tutorials/begin/index.html": {
+      "id": "SSY7msVZuqW4Z-y2U3iScrNSunHCqAopsdWpps2iGew"
+    },
+    "zh/tutorials/begin/messaging.html": {
+      "id": "SjL1jqgyudDXRepg_NYOzKvZU2yrAUrLNcUHQcsDMGE"
+    },
+    "zh/tutorials/begin/preparations.html": {
+      "id": "pih8AgLV9ibbdX0uOUiDqFHQ4SJTiVcwciU_HbxlBiw"
+    },
+    "zh/tutorials/begin/rabbithole.html": {
+      "id": "b87b1Y7-q2U_J-39U1ZiHFTM88xOS7YZc2LL-Iwzbro"
+    },
+    "zh/tutorials/begin/token.html": {
+      "id": "8OsKY_rA8RXJ4LfsGWUoGtTpGL6caayvBiWzBkUfol0"
+    },
+    "zh/tutorials/begin/tokengating.html": {
+      "id": "ChSS3LZBCK3nxq_IbI5uCCgax-VqmVaJJNnv1u-dgvI"
+    },
+    "zh/tutorials/bots-and-games/announcements.html": {
+      "id": "UoRclJTdBGxFDhvKztShMCVhx_ufLS8b_5FKZb4nAzQ"
+    },
+    "zh/tutorials/bots-and-games/ao-effect.html": {
+      "id": "6QFNkZXrdiAG7XHQEub9uRnS_FuRJJYTTudC3sx3ZKg"
+    },
+    "zh/tutorials/bots-and-games/arena-mechanics.html": {
+      "id": "zNK3aWbhteazAG8E0z5cUj5cdCw7oneVRfvacy9gH5U"
+    },
+    "zh/tutorials/bots-and-games/attacking.html": {
+      "id": "yOSUzf93C0vMsDOuqy4YT3UqSlVHqwABe3XBOt1833E"
+    },
+    "zh/tutorials/bots-and-games/bringing-together.html": {
+      "id": "X3E4QISLPfnrcI_ulWBdVl0LabXs_ItnHfCs6BfC02g"
+    },
+    "zh/tutorials/bots-and-games/build-game.html": {
+      "id": "dIByHrxoXOqbuTucZBK9AmUKIHxv4QBUx4VwcPaJUUg"
+    },
+    "zh/tutorials/bots-and-games/decisions.html": {
+      "id": "a7kqGQU8DwpPGA1DacFHM88HtRFtp7ESGX6OASNq5PY"
+    },
+    "zh/tutorials/bots-and-games/game-state.html": {
+      "id": "QjxuN-hJ1xky8k66xw7I6wYUQ9Vn3xRf0FLDYPC0I08"
+    },
+    "zh/tutorials/bots-and-games/index.html": {
+      "id": "f8Ch6VRX6FR8LpO07XaF4yHXT8uaJ_5bY45MJtyLcXI"
+    },
+    "zh/tutorials/index.html": {
+      "id": "ol4-l2DFXvsULZ7YufOgAk2dq7VgzgNzJ47lqCu0BIA"
+    },
+    "zh/welcome/getting-started.html": {
+      "id": "MQFfx44ODsy2FNS9JYKR_GXf1bTy_nPUMZ91kGfp9jY"
+    },
+    "zh/welcome/index.html": {
+      "id": "MhUpWUAe84vQjPaXnh1UIA2X4Af3-LEJvPHsuGGlu4s"
+    },
+    "zh/welcome/testnet-info/cred-and-quests.html": {
+      "id": "tvK6GTq2X6s08V6e_Bp9FfXqtCfsj5oYzAYRaaurUiU"
+    },
+    "zh/welcome/testnet-info/index.html": {
+      "id": "wO-ybink3i1SCalFQnCYsImn6fYvpjSW5MJsQubrIJw"
+    }
+  }
+}

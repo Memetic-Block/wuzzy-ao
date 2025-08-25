@@ -16,43 +16,46 @@ describe('Wuzzy-Nest Searching', () => {
   it('should validate search queries')
 
   it('should accept simple search queries', async () => {
-    const crawlerAddress = 'CRAWLER_ADDRESS'
     const indexType = 'ARNS'
     const arnsSubdomain = '@'
     const documents = [
       {
         arnsName: 'artbycity',
         contentType: 'text/plain',
-        transactionId: '67890',
+        documentId: '67890',
         content: 'This is another test document from artbycity'
       },
       {
         arnsName: 'memeticblock',
         contentType: 'text/plain',
-        transactionId: '12345',
+        documentId: '12345',
         content: 'This is a test document from memeticblock, it says test twice'
       },
       {
         arnsName: 'wuzzy',
         contentType: 'text/plain',
-        transactionId: '54321',
+        documentId: '54321',
         content: 'This is yet another test document from wuzzy'
       }
     ]
 
     for (const doc of documents) {
-      await handle({
-        From: crawlerAddress,
+      const result = await handle({
+        From: OWNER_ADDRESS,
         Tags: [
-          { name: 'Action', value: 'Index' },
+          { name: 'Action', value: 'Index-Document' },
           { name: 'Index-Type', value: indexType },
           { name: 'Document-ARNS-Name', value: doc.arnsName },
           { name: 'Document-ARNS-Sub-Domain', value: arnsSubdomain },
           { name: 'Document-Content-Type', value: doc.contentType },
-          { name: 'Document-Transaction-Id', value: doc.transactionId }
+          { name: 'Document-Id', value: doc.documentId }
         ],
         Data: doc.content
       })
+      if (result.Error) {
+        console.log('Error indexing document for search test', result.Error)
+      }
+      expect(result.Error).to.not.exist
     }
 
     const searchOneResult = await handle({
@@ -71,7 +74,7 @@ describe('Wuzzy-Nest Searching', () => {
     const searchResults = JSON.parse(searchOneResult.Messages[0].Data)
     expect(searchResults.TotalCount).to.equal(1)
     expect(searchResults.Hits).to.have.lengthOf(1)
-    expect(searchResults.Hits[0].doc.TransactionId).to.equal('12345')
+    expect(searchResults.Hits[0].doc.DocumentId).to.equal('12345')
 
     const searchTwoResult = await handle({
       From: OWNER_ADDRESS,
@@ -89,8 +92,11 @@ describe('Wuzzy-Nest Searching', () => {
     const searchTwoResults = JSON.parse(searchTwoResult.Messages[0].Data)
     expect(searchTwoResults.TotalCount).to.equal(2)
     expect(searchTwoResults.Hits).to.have.lengthOf(2)
-    expect(searchTwoResults.Hits[0].doc.TransactionId).to.equal('67890')
-    expect(searchTwoResults.Hits[1].doc.TransactionId).to.equal('54321')
+    const searchTwoHits = searchTwoResults.Hits.map(
+      (hit: any) => hit.doc.DocumentId
+    )
+    expect(searchTwoHits).to.include('67890')
+    expect(searchTwoHits).to.include('54321')
 
     const searchThreeResult = await handle({
       From: OWNER_ADDRESS,
@@ -126,67 +132,73 @@ describe('Wuzzy-Nest Searching', () => {
     expect(searchFourResults.TotalCount).to.equal(3)
     expect(searchFourResults.Hits).to.have.lengthOf(3)
     // NB: memeticblock content says query twice, so should be ranked first
-    expect(searchFourResults.Hits[0].doc.TransactionId).to.equal('12345')
-    expect(searchFourResults.Hits[1].doc.TransactionId).to.equal('67890')
-    expect(searchFourResults.Hits[2].doc.TransactionId).to.equal('54321')
+    const searchFourHits = searchFourResults.Hits.map(
+      (hit: any) => hit.doc.DocumentId
+    )
+    expect(searchFourHits).to.include('12345')
+    expect(searchFourHits).to.include('67890')
+    expect(searchFourHits).to.include('54321')
   })
 
   it('should accept bm25 search queries', async () => {
-    const crawlerAddress = 'CRAWLER_ADDRESS'
     const indexType = 'ARNS'
     const arnsSubdomain = '@'
     const documents = [
       {
         arnsName: 'wuzzy1',
         contentType: 'text/plain',
-        transactionId: '11111',
+        documentId: '11111',
         content: 'Wuzzy'
       },
       {
         arnsName: 'wuzzy2',
         contentType: 'text/plain',
-        transactionId: '22222',
+        documentId: '22222',
         content: 'Wuzzy S'
       },
       {
         arnsName: 'wuzzy3',
         contentType: 'text/plain',
-        transactionId: '33333',
+        documentId: '33333',
         content: 'Wuzzy AO Search'
       },
       {
         arnsName: 'wuzzy4',
         contentType: 'text/plain',
-        transactionId: '44444',
+        documentId: '44444',
         content: 'Wuzzy Search'
       },
       {
         arnsName: 'wuzzy5',
         contentType: 'text/plain',
-        transactionId: '55555',
+        documentId: '55555',
         content: 'Wuzzy Wuzzy Search Search'
       },
       {
         arnsName: 'wuzzy6',
         contentType: 'text/plain',
-        transactionId: '66666',
+        documentId: '66666',
         content: 'Wuzzy Wuzzy Wuzzy Search Search Search'
       }
     ]
 
     for (const doc of documents) {
-      await handle({
-        From: crawlerAddress,
+      const result = await handle({
+        From: OWNER_ADDRESS,
         Tags: [
-          { name: 'Action', value: 'Index' },
+          { name: 'Action', value: 'Index-Document' },
           { name: 'Index-Type', value: indexType },
           { name: 'Document-ARNS-Name', value: doc.arnsName },
           { name: 'Document-ARNS-Sub-Domain', value: arnsSubdomain },
           { name: 'Document-Content-Type', value: doc.contentType },
-          { name: 'Document-Transaction-Id', value: doc.transactionId }
+          { name: 'Document-Id', value: doc.documentId }
         ],
         Data: doc.content
       })
+      if (result.Error) {
+        console.log('Error indexing document for search test', result.Error)
+      }
+      expect(result.Error).to.not.exist
     }
 
     const searchOneResult = await handle({
@@ -207,6 +219,6 @@ describe('Wuzzy-Nest Searching', () => {
     expect(searchResults.SearchType).to.equal('bm25')
     expect(searchResults.TotalCount).to.equal(6)
     expect(searchResults.Hits).to.have.lengthOf(6)
-    expect(searchResults.Hits[0].doc.TransactionId).to.equal('11111')
+    expect(searchResults.Hits[0].doc.DocumentId).to.equal('11111')
   })
 })

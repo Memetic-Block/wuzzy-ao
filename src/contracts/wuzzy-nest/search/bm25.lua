@@ -6,32 +6,36 @@ function BM25Search._InverseDocumentFrequency(totalHits, totalDocuments)
   ) or 0
 end
 
--- TODO -> split query into terms
--- TODO -> Use term count for document length
-function BM25Search.search(query, documents, opts)
+function BM25Search.search(query, state, opts)
   local StringUtils = require('..common.strings')
   local B = opts and opts.b or 0.75
   local K = opts and opts.k or 1.2
   local hits = {}
-  local totalDocLength = 0
 
-  for _, doc in ipairs(documents) do
-    totalDocLength = totalDocLength + #doc.Content
+  -- TODO -> split query into terms
+
+  if state.TotalDocuments == 0 or state.AverageDocumentTermLength == 0 then
+    return hits -- No documents to search
+  end
+
+  for _, doc in pairs(state.Documents) do
     local count = StringUtils.count(doc.Content, query)
     if count > 0 then
       table.insert(hits, { count = count, doc = doc })
     end
   end
 
-  if #documents == 0 then
-    return hits -- No documents to search
-  end
-  local avgDocLength = totalDocLength / #documents
-  local idf = BM25Search._InverseDocumentFrequency(#hits, #documents)
+  local idf = BM25Search._InverseDocumentFrequency(#hits, state.TotalDocuments)
   for _, hit in ipairs(hits) do
     hit.score = idf * (
       (hit.count * (K + 1)) /
-      (hit.count + (K * (1 - B + (B * (#hit.doc.Content / avgDocLength)))))
+      (
+        hit.count + (
+          K * (
+            1 - B + (B * (#hit.doc.Content / state.AverageDocumentTermLength))
+          )
+        )
+      )
     )
   end
 

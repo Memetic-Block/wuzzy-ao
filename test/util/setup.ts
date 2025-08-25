@@ -13,23 +13,25 @@ export const MODULE_ID = ''.padEnd(43, '3')
 export const DEFAULT_MODULE_ID = ''.padEnd(43, '4')
 export const DEFAULT_TARGET = ''.padEnd(43, '5')
 export const DEFAULT_MESSAGE_ID = ''.padEnd(43, 'f')
-export const NEST_ID = 'nest_'.padEnd(43, '0')
+export const NEST_ID = ''.padEnd(43, '0')
 export const ARIO_NETWORK_PROCESS_ID = 'ario_network_process_'.padEnd(43, '0')
 export const ANT_PROCESS_ID = 'ant_process_'.padEnd(43, '0')
+export const ORACLE_ADDRESS = 'oracle_address_'.padEnd(43, '7')
+export const AUTHORITY_ADDRESS = 'authority_address_'.padEnd(43, '8')
 
 export const AO_ENV = {
   Process: {
     Id: PROCESS_ID,
     Owner: OWNER_ADDRESS,
     Tags: [
-      { name: 'Authority', value: OWNER_ADDRESS }
+      { name: 'Authority', value: AUTHORITY_ADDRESS }
     ]
   },
   Module: {
     Id: MODULE_ID,
     Owner: OWNER_ADDRESS,
     Tags: [
-      { name: 'Authority', value: OWNER_ADDRESS }
+      { name: 'Authority', value: AUTHORITY_ADDRESS }
     ]
   }
 }
@@ -39,13 +41,41 @@ const AOS_WASM = fs.readFileSync(
     path.resolve(),
     // './test/util/aos-cbn0KKrBZH7hdNkNokuXLtGryrWM--PjSTBqIzw9Kkk.wasm'
     // './test/util/aos-Pq2Zftrqut0hdisH_MC2pDOT6S4eQFoxGsFUzR6r350.wasm'
-    // './test/util/aos64.wasm'
-    './test/util/QEgxNlbNwBi10VXu5DbP6XHoRDHcynP_Qbq3lpNC97s.wasm'
+    // './test/util/QEgxNlbNwBi10VXu5DbP6XHoRDHcynP_Qbq3lpNC97s.wasm'
     // './test/util/nEjlSFA_8narJlVHApbczDPkMc9znSqYtqtf1iOdoxM.wasm'
+    // './test/util/ISShJH1ij-hPPt9St5UFFr_8Ys3Kj5cyg7zrMGt7H9s.wasm'
+
+    // NB: Use this one for legacynet
+    // './test/util/aos64.wasm'
+
+    // NB: Use this one for hyper-aos
+    './test/util/hyper-aos.wasm'
   )
 )
 const AOS_WASM_FORMAT = 'wasm64-unknown-emscripten-draft_2024_02_15'
 // const AOS_WASM_FORMAT = 'wasm32-unknown-emscripten-metering'
+// Memory-Limit
+// 1-gb
+// Compute-Limit
+// 9000000000000
+// Module-Format
+// wasm64-unknown-emscripten-draft_2024_02_15
+// AOS-Version
+// 2.0.6
+// Name
+// aos-lg-2.0.6
+// Data-Protocol
+// ao
+// Type
+// Module
+// Input-Encoding
+// JSON-1
+// Output-Encoding
+// JSON-1
+// Variant
+// ao.TN.1
+// Content-Type
+// application/wasm
 
 export const DEFAULT_HANDLE_OPTIONS = {
   Id: DEFAULT_MESSAGE_ID,
@@ -63,14 +93,21 @@ export const DEFAULT_HANDLE_OPTIONS = {
 }
 
 // NB: Preload bundled contract source as a simple in-memory cache
-const contractNames = [
-  'acl-test',
-  'wuzzy-crawler',
-  'wuzzy-nest'
-]
+const contractNames = process.env.CONTRACT_NAMES
+  ? process.env.CONTRACT_NAMES.split(',')
+  : fs.readdirSync(path.join(path.resolve(), './dist'))
+// const contractNames = [
+//   'acl-test',
+//   'wuzzy-crawler',
+//   'wuzzy-nest',
+//   'weavedrive-test',
+//   'wuzzy-tx-oracle-test',
+//   'wuzzy-nest-registry',
+//   'relay-test'
+// ]
 const bundledContractSources = Object.fromEntries(contractNames.map(cn => [
   cn,
-  fs.readFileSync(path.join(path.resolve(), `./dist/${cn}.lua`), 'utf-8')
+  fs.readFileSync(path.join(path.resolve(), `./dist/${cn}/process.lua`), 'utf-8')
 ]))
 
 export type FullAOHandleFunction = (
@@ -80,7 +117,7 @@ export type FullAOHandleFunction = (
 ) => Promise<AoLoader.HandleResponse & { Error?: string }>
 
 export type AOTestHandle = (
-  options?: Partial<AoLoader.Message>,
+  options?: Partial<AoLoader.Message & { Id: string }>,
   mem?: ArrayBuffer | null
 ) => Promise<AoLoader.HandleResponse & { Error?: string }>
 
@@ -111,12 +148,16 @@ export async function createLoader(
   contractName: string,
   options: AOCreateLoaderOptions = {}
 ) {
-  const originalHandle = await AoLoader(AOS_WASM, {
-    format: AOS_WASM_FORMAT,
-    memoryLimit: '524288000', // in bytes
-    computeLimit: 9e12,
-    extensions: []
-  })
+  const contractWasm = fs.readFileSync(path.join(path.resolve(), `./dist/${contractName}/process.wasm`))
+  const originalHandle = await AoLoader(
+    contractWasm,// AOS_WASM,
+    {
+      format: AOS_WASM_FORMAT,
+      memoryLimit: '524288000', // in bytes
+      computeLimit: 9e12,
+      extensions: []
+    }
+  )
 
   if (!bundledContractSources[contractName] && !options.contractSource) {
     throw new Error(`Unknown contract: ${contractName}`)
@@ -163,13 +204,14 @@ export async function createLoader(
           }
         }
       )
-    // console.log(`DEBUG - AO EVAL Result `, JSON.stringify({
-    //   Assignments: result.Assignments,
-    //   Messages: result.Messages,
-    //   Output: result.Output,
-    //   Patches: result.Patches,
-    //   Spawns: result.Spawns
-    // }, null, 2))
+    console.log(`DEBUG - AO EVAL Result `, JSON.stringify({
+      Assignments: result.Assignments,
+      Messages: result.Messages,
+      Output: result.Output,
+      Patches: result.Patches,
+      Spawns: result.Spawns,
+      Error: result.Error
+    }, null, 2))
   }
 
   async function handle(

@@ -11,11 +11,14 @@ async function testboot() {
       path.resolve(),
       // './test/util/aos-cbn0KKrBZH7hdNkNokuXLtGryrWM--PjSTBqIzw9Kkk.wasm'
       // './test/util/aos-Pq2Zftrqut0hdisH_MC2pDOT6S4eQFoxGsFUzR6r350.wasm'
-      // './test/util/aos64.wasm'
+      './test/util/aos64.wasm'
       // './test/util/QEgxNlbNwBi10VXu5DbP6XHoRDHcynP_Qbq3lpNC97s.wasm'
-      './test/util/nEjlSFA_8narJlVHApbczDPkMc9znSqYtqtf1iOdoxM.wasm'
+      // './test/util/nEjlSFA_8narJlVHApbczDPkMc9znSqYtqtf1iOdoxM.wasm',
+      // './test/util/ISShJH1ij-hPPt9St5UFFr_8Ys3Kj5cyg7zrMGt7H9s.wasm'
     )
   )
+  const AOS_FORMAT = 'wasm64-unknown-emscripten-draft_2024_02_15'
+  // const AOS_FORMAT = 'wasm32-unknown-emscripten-metering'
   const AO_ENV = {
     Process: {
       Id: PROCESS_ID,
@@ -34,8 +37,7 @@ async function testboot() {
   }
 
   const handle = await AoLoader(AOS_WASM, {
-    // format: 'wasm64-unknown-emscripten-draft_2024_02_15',
-    format: 'wasm32-unknown-emscripten-metering',
+    format: AOS_FORMAT,
     memoryLimit: '524288000', // in bytes
     computeLimit: 9e12,
     extensions: []

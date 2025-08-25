@@ -2,8 +2,10 @@ import { expect } from 'chai'
 
 import {
   AOTestHandle,
+  ARIO_NETWORK_PROCESS_ID,
   createLoader,
   NEST_ID,
+  ORACLE_ADDRESS,
   OWNER_ADDRESS
 } from '~/test/util/setup'
 
@@ -13,8 +15,11 @@ describe('Wuzzy-Crawler Initialization', () => {
   beforeEach(async () => {
     handle = (await createLoader(
       'wuzzy-crawler', {
-        processTags: [ { name: 'Nest-Id', value: NEST_ID } ],
-        useWeaveDriveMock: true
+        processTags: [
+          { name: 'Nest-Id', value: NEST_ID },
+          { name: 'Ario-Network-Process-Id', value: ARIO_NETWORK_PROCESS_ID },
+          { name: 'Data-Oracle-Address', value: ORACLE_ADDRESS }
+        ]
       }
     )).handle
   })
@@ -26,7 +31,7 @@ describe('Wuzzy-Crawler Initialization', () => {
         { name: 'Action', value: 'View-State' }
       ]
     })
-
+    expect(result.Error).to.not.exist
     expect(result.Messages).to.have.lengthOf(1)
     expect(result.Messages[0].Data).to.exist
     const data = JSON.parse(result.Messages[0].Data)

@@ -6,6 +6,7 @@ import {
   ARIO_NETWORK_PROCESS_ID,
   createLoader,
   NEST_ID,
+  ORACLE_ADDRESS,
   OWNER_ADDRESS
 } from '~/test/util/setup'
 import MockTransactions from '~/test/util/mock-transactions.json'
@@ -18,9 +19,9 @@ describe('Wuzzy-Crawler Indexing', () => {
       'wuzzy-crawler', {
         processTags: [
           { name: 'Nest-Id', value: NEST_ID },
-          { name: 'Ario-Network-Process-Id', value: ARIO_NETWORK_PROCESS_ID }
-        ],
-        useWeaveDriveMock: true
+          { name: 'Ario-Network-Process-Id', value: ARIO_NETWORK_PROCESS_ID },
+          { name: 'Data-Oracle-Address', value: ORACLE_ADDRESS }
+        ]
       }
     )).handle
   })
@@ -44,20 +45,34 @@ describe('Wuzzy-Crawler Indexing', () => {
         processId: ANT_PROCESS_ID
       })
     })
-    const result = await handle({
+    await handle({
       From: ANT_PROCESS_ID,
       Tags: [
         { name: 'Action', value: 'Record-Notice' },
         { name: 'Name', value: arnsName }
       ],
       Data: JSON.stringify({
-        transactionId: MockTransactions[0].tx.id
+        transactionId: MockTransactions[1].tx.id
       })
     })
-    if (result.Error) {
-      console.log(`DEBUG - AO Message Error: ${result.Error}`)
-    }
-    expect(result.Error).to.be.undefined
+    await handle({
+      From: ORACLE_ADDRESS,
+      Tags: [
+        { name: 'Action', value: 'Get-Transaction-Result' },
+        { name: 'Transaction-Id', value: MockTransactions[1].tx.id }
+      ],
+      Data: JSON.stringify(MockTransactions[1].tx)
+    })
+    const result = await handle({
+      From: ORACLE_ADDRESS,
+      Tags: [
+        { name: 'Action', value: 'Get-Data-Result' },
+        { name: 'Transaction-Id', value: MockTransactions[1].tx.id }
+      ],
+      Data: MockTransactions[1].data
+    })
+
+    expect(result.Error).to.not.exist
     expect(result.Messages).to.have.lengthOf(2)
     expect(result.Messages[0].Target).to.equal(OWNER_ADDRESS)
     expect(result.Messages[0].Tags).to.deep.include({
@@ -67,14 +82,14 @@ describe('Wuzzy-Crawler Indexing', () => {
     expect(result.Messages[1].Target).to.equal(NEST_ID)
     expect(result.Messages[1].Tags).to.deep.include({
       name: 'Action',
-      value: 'Index'
+      value: 'Index-Document'
     })
     // ['Index-Type'] = 'ARNS',
     // ['Document-ARNS-Name'] = name,
     // ['Document-ARNS-Sub-Domain'] = '@', -- TODO -> Handle subdomains
     // ['Document-Content-Type'] = result.contentType,
-    // ['Document-Transaction-Id'] = record.transactionId
-    console.log('DEBUG - AO Message:', JSON.stringify(result.Messages, null, 2))
+    // ['Document-Id'] = record.transactionId
+    // console.log('DEBUG - AO Message:', JSON.stringify(result.Messages, null, 2))
     expect(result.Messages[1].Tags).to.deep.include({
       name: 'Index-Type',
       value: 'ARNS'
@@ -84,6 +99,6 @@ describe('Wuzzy-Crawler Indexing', () => {
       value: 'memeticblock'
     })
     expect(result.Messages[1].Data).to.exist
-    expect(result.Messages[1].Data).to.equal(MockTransactions[0].data)
+    expect(result.Messages[1].Data).to.equal(MockTransactions[1].data)
   })
 })

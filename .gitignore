@@ -37,6 +37,8 @@ yarn-error.log
 tests/wallets
 tests/contracts
 
-src/contract/process.wasm
 key.json
 secret-key-base64.txt
+
+src/contracts/*/*-stringified.lua
+!src/contracts/lib

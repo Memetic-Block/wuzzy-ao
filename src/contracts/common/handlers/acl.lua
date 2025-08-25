@@ -1,31 +1,23 @@
 return function (ACL)
   local json = require('json')
 
-  Handlers.add(
-    'Update-Roles',
-    Handlers.utils.hasMatchingTag('Action', 'Update-Roles'),
-    function (msg)
-      ACL.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Update-Roles' })
+  Handlers.add('Update-Roles', 'Update-Roles', function (msg)
+    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Update-Roles' })
 
-      ACL.updateRoles(json.decode(msg.Data))
+    ACL.updateRoles(json.decode(msg.data))
 
-      ao.send({
-        Target = msg.From,
-        Action = 'Update-Roles-Response',
-        Data = 'OK'
-      })
-    end
-  )
+    send({
+      target = msg.From,
+      action = 'Update-Roles-Response',
+      data = 'OK'
+    })
+  end)
 
-  Handlers.add(
-    'View-Roles',
-    Handlers.utils.hasMatchingTag('Action', 'View-Roles'),
-    function (msg)
-      ao.send({
-        Target = msg.From,
-        Action = 'View-Roles-Response',
-        Data = json.encode(ACL.State)
-      })
-    end
-  )
+  Handlers.add('View-Roles', 'View-Roles', function (msg)
+    send({
+      target = msg.from,
+      action = 'View-Roles-Response',
+      data = json.encode(ACL.State)
+    })
+  end)
 end

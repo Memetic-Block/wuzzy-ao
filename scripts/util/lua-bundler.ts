@@ -9,7 +9,7 @@ interface Module {
 
 function createExecutableFromProject(project: Module[]): [string, Module[]] {
   const getModFnName = (name: string) => name
-    .replace(/\./g, '_')
+    .replace(/[\.\-]/g, '_')
     .replace(/^_/, '')
 
   const contents: Module[] = []
@@ -80,24 +80,23 @@ function exploreNodes(node: Module, cwd: string): Module[] {
   node.content = fs.readFileSync(node.path, 'utf-8');
 
   const requirePattern = /(?<=(require( *)(\n*)(\()?( *)("|'))).*(?=("|'))/g;
-  const requiredModules =
-    node.content.match(requirePattern)?.map((mod) => {
-      let moduleDirectory = cwd
+  const requiredModules = node.content.match(requirePattern)?.map((mod) => {
+    let moduleDirectory = cwd
 
-      // NB: fix for parent directory imports
-      if (mod.startsWith('..')) {        
-        moduleDirectory = path.dirname(moduleDirectory)
-      }
+    // NB: fix for parent directory imports
+    if (mod.startsWith('..')) {        
+      moduleDirectory = path.dirname(moduleDirectory)
+    }
 
-      return {
-        name: mod,
-        path: path.join(
-          moduleDirectory,
-          mod.replace(/\./g, '/') + '.lua'
-        ),
-        content: undefined,
-      };
-    }) || [];
+    return {
+      name: mod,
+      path: path.join(
+        moduleDirectory,
+        mod.replace(/\./g, '/') + '.lua'
+      ),
+      content: undefined,
+    };
+  }) || [];
 
   return requiredModules;
 }

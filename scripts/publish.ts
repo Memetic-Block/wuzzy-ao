@@ -8,12 +8,12 @@ const CONTRACT_NAME = process.env.CONTRACT_NAME || ''
 if (!CONTRACT_NAME) {
   throw new Error('CONTRACT_NAME is not set!')
 }
-const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY || ''
-if (!DEPLOYER_PRIVATE_KEY) {
-  throw new Error('DEPLOYER_PRIVATE_KEY is not set!')
+const PRIVATE_KEY = process.env.PRIVATE_KEY || ''
+if (!PRIVATE_KEY) {
+  throw new Error('PRIVATE_KEY is not set!')
 }
-const DEPLOYER_JWK = JSON.parse(readFileSync(DEPLOYER_PRIVATE_KEY, 'utf-8'))
-const SIGNER = new ArweaveSigner(DEPLOYER_JWK)
+const JWK = JSON.parse(readFileSync(PRIVATE_KEY, 'utf-8'))
+const SIGNER = new ArweaveSigner(JWK)
 
 export async function publish(
   contractName: string,

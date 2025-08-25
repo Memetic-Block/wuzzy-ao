@@ -1,8 +1,8 @@
 return {
-  search = function (query, documents)
+  search = function (query, state)
     local StringUtils = require('..common.strings')
     local hits = {}
-    for _, doc in ipairs(documents) do
+    for _, doc in pairs(state.Documents) do
       local count = StringUtils.count(doc.Content, query)
       if count > 0 then
         table.insert(hits, { score = count, doc = doc })

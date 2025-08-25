@@ -21,11 +21,11 @@ const LUA_SOURCE_TXID = process.env.LUA_SOURCE_TX_ID || ''
 if (!LUA_SOURCE_TXID) {
   throw new Error('LUA_SOURCE_TX_ID is not set!')
 }
-const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY || ''
-if (!DEPLOYER_PRIVATE_KEY) {
-  throw new Error('DEPLOYER_PRIVATE_KEY is not set!')
+const PRIVATE_KEY = process.env.PRIVATE_KEY || ''
+if (!PRIVATE_KEY) {
+  throw new Error('PRIVATE_KEY is not set!')
 }
-const DEPLOYER_JWK = JSON.parse(readFileSync(DEPLOYER_PRIVATE_KEY, 'utf-8'))
+const JWK = JSON.parse(readFileSync(PRIVATE_KEY, 'utf-8'))
 
 const SPAWN_TAGS = JSON.parse(process.env.SPAWN_TAGS || '[]')
 if (!Array.isArray(SPAWN_TAGS)) {
@@ -87,7 +87,7 @@ export async function spawn(
   )
 }
 
-spawn(CONTRACT_NAME, LUA_SOURCE_TXID, DEPLOYER_JWK, SPAWN_TAGS).then(() => {
+spawn(CONTRACT_NAME, LUA_SOURCE_TXID, JWK, SPAWN_TAGS).then(() => {
   logger.info('Spawn AO Process executed successfully!')
 }).catch(error => {
   logger.error(`Error executing spawn AO Process:`, error)

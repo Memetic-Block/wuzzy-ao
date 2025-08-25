@@ -31,15 +31,8 @@ describe('Wuzzy-Crawler Request-Crawl', () => {
         { name: 'URL', value: url }
       ]
     })
-    expect(result.Messages).to.have.lengthOf(1)
-    const response = result.Messages[0]
-    expect(response.Target).to.equal(OWNER_ADDRESS)
-    expect(response.Tags).to.deep.include({
-      name: 'Action',
-      value: 'Request-Crawl-Response'
-    })
-    expect(response.Data)
-      .to.equal('http://|https:// protocol is not implemented yet')
+    expect(result.Error).to.exist
+    expect(result.Error).to.include(`Unsupported Crawl Task Protocol: ${url}`)
   })
 
   it('replies that https protocol is not implemented yet', async () => {
@@ -51,15 +44,8 @@ describe('Wuzzy-Crawler Request-Crawl', () => {
         { name: 'URL', value: url }
       ]
     })
-    expect(result.Messages).to.have.lengthOf(1)
-    const response = result.Messages[0]
-    expect(response.Target).to.equal(OWNER_ADDRESS)
-    expect(response.Tags).to.deep.include({
-      name: 'Action',
-      value: 'Request-Crawl-Response'
-    })
-    expect(response.Data)
-      .to.equal('http://|https:// protocol is not implemented yet')
+    expect(result.Error).to.exist
+    expect(result.Error).to.include(`Unsupported Crawl Task Protocol: ${url}`)
   })
 
   it('replies that arns record request was sent', async () => {
@@ -88,7 +74,7 @@ describe('Wuzzy-Crawler Request-Crawl', () => {
     expect(response.Target).to.equal(OWNER_ADDRESS)
     expect(response.Tags).to.deep.include({
       name: 'Action',
-      value: 'Request-Crawl-Response'
+      value: 'Request-Crawl-Result'
     })
     expect(response.Data)
       .to.equal(`Record request sent to ARNS registry: ${name}`)
@@ -104,14 +90,7 @@ describe('Wuzzy-Crawler Request-Crawl', () => {
         { name: 'URL', value: url }
       ]
     })
-
-    expect(result.Messages).to.have.lengthOf(1)
-    const response = result.Messages[0]
-    expect(response.Target).to.equal(OWNER_ADDRESS)
-    expect(response.Tags).to.deep.include({
-      name: 'Action',
-      value: 'Request-Crawl-Response'
-    })
-    expect(response.Data).to.equal('ar:// protocol is not implemented yet')
+    expect(result.Error).to.exist
+    expect(result.Error).to.include(`Unsupported Crawl Task Protocol: ${url}`)
   })
 })

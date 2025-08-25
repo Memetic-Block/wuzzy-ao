@@ -15,7 +15,8 @@ const contractsWithACL = [
   // NB: Add contracts to test that they have the ACL module and
   //     that it is wired-up through handlers
   'wuzzy-crawler',
-  'wuzzy-nest'
+  'wuzzy-nest',
+  'wuzzy-nest-registry'
 ]
 
 for (const contractName of contractsWithACL) {

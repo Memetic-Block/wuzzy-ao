@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run clean && tsx scripts/bundle.ts",
+    "build": "npm run bundle && tsx scripts/build.ts",
+    "bundle": "npm run clean && tsx scripts/bundle.ts",
     "clean": "rimraf [ dist ]",
     "test": "npm run build && mocha test/spec/**/*.spec.ts"
   },

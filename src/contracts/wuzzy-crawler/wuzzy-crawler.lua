@@ -1,267 +1,358 @@
 local WuzzyCrawler = {
   State = {
+    --- @type string|nil
     NestId = nil,
-    ArioNetworkProcessId = nil,
-    CrawlRequests = {},
-    AntRecordRequests = {}
+
+    --- @type string|nil
+    Gateway = nil,
+
+    --- @type table<string, { AddedBy: string, URL: string }>
+    CrawlTasks = {},
+
+    --- @type table<string, boolean>
+    SupportedMimeTypes = {
+      ['text/html'] = true,
+      ['text/plain'] = true,
+      ['application/x.arweave-manifest+json'] = true
+    },
+
+    --- @type table<string, { Name: string, SubDomain: string }>
+    AntRecordRequests = {},
+
+    --- @type table<string, {
+    ---   Name: string,
+    ---   SubDomain: string,
+    ---   URL: string,
+    ---   ContentType: string|nil,
+    ---   IsManifestPath: boolean|nil }>
+    DataOracleRequests = {},
+
+    --- @type table<string, {
+    ---   Name: string|nil,
+    ---   URL: string }>
+    CrawlQueue = {},
+
+    -- Crawl Memory
+    --- @type table<string, string>
+    CrawledURLs = {}
   }
 }
 
 WuzzyCrawler.State.NestId = WuzzyCrawler.State.NestId or
-  ao.env.Process.Tags['Nest-Id']
-WuzzyCrawler.State.ArioNetworkProcessId =
-  WuzzyCrawler.State.ArioNetworkProcessId or
-    ao.env.Process.Tags['Ario-Network-Process-Id']
+  process.Tags['Nest-Id']
+WuzzyCrawler.State.Gateway = WuzzyCrawler.State.Gateway or
+  process.Tags['Gateway'] or 'arweave.net'
 
 function WuzzyCrawler.init()
-  local json = require('json')
-  local base64 = require('.base64')
   local ACL = require('..common.acl')
+  local utils = require('.utils')
   local StringUtils = require('..common.strings')
-  local WeaveDrive = require('..common.weavedrive')
+  local HtmlParser = require('..common.lua-htmlparser.htmlparser')
+  local neturl = require('..lib.neturl')
 
   require('..common.handlers.acl')(ACL)
   require('..common.handlers.state')(WuzzyCrawler)
 
-  Handlers.add(
-    'Request-Crawl',
-    Handlers.utils.hasMatchingTag('Action', 'Request-Crawl'),
-    function (msg)
-      ACL.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Request-Crawl' })
+  Handlers.add('Request-Crawl', 'Request-Crawl', function (msg)
+    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Request-Crawl' })
 
-      local url = msg.Tags['URL']
-      assert(url ~= nil, 'URL tag is required for Request-Crawl')
+    local url = msg['URL']
+    assert(url ~= nil, 'Missing URL to crawl')
 
-      if
-        StringUtils.starts_with(url, 'https://') or
-          StringUtils.starts_with(url, 'http://')
-      then
-        -- TODO -> Handle HTTP/HTTPS protocol
-        -- ao.send({
-        --   Target = WuzzyCrawler.State.NestId,
-        --   device = 'relay@1.0',
-        --   Data = json.encode({
-        --     mode = 'call',
-        --     method = 'GET',
-        --     ['0'] = { path = url }
-        --   })
-        -- })
+    local result, err = WuzzyCrawler.enqueueCrawl(url)
+    assert(not err, err)
 
-        -- ao.send({
-        --   Target = msg.From,
-        --   Action = 'Request-Crawl-Response',
-        --   Data = 'Crawl request sent to relay device'
-        -- })
-        ao.send({
-          Target = msg.From,
-          Action = 'Request-Crawl-Response',
-          Data = 'http://|https:// protocol is not implemented yet'
-        })
-      elseif StringUtils.starts_with(url, 'arns://') then
-        -- TODO -> Handle undernames
-        local name = string.gsub(url, 'arns://', '')
-        WuzzyCrawler.State.CrawlRequests[name] = msg.From
-        ao.send({
-          Target = WuzzyCrawler.State.ArioNetworkProcessId,
-          Action = 'Record',
-          Name = name
-        })
-        ao.send({
-          Target = msg.From,
-          Action = 'Request-Crawl-Response',
-          Data = 'Record request sent to ARNS registry: '..name
-        })
-      elseif StringUtils.starts_with(url, 'ar://') then
-        -- TODO -> Handle AR protocol (not implemented yet)
-        ao.send({
-          Target = msg.From,
-          Action = 'Request-Crawl-Response',
-          Data = 'ar:// protocol is not implemented yet'
-        })
-      else
-        ao.send({
-          Target = msg.From,
-          Action = 'Request-Crawl-Response',
-          Data = 'Unsupported URL protocol'
-        })
+    send({
+      target = msg.from,
+      action = 'Request-Crawl-Result',
+      data = result
+    })
+  end)
+
+  Handlers.add('Add-Crawl-Tasks', 'Add-Crawl-Tasks', function (msg)
+    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Add-Crawl-Tasks' })
+    assert(msg.data and #msg.data > 0, 'Missing Crawl Task Data')
+
+    for url in msg.data:gmatch('[^\r\n]+') do
+      -- TODO -> validate url
+      -- TODO -> Safely parse url
+      local parsedUrl = neturl.parse(url)
+      local protocol = parsedUrl.scheme
+      local domain = parsedUrl.host or parsedUrl.authority
+      local path = parsedUrl.path
+      assert(protocol and domain and path, 'Invalid Crawl Task Data: ' .. url)
+      local baseUrl = protocol .. '://' .. domain .. path
+      assert(
+        not WuzzyCrawler.State.CrawlTasks[baseUrl],
+        'Duplicate Crawl Task: ' .. baseUrl
+      )
+      WuzzyCrawler.State.CrawlTasks[baseUrl] = {
+        AddedBy = msg.from,
+        SubmittedUrl = url,
+        URL = baseUrl,
+        Protocol = protocol,
+        Domain = domain,
+        Path = path
+      }
+    end
+
+    send({
+      target = msg.from,
+      action = 'Add-Crawl-Tasks-Result',
+      data = 'OK'
+    })
+  end)
+
+  Handlers.add('Remove-Crawl-Tasks', 'Remove-Crawl-Tasks', function (msg)
+    ACL.assertHasOneOfRole(
+      msg.from,
+      { 'owner', 'admin', 'Remove-Crawl-Tasks' }
+    )
+    assert(msg.data and #msg.data > 0, 'Missing Crawl Task Data to remove')
+
+    for url in msg.data:gmatch('[^\r\n]+') do
+      assert(
+        WuzzyCrawler.State.CrawlTasks[url],
+        'Crawl Task not found: ' .. url
+      )
+      WuzzyCrawler.State.CrawlTasks[url] = nil
+    end
+
+    send({
+      target = msg.from,
+      action = 'Remove-Crawl-Tasks-Result',
+      data = 'OK'
+    })
+  end)
+
+  Handlers.add('Cron', 'Cron', function (msg)
+    assert(msg.from == authorities[1], 'Unauthorized Cron Caller')
+
+    local queue = utils.keys(WuzzyCrawler.State.CrawlQueue)
+    if #queue < 1 then
+      print('Nothing in Crawl Queue')
+
+      local tasks = utils.keys(WuzzyCrawler.State.CrawlTasks)
+      if #tasks < 1 then
+        print('No Crawl Tasks to process')
+        return
+      end
+
+      print('Processing Crawl Tasks: ' .. #tasks)
+      for _, task in pairs(WuzzyCrawler.State.CrawlTasks) do
+        local result, err = WuzzyCrawler.enqueueCrawl(task.URL)
+        if err then print('Enqueue Crawl Error:', err) end
+        if result then print('Enqueue Crawl Result:', result) end
       end
     end
-  )
 
-  Handlers.add(
-    'Record-Notice',
-    Handlers.utils.hasMatchingTag('Action', 'Record-Notice'),
-    function (msg)
-      if msg.From == WuzzyCrawler.State.ArioNetworkProcessId then
-        local name = msg.Tags['Name']
-        if type(name) ~= 'string' or name == '' then return end
-        local requestor = WuzzyCrawler.State.CrawlRequests[name]
-        if not requestor then return end
-
-        -- TODO -> validate msg.Data as StoredRecord
-        --- @class StoredRecord
-        --- @field processId string The process id of the record
-        --- @field startTimestamp number The start timestamp of the record
-        --- @field type 'lease' | 'permabuy' The type of the record (lease/permabuy)
-        --- @field undernameLimit number The undername limit of the record
-        --- @field purchasePrice number The purchase price of the record
-        --- @field endTimestamp number|nil The end timestamp of the record
-        local record = json.decode(msg.Data)
-        local subdomain = '@' -- TODO -> Handle subdomains
-        WuzzyCrawler.State.AntRecordRequests[record.processId] = {
-          name = name,
-          subdomain = subdomain
-        }
-        ao.send({
-          Target = record.processId,
-          Action = 'Record',
-          ['Sub-Domain'] = subdomain -- TODO -> Handle subdomains
-        })
-      elseif WuzzyCrawler.State.AntRecordRequests[msg.From] then
-        local request = WuzzyCrawler.State.AntRecordRequests[msg.From]
-        local requestor = WuzzyCrawler.State.CrawlRequests[request.name]
-        if not requestor then return end
-
-        -- TODO -> validate msg.Data as AntRecord
-        --- @class AntRecord
-        --- @field transactionId string The transaction id of the record
-        --- @field ttlSeconds number The time-to-live seconds of the record
-        --- @field priority integer|nil The sort order of the record - must be nil or 1 or greater
-        local record = json.decode(msg.Data)
-        local result, err = WuzzyCrawler.fetchAndParseTransaction(
-          record.transactionId
-        )
-        if not result or err then
-          ao.send({
-            Target = requestor,
-            Action = 'Crawl-Response',
-            Data = 'Crawl request failed: ' .. (err or 'Unknown Error')
-          })
-        else
-          ao.send({
-            Target = requestor,
-            Action = 'Crawl-Response',
-            Data = 'Crawl request successful: ' .. result.message
-          })
-
-          -- TODO -> Send to Wuzzy-Nest
-          ao.send({
-            Target = WuzzyCrawler.State.NestId,
-            Action = 'Index',
-            Data = result.content,
-            Tags = {
-              ['Index-Type'] = 'ARNS',
-              ['Document-ARNS-Name'] = request.name,
-              ['Document-ARNS-Sub-Domain'] = '@', -- TODO -> Handle subdomains
-              ['Document-Content-Type'] = result.contentType,
-              ['Document-Transaction-Id'] = record.transactionId
-            }
-          })
-        end
-
-        WuzzyCrawler.State.AntRecordRequests[request.name] = nil
-      end
+    queue = utils.keys(WuzzyCrawler.State.CrawlQueue)
+    if queue[1] then
+      local result, err = WuzzyCrawler.dequeueCrawl(queue[1])
+      if err then print('Dequeue Crawl Error:', err) end
+      if result then print('Dequeue Crawl Result:', result) end
     end
-  )
+  end)
 
-  WuzzyCrawler.fetchAndParseTransaction = function (transactionId)
-    --- @class TransactionHeaders
-    --- @field tags { [number]: { name: string, value: string } }
-    --- @field id string The transaction id
-    --- @field owner string The owner pubkey of the transaction
-    --- @field ownerAddress string The owner address of the transaction
-    --- @field signature string The signature of the transaction
-    --- @field format number The format of the transaction
-    --- @field target string The target of the transaction
-    --- @field quantity string The quantity of the transaction
-    --- @field data_root string The data root of the transaction
-    --- @field last_tx string The last transaction id anchor
-    --- @field data_size string The data size of the transaction
-    --- @field reward string The reward of the transaction
-    local tx, getTxErr = WeaveDrive.getTx(transactionId)
-    if getTxErr then
-      return nil, 'Unable to fetch transaction headers: ' .. getTxErr
-    end
+  Handlers.add('Relay-Result', 'Relay-Result', function (msg)
+    assert(msg.from == id, 'Unauthorized Relay-Result Caller')
 
-    -- TODO -> Validate tx as TransactionHeaders
-    -- TODO -> Don't fetch data if too large
-
-    local contentType = 'unknown'
-    for _, tag in ipairs(tx.tags) do
-      for _, pad in ipairs({ '', '==', '=' }) do
-        local success, result = pcall(base64.decode, tag.name..pad)
-        if
-          success and result == 'Content-Type' and
-            type(tag.value) == 'string'
-        then
-          for _, pad2 in ipairs({ '', '==', '=' }) do
-            local success2, result2 = pcall(
-              base64.decode,
-              tag.value..pad2
-            )
-            if success2 and result2 and result2 ~= '' then
-              contentType = result2
-              break
-            end
+    if msg['content-type'] == 'text/html' then
+      local parsed = WuzzyCrawler.parseHTML(msg.body)
+      local links = utils.map(
+        function (link)
+          if StringUtils.starts_with(link, '/') then
+            local parsedUrl = neturl.parse(msg['relay-path'])
+            local protocol = parsedUrl.scheme
+            local domain = parsedUrl.host or parsedUrl.authority
+            return protocol .. '://' .. domain .. link
           end
-          break
-        end
+
+          return link
+        end,
+        parsed.links
+      )
+
+      WuzzyCrawler.submitDocument({
+        Id = msg['relay-path'],
+        URL = msg['relay-path'],
+        ContentType = msg['content-type'],
+        LastCrawledAt = msg['block-timestamp'],
+        Content = parsed.content
+      })
+      for _, url in ipairs(links) do
+        print('Discovered link:', url)
+        local result, err = WuzzyCrawler.enqueueCrawl(url)
+        if err then print('Enqueue Crawl Error:', err) end
+        if result then print('Enqueue Crawl Result:', result) end
       end
-    end
-
-    -- TODO -> Don't fetch data if contentType is unsupported
-    local txData, getDataErr = WeaveDrive.getData(transactionId)
-    if getDataErr then
-      return nil, 'Unable to fetch transaction data: ' .. getDataErr
-    end
-    if not txData or txData == '' then
-      return nil, 'Transaction data is empty'
-    end
-    if contentType == 'application/x.arweave-manifest+json' then
-      -- TODO -> Validate dataMsg.Data as Arweave manifest
-      -- TODO -> Safely decode JSON
-      --- @class ArweaveManifest
-      --- @field manifest 'arweave/paths' The manifest type
-      --- @field version string The manifest version
-      --- @field index { path: string } The index file of the manifest
-      --- @field fallback? { id: string } The fallback file of the manifest
-      --- @field paths { [string]: { id: string } } The paths of the manifest
-      local manifest = json.decode(txData)
-      local index = manifest.paths[manifest.index.path]
-
-      -- TODO -> Use fallback.id for 404s
-      -- TODO -> Look for robots.txt in the manifest paths
-      -- TODO -> Look for sitemap.xml in the manifest paths
-      -- TODO -> Crawl index and paths
-
-      if index then
-        -- TODO -> Track that this was a manifest crawl with index info
-        return WuzzyCrawler.fetchAndParseTransaction(index.id)
-      end
-
-      -- TODO -> Handle manifest without index
-      return {
-        message = 'Arweave manifest received',
-        contentType = contentType,
-        content = txData
-      }
-    elseif contentType == 'text/html' then
-      return {
-        message = 'HTML content received',
-        contentType = contentType,
-        content = txData
-      }
-    elseif contentType == 'text/plain' then
-      return {
-        message = 'Plain text content received: ' .. txData,
-        contentType = contentType,
-        content = txData
-      }
+    elseif msg['content-type'] == 'text/plain' then
+      WuzzyCrawler.submitDocument({
+        Id = msg['relay-path'],
+        URL = msg['relay-path'],
+        ContentType = msg['content-type'],
+        LastCrawledAt = msg['block-timestamp'],
+        Content = msg.body
+      })
     else
-      return nil, 'Crawl request failed: Unsupported content type: '
-        .. contentType
+      print(
+        'Ignoring url: ' .. tostring(msg['relay-path']) ..
+        ' with content-type: ' .. tostring(msg['content-type'])
+      )
     end
+  end)
+
+  function WuzzyCrawler.dequeueCrawl(url)
+    local relayPath = url
+
+    if StringUtils.starts_with(url, 'arns://') then
+      local parsed = neturl.parse(url)
+      local domain = parsed.host or parsed.authority
+      local path = parsed.path
+      relayPath = 'https://' .. domain .. '.' .. WuzzyCrawler.State.Gateway
+      if path and path ~= '' then
+        relayPath = relayPath .. path
+      end
+    elseif StringUtils.starts_with(url, 'ar://') then
+      local parsed = neturl.parse(url)
+      local txid = parsed.host or parsed.authority
+      local path = parsed.path
+      relayPath = 'https://' .. WuzzyCrawler.State.Gateway .. '/' .. txid
+      if path and path ~= '' then
+        relayPath = relayPath .. path
+      end
+    end
+
+    send({
+      target = id,
+      ['relay-path'] = relayPath,
+      resolve = '~relay@1.0/call/~patch@1.0',
+      action = 'Relay-Result'
+    })
+    WuzzyCrawler.State.CrawlQueue[url] = nil
+    return 'Crawled ' .. url
+  end
+
+  function WuzzyCrawler.enqueueCrawl(url)
+    -- TODO -> validate url
+    -- TODO -> Safely parse url
+    local parsedUrl = neturl.parse(url)
+    local protocol = parsedUrl.scheme
+    local domain = parsedUrl.host or parsedUrl.authority
+    local path = parsedUrl.path
+
+    if protocol and domain and path then
+      if utils.includes(protocol, { 'http', 'https', 'arns', 'ar' }) then
+        local baseUrl = protocol .. '://' .. domain .. path
+        WuzzyCrawler.State.CrawlQueue[baseUrl] = {
+          SubmittedUrl = url,
+          URL = baseUrl,
+          Protocol = protocol,
+          Domain = domain,
+          Path = path
+        }
+
+        return 'URL added to crawl queue: ' .. baseUrl
+      else
+        return nil, 'Unsupported Crawl Task Protocol: ' .. url
+      end
+    else
+      return nil, 'Invalid URL: ' .. url
+    end
+  end
+
+  function WuzzyCrawler.submitDocument(document)
+    send({
+      target = WuzzyCrawler.State.NestId,
+      action = 'Index-Document',
+      data = document.Content,
+      ['Document-Id'] = document.Id,
+      ['Document-Last-Crawled-At'] = document.LastCrawledAt,
+      ['Document-URL'] = document.URL,
+      ['Document-Content-Type'] = document.ContentType
+    })
+  end
+
+  function WuzzyCrawler.parseHTML(html)
+    -- TODO -> Safely call stuff below
+
+    local root = HtmlParser.parse(html, 10000)
+    local titleElement = root:select('title')[1]
+    local title = titleElement and titleElement:getcontent() or ''
+    local descElement = root:select('meta[name="description"]')[1]
+    local description =
+      descElement and descElement.attributes['content'] or ''
+    local anchorElements = root:select('a')
+    local links = {}
+    for _, anchor in ipairs(anchorElements) do
+      local href = anchor.attributes['href']
+      if
+        href and
+        href ~= '' and
+        href ~= '/index.html' and
+        (not StringUtils.starts_with(href, '#')) and
+        (not StringUtils.starts_with(href, '/#')) and
+        (not utils.find(function(link) return link == href end, links))
+      then
+        table.insert(links, href)
+      end
+    end
+    local body = root:select('body')[1]
+
+    if not body then
+      print('No body element found in HTML')
+      return ''
+    end
+
+    -- Get all text content from body, including child elements
+    local content = body:getcontent() or ''
+
+    -- Strip all HTML tags to get just the text content
+    content = content:gsub('<[^>]*>', ' ') -- Remove all HTML tags
+
+    -- Decode HTML entities to their text content
+    content = content:gsub('&amp;', '&')  -- Must be first to avoid double-decoding
+    content = content:gsub('&lt;', '<')
+    content = content:gsub('&gt;', '>')
+    content = content:gsub('&quot;', '"')
+    content = content:gsub('&#39;', "'")
+    content = content:gsub('&#x27;', "'")
+    content = content:gsub('&apos;', "'")
+    content = content:gsub('&nbsp;', ' ')
+    content = content:gsub('&copy;', '©')
+    content = content:gsub('&reg;', '®')
+    content = content:gsub('&trade;', '™')
+    content = content:gsub('&hellip;', '…')
+    content = content:gsub('&mdash;', '—')
+    content = content:gsub('&ndash;', '–')
+    content = content:gsub('&ldquo;', '"')
+    content = content:gsub('&rdquo;', '"')
+    content = content:gsub('&lsquo;', "'")
+    content = content:gsub('&rsquo;', "'")
+
+    -- Decode numeric character references (decimal)
+    content = content:gsub('&#(%d+);', function(n)
+      local num = tonumber(n)
+      if num and num >= 32 and num <= 126 then
+        return string.char(num)
+      end
+      return ''
+    end)
+
+    -- Clean up extra whitespace and newlines
+    content = content:gsub('%s+', ' ') -- Replace multiple whitespace with single space
+    content = content:gsub('^%s+', '') -- Trim leading whitespace
+    content = content:gsub('%s+$', '') -- Trim trailing whitespace
+
+    return {
+      title = title,
+      description = description,
+      links = links,
+      content = content
+    }
   end
 end
 
 WuzzyCrawler.init()
+
+return WuzzyCrawler

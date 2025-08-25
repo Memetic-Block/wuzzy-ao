@@ -1,15 +1,11 @@
-return function (WuzzyCrawler)
+return function (ProcessWithState)
   local json = require('json')
 
-  Handlers.add(
-    'View-State',
-    Handlers.utils.hasMatchingTag('Action', 'View-State'),
-    function (msg)
-      Send({
-        Target = msg.From,
-        Action = 'View-State-Response',
-        Data = json.encode(WuzzyCrawler.State)
-      })
-    end
-  )
+  Handlers.add('View-State', 'View-State', function (msg)
+    send({
+      target = msg.from,
+      action = 'View-State-Response',
+      data = json.encode(ProcessWithState.State)
+    })
+  end)
 end
