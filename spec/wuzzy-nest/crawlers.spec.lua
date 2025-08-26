@@ -103,6 +103,7 @@ describe('Wuzzy-Nest Crawlers', function()
         device = 'patch@1.0',
         cache = WuzzyNest.State
       })
+      assert(WuzzyNest.ACL.State.Roles['Index-Document'][newCrawlerProcessId])
     end)
 
     it('throws on Create-Crawler messages from unauthorized callers', function()
@@ -319,6 +320,10 @@ describe('Wuzzy-Nest Crawlers', function()
         device = 'patch@1.0',
         cache = WuzzyNest.State
       })
+
+      assert(WuzzyNest.ACL.State.Roles['Index-Document']['crawler-1'])
+      assert(WuzzyNest.ACL.State.Roles['Index-Document']['crawler-2'])
+      assert(WuzzyNest.ACL.State.Roles['Index-Document']['crawler-3'])
     end)
   end)
 

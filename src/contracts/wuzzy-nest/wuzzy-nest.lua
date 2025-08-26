@@ -20,14 +20,13 @@ local WuzzyNest = {
     Crawlers = {},
 
     CrawlTasks = {}
-  }
+  },
+  ACL = require('..common.acl')
 }
-
 WuzzyNest.State.WuzzyCrawlerModuleId = module
 
 function WuzzyNest.init()
   local json = require('json')
-  local ACL = require('..common.acl')
   local SimpleSearch = require('.search.simple')
   local BM25Search = require('.search.bm25')
   local StringUtils = require('..common.strings')
@@ -39,11 +38,11 @@ function WuzzyNest.init()
     require('..wuzzy-crawler.wuzzy-crawler-stringified')
   )
 
-  require('..common.handlers.acl')(ACL)
+  require('..common.handlers.acl')(WuzzyNest.ACL)
   require('..common.handlers.state')(WuzzyNest)
 
   Handlers.add('Index-Document', 'Index-Document', function (msg)
-    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Index-Document' })
+    WuzzyNest.ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Index-Document' })
 
     local url = msg['Document-URL']
     assert(url, 'Missing Document-URL')
@@ -140,7 +139,7 @@ function WuzzyNest.init()
   end)
 
   Handlers.add('Remove-Document', 'Remove-Document', function (msg)
-    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Remove-Document' })
+    WuzzyNest.ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Remove-Document' })
 
     local documentId = msg['Document-Id']
     assert(documentId, 'Document-Id is required')
@@ -194,7 +193,7 @@ function WuzzyNest.init()
   end)
 
   Handlers.add('Add-Crawl-Tasks', 'Add-Crawl-Tasks', function (msg)
-    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Add-Crawl-Tasks' })
+    WuzzyNest.ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Add-Crawl-Tasks' })
     assert(msg.data and #msg.data > 0, 'Missing Crawl Task Data')
 
     for url in msg.data:gmatch('[^\r\n]+') do
@@ -231,7 +230,7 @@ function WuzzyNest.init()
   end)
 
   Handlers.add('Remove-Crawl-Tasks', 'Remove-Crawl-Tasks', function (msg)
-    ACL.assertHasOneOfRole(
+    WuzzyNest.ACL.assertHasOneOfRole(
       msg.from,
       { 'owner', 'admin', 'Remove-Crawl-Tasks' }
     )
@@ -254,7 +253,7 @@ function WuzzyNest.init()
   end)
 
   Handlers.add('Create-Crawler', 'Create-Crawler', function (msg)
-    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Create-Crawler' })
+    WuzzyNest.ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Create-Crawler' })
     local crawlerName = msg['Crawler-Name'] or 'My Wuzzy Crawler'
     local xCreateCrawlerId = msg.id
 
@@ -337,6 +336,9 @@ function WuzzyNest.init()
       Owner = crawlerRef.Creator
     }
     WuzzyNest.State.CrawlerSpawnRefs[xCreateCrawlerId] = nil
+    WuzzyNest.ACL.updateRoles({
+      Grant = { [crawlerId] = { 'Index-Document' } }
+    })
 
     send({
       target = crawlerRef.Creator,
@@ -352,7 +354,7 @@ function WuzzyNest.init()
   end)
 
   Handlers.add('Add-Crawler', 'Add-Crawler', function (msg)
-    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Add-Crawler' })
+    WuzzyNest.ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Add-Crawler' })
     assert(type(msg['Crawler-Id']) == 'string', 'Crawler-Id is required')
     assert(
       not WuzzyNest.State.Crawlers[msg['Crawler-Id']],
@@ -365,6 +367,9 @@ function WuzzyNest.init()
       Owner = msg.from,
       Name = crawlerName
     }
+    WuzzyNest.ACL.updateRoles({
+      Grant = { [msg['Crawler-Id']] = { 'Index-Document' } }
+    })
 
     send({
       target = msg.from,
@@ -379,7 +384,7 @@ function WuzzyNest.init()
   end)
 
   Handlers.add('Remove-Crawler', 'Remove-Crawler', function (msg)
-    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Remove-Crawler' })
+    WuzzyNest.ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Remove-Crawler' })
     assert(type(msg['Crawler-Id']) == 'string', 'Crawler-Id is required')
     assert(
       WuzzyNest.State.Crawlers[msg['Crawler-Id']],
