@@ -18,7 +18,7 @@ function BM25Search.search(query, state, opts)
     return hits -- No documents to search
   end
 
-  for _, doc in pairs(state.Documents) do
+  for _, doc in ipairs(state.Documents) do
     local count = StringUtils.count(doc.Content, query)
     if count > 0 then
       table.insert(hits, { count = count, doc = doc })

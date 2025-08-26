@@ -2,7 +2,7 @@ return {
   search = function (query, state)
     local StringUtils = require('..common.strings')
     local hits = {}
-    for _, doc in pairs(state.Documents) do
+    for _, doc in ipairs(state.Documents) do
       local count = StringUtils.count(doc.Content, query)
       if count > 0 then
         table.insert(hits, { score = count, doc = doc })
@@ -10,7 +10,12 @@ return {
     end
 
     -- Sort by score DESC in each document
-    table.sort(hits, function(a, b) return a.score > b.score end)
+    table.sort(
+      hits,
+      function(a, b)
+        return a.score > b.score
+      end
+    )
 
     return hits
   end

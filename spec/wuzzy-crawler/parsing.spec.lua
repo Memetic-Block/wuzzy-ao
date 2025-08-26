@@ -1,10 +1,12 @@
 local codepath = 'wuzzy-crawler.wuzzy-crawler'
 
 describe('Wuzzy-Crawler Parsing', function()
+  _G.send = spy.new(function() end)
   local WuzzyCrawler = require(codepath)
   local utils = require('.utils')
   before_each(function()
     CacheOriginalGlobals()
+    _G.send = spy.new(function() end)
     WuzzyCrawler = require(codepath)
   end)
   after_each(function()

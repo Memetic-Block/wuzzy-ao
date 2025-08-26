@@ -1,9 +1,11 @@
 local codepath = 'wuzzy-crawler.wuzzy-crawler'
 
 describe('Wuzzy-Crawler Crawling', function()
+  _G.send = spy.new(function() end)
   local WuzzyCrawler = require(codepath)
   before_each(function()
     CacheOriginalGlobals()
+    _G.send = spy.new(function() end)
     WuzzyCrawler = require(codepath)
   end)
   after_each(function()
@@ -78,7 +80,7 @@ describe('Wuzzy-Crawler Crawling', function()
         Protocol = protocol,
         Domain = domain,
         Path = path
-      }, WuzzyCrawler.State.CrawlQueue[baseUrl])
+      }, WuzzyCrawler.State.CrawlQueue[1])
     end)
 
     it('accepts http scheme crawl requests', function()
@@ -98,7 +100,7 @@ describe('Wuzzy-Crawler Crawling', function()
         action = 'Request-Crawl-Result',
         data = 'URL added to crawl queue: ' .. url
       })
-      assert.are_same(WuzzyCrawler.State.CrawlQueue[url], {
+      assert.are_same(WuzzyCrawler.State.CrawlQueue[1], {
         SubmittedUrl = url,
         URL = url,
         Protocol = protocol,
@@ -124,7 +126,7 @@ describe('Wuzzy-Crawler Crawling', function()
         action = 'Request-Crawl-Result',
         data = 'URL added to crawl queue: ' .. url
       })
-      assert.are_same(WuzzyCrawler.State.CrawlQueue[url], {
+      assert.are_same(WuzzyCrawler.State.CrawlQueue[1], {
         SubmittedUrl = url,
         URL = url,
         Protocol = protocol,
@@ -150,7 +152,7 @@ describe('Wuzzy-Crawler Crawling', function()
         action = 'Request-Crawl-Result',
         data = 'URL added to crawl queue: ' .. url
       })
-      assert.are_same(WuzzyCrawler.State.CrawlQueue[url], {
+      assert.are_same(WuzzyCrawler.State.CrawlQueue[1], {
         SubmittedUrl = url,
         URL = url,
         Protocol = protocol,
@@ -176,7 +178,7 @@ describe('Wuzzy-Crawler Crawling', function()
         action = 'Request-Crawl-Result',
         data = 'URL added to crawl queue: ' .. url
       })
-      assert.are_same(WuzzyCrawler.State.CrawlQueue[url], {
+      assert.are_same(WuzzyCrawler.State.CrawlQueue[1], {
         SubmittedUrl = url,
         URL = url,
         Protocol = protocol,
@@ -185,14 +187,30 @@ describe('Wuzzy-Crawler Crawling', function()
       })
     end)
 
-    pending('uses ~patch@1.0 whenever updating state', function() end)
+    it('uses ~patch@1.0 whenever updating state', function()
+      _G.send = spy.new(function() end)
+      local protocol = 'https'
+      local domain = 'example.com'
+      local path = '/some/path'
+      local url = protocol .. '://' .. domain .. path
+
+      GetHandler('Request-Crawl').handle({
+        from = _G.owner,
+        URL = url
+      })
+
+      assert.spy(_G.send).was.called_with({
+        device = 'patch@1.0',
+        cache = WuzzyCrawler.State
+      })
+    end)
   end)
 
   describe('Dequeue Crawl', function()
     it('requests url from ~relay@1.0', function()
       _G.send = spy.new(function() end)
       local url = 'http://example.com/some/path'
-      WuzzyCrawler.State.CrawlQueue[url] = url
+      WuzzyCrawler.State.CrawlQueue[1] = { URL = url }
 
       WuzzyCrawler.dequeueCrawl(url)
 
@@ -202,7 +220,7 @@ describe('Wuzzy-Crawler Crawling', function()
         resolve = '~relay@1.0/call/~patch@1.0',
         action = 'Relay-Result'
       })
-      assert(WuzzyCrawler.State.CrawlQueue[url] == nil)
+      assert(#WuzzyCrawler.State.CrawlQueue == 0)
     end)
 
     it('handles arns scheme urls', function()
@@ -211,7 +229,7 @@ describe('Wuzzy-Crawler Crawling', function()
       local domain = 'memeticblock'
       local path = '/info'
       local url = protocol .. '://' .. domain .. path
-      WuzzyCrawler.State.CrawlQueue[url] = url
+      WuzzyCrawler.State.CrawlQueue[1] = { URL = url }
 
       WuzzyCrawler.dequeueCrawl(url)
 
@@ -221,7 +239,7 @@ describe('Wuzzy-Crawler Crawling', function()
         resolve = '~relay@1.0/call/~patch@1.0',
         action = 'Relay-Result'
       })
-      assert(WuzzyCrawler.State.CrawlQueue[url] == nil)
+      assert(#WuzzyCrawler.State.CrawlQueue == 0)
     end)
 
     it('handles ar scheme urls', function()
@@ -230,7 +248,7 @@ describe('Wuzzy-Crawler Crawling', function()
       local txid = 'mock-tx-id'
       local path = '/info'
       local url = protocol .. '://' .. txid .. path
-      WuzzyCrawler.State.CrawlQueue[url] = url
+      WuzzyCrawler.State.CrawlQueue[1] = { URL = url }
 
       WuzzyCrawler.dequeueCrawl(url)
 
@@ -240,9 +258,7 @@ describe('Wuzzy-Crawler Crawling', function()
         resolve = '~relay@1.0/call/~patch@1.0',
         action = 'Relay-Result'
       })
-      assert(WuzzyCrawler.State.CrawlQueue[url] == nil)
+      assert(#WuzzyCrawler.State.CrawlQueue == 0)
     end)
-
-    pending('uses ~patch@1.0 whenever updating state', function() end)
   end)
 end)

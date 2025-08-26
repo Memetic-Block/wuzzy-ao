@@ -1,11 +1,13 @@
 local codepath = 'wuzzy-crawler.wuzzy-crawler'
 
 describe('Wuzzy-Crawler Relay-Result', function()
+  _G.send = spy.new(function() end)
   local WuzzyCrawler = require(codepath)
   local utils = require('.utils')
   local StringUtils = require('common.strings')
   before_each(function()
     CacheOriginalGlobals()
+    _G.send = spy.new(function() end)
     WuzzyCrawler = require(codepath)
   end)
   after_each(function()
@@ -24,7 +26,19 @@ describe('Wuzzy-Crawler Relay-Result', function()
     local parseHtmlSpy = spy.on(WuzzyCrawler, 'parseHTML')
     local relayPath = 'https://example.com/some/path'
     local contentType = 'text/html'
-    local body = '<html><body>some <em>html</em> content</body></html>'
+    local title = 'Page Title'
+    local desc = 'Page Description'
+    local body = [[
+    <html>
+      <head>
+        <title>]]..title..[[</title>
+        <meta name="description" content="]]..desc..[[">
+      </head>
+      <body>
+        <p>some <em>html</em> content</p>
+      </body>
+    </html>
+    ]]
     local expectedContent = 'some html content'
     local now = tostring(os.time())
     GetHandler('Relay-Result').handle({
@@ -44,7 +58,9 @@ describe('Wuzzy-Crawler Relay-Result', function()
       ['Document-Id'] = relayPath,
       ['Document-Last-Crawled-At'] = now,
       ['Document-URL'] = relayPath,
-      ['Document-Content-Type'] = contentType
+      ['Document-Content-Type'] = contentType,
+      ['Document-Title'] = title,
+      ['Document-Description'] = desc
     })
   end)
 
@@ -98,6 +114,8 @@ describe('Wuzzy-Crawler Relay-Result', function()
   it('adds discovered links to crawl queue', function()
     _G.send = spy.new(function() end)
     local url = 'https://cookbook.arweave.net'
+    WuzzyCrawler.State.CrawlTasks = { url }
+    WuzzyCrawler.State.CrawledURLs[url] = tostring(os.time())
     GetHandler('Relay-Result').handle({
       from = _G.id,
       body = _G.CookbookHtmlContent,
@@ -105,21 +123,99 @@ describe('Wuzzy-Crawler Relay-Result', function()
       ['content-type'] = 'text/html',
       ['block-timestamp'] = tostring(os.time())
     })
-
-    local crawlQueueItems = utils.keys(WuzzyCrawler.State.CrawlQueue)
-    assert(#crawlQueueItems == #_G.CookbookLinks)
+    -- print('crawl queue:', #WuzzyCrawler.State.CrawlQueue)
+    -- print('cookbook links:', #_G.CookbookLinks)
+    local externalLinks = {
+      "https://github.com/twilson63/permaweb-cookbook",
+      "https://github.com/twilson63/permaweb-cookbook/edit/main/docs/src/index.md",
+      "https://arweave.org"
+    }
+    assert(#WuzzyCrawler.State.CrawlQueue == #_G.CookbookLinks - #externalLinks)
     for _, link in ipairs(_G.CookbookLinks) do
-      local normalizedLink = link
-      if StringUtils.starts_with(link, '/') then
-        normalizedLink = url .. link
+      if not utils.includes(link, externalLinks) then
+        local normalizedLink = link
+        if StringUtils.starts_with(link, '/') then
+          normalizedLink = url .. link
+        end
+        assert(
+          utils.find(
+            function(q) return q.URL == normalizedLink end,
+            WuzzyCrawler.State.CrawlQueue
+          ),
+          'Missing link in crawl queue: ' .. link
+        )
       end
-      assert(
-        utils.includes(normalizedLink, crawlQueueItems),
-        'Missing link in crawl queue: ' .. link
-      )
     end
   end)
 
-  pending('normalizes discovered links', function() end)
-  pending('doesn\'t re-crawl already crawled URLs', function() end)
+  it('normalizes discovered links', function()
+    _G.send = spy.new(function() end)
+    local enqueueCrawlSpy = spy.on(WuzzyCrawler, 'enqueueCrawl')
+    local relayPath = 'https://cookbook.arweave.net'
+    local url =
+      'http://cookbook.arweave.net/info/path/../to/page?json=true&skip=100#mid-dle'
+    local expectedUrl = 'http://cookbook.arweave.net/info/to/page'
+    WuzzyCrawler.State.CrawlTasks = { relayPath }
+    GetHandler('Relay-Result').handle({
+      from = _G.id,
+      body = [[
+      <html>
+        <body>
+          <a href="]] .. url .. [["></a>
+        </body>
+      </html>
+      ]],
+      ['relay-path'] = relayPath,
+      ['content-type'] = 'text/html',
+      ['block-timestamp'] = tostring(os.time())
+    })
+
+    assert.spy(enqueueCrawlSpy).was.called(1)
+    assert.spy(enqueueCrawlSpy).was.called_with(expectedUrl)
+  end)
+
+  it('doesn\'t re-crawl already crawled URLs', function()
+    _G.send = spy.new(function() end)
+    local enqueueCrawlSpy = spy.on(WuzzyCrawler, 'enqueueCrawl')
+    local url = 'https://cookbook.arweave.net'
+    WuzzyCrawler.State.CrawledURLs[url] = tostring(os.time())
+    GetHandler('Relay-Result').handle({
+      from = _G.id,
+      body = [[
+      <html>
+        <body>
+          <a href="]] .. url .. [["></a>
+        </body>
+      </html>
+      ]],
+      ['relay-path'] = url,
+      ['content-type'] = 'text/html',
+      ['block-timestamp'] = tostring(os.time())
+    })
+
+    assert.spy(enqueueCrawlSpy).was.called(0)
+  end)
+
+  it('only crawls within Crawl-Tasks domains', function()
+    _G.send = spy.new(function() end)
+    local enqueueCrawlSpy = spy.on(WuzzyCrawler, 'enqueueCrawl')
+    local relayPath = 'https://cookbook.arweave.net'
+    local otherDomainUrl = 'https://google.com/search'
+    WuzzyCrawler.State.CrawledURLs[relayPath] = tostring(os.time())
+    GetHandler('Relay-Result').handle({
+      from = _G.id,
+      body = [[
+      <html>
+        <body>
+          <a href="]] .. otherDomainUrl .. [["></a>
+        </body>
+      </html>
+      ]],
+      ['relay-path'] = relayPath,
+      ['content-type'] = 'text/html',
+      ['block-timestamp'] = tostring(os.time())
+    })
+
+    assert.spy(enqueueCrawlSpy).was.called(0)
+  end)
 end)

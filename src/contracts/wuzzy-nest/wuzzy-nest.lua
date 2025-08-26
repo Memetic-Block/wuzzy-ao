@@ -1,11 +1,11 @@
 local WuzzyNest = {
   State = {
-    IndexType = 'ARNS',
+    --- @type boolean
+    Initialized = false,
 
     --- @type { [number]: {
     ---   SubmittedBy: string,
     ---   TransactionId: string,
-    ---   IndexType: string,
     ---   ARNSName: string,
     ---   ARNSSubDomain: string,
     ---   ContentType: string,
@@ -47,10 +47,13 @@ function WuzzyNest.init()
 
     local url = msg['Document-URL']
     assert(url, 'Missing Document-URL')
-    local parsedUrl = neturl.parse(url) -- TODO -> Safely parse url
+    local parsedUrl = neturl.parse(url):normalize() -- TODO -> Safely parse url
     local protocol = parsedUrl.scheme
     local domain = parsedUrl.host or parsedUrl.authority
     local path = parsedUrl.path
+    if path:sub(-1) == '/' then
+      path = path:sub(1, -2)
+    end
     assert(protocol and domain and path, 'Invalid Document-URL: ' .. url)
     local documentId = protocol .. '://' .. domain .. path
 
@@ -74,20 +77,25 @@ function WuzzyNest.init()
       'Invalid Document-Content-Type: ' .. contentType
     )
 
-    local alreadyExists = not not WuzzyNest.State.Documents[documentId]
-    if not alreadyExists then
-      assert(msg.data and #msg.data > 0, 'Missing Document Content')
+    local existingDocumentIndex = nil
+    local existingDocument = nil
+    for i, doc in ipairs(WuzzyNest.State.Documents) do
+      if doc.DocumentId == documentId then
+        existingDocumentIndex = i
+        existingDocument = doc
+        break
+      end
     end
 
     -- TODO -> Split content into terms
-
+    assert(msg.data and #msg.data > 0, 'Missing Document Content')
     local termCount = #msg.data
-    local oldTermCount = alreadyExists and WuzzyNest.State.Documents[documentId].TermCount or 0
+    local oldTermCount = existingDocument and existingDocument.TermCount or 0
 
     WuzzyNest.State.TotalTermCount =
       WuzzyNest.State.TotalTermCount + termCount - oldTermCount
 
-    if not alreadyExists then
+    if not existingDocument then
       WuzzyNest.State.TotalDocuments = WuzzyNest.State.TotalDocuments + 1
     end
 
@@ -98,7 +106,7 @@ function WuzzyNest.init()
       WuzzyNest.State.AverageDocumentTermLength = 0
     end
 
-    WuzzyNest.State.Documents[documentId] = {
+    local doc = {
       SubmittedBy = msg.from,
       DocumentId = documentId,
       LastCrawledAt = lastCrawledAt,
@@ -108,14 +116,26 @@ function WuzzyNest.init()
       URL = url,
       ContentType = contentType,
       Content = msg.data,
-      TermCount = termCount
+      TermCount = termCount,
+      Title = msg['Document-Title'],
+      Description = msg['Document-Description']
     }
+
+    if existingDocumentIndex then
+      WuzzyNest.State.Documents[existingDocumentIndex] = doc
+    else
+      table.insert(WuzzyNest.State.Documents, doc)
+    end
 
     send({
       target = msg.from,
       action = 'Index-Document-Result',
       ['Document-Id'] = documentId,
       data = 'OK'
+    })
+    send({
+      device = 'patch@1.0',
+      cache = WuzzyNest.State
     })
   end)
 
@@ -124,10 +144,19 @@ function WuzzyNest.init()
 
     local documentId = msg['Document-Id']
     assert(documentId, 'Document-Id is required')
-    local document = WuzzyNest.State.Documents[documentId]
+    local document = utils.find(
+      function(doc) return doc.DocumentId == documentId end,
+      WuzzyNest.State.Documents
+    )
     assert(document, 'Document not found')
 
-    WuzzyNest.State.Documents[documentId] = nil
+    for i, doc in ipairs(WuzzyNest.State.Documents) do
+      if doc.DocumentId == documentId then
+        table.remove(WuzzyNest.State.Documents, i)
+        break
+      end
+    end
+
     WuzzyNest.State.TotalDocuments = WuzzyNest.State.TotalDocuments - 1
 
     send({
@@ -135,6 +164,10 @@ function WuzzyNest.init()
       action = 'Remove-Document-Result',
       ['Document-Id'] = documentId,
       data = 'OK'
+    })
+    send({
+      device = 'patch@1.0',
+      cache = WuzzyNest.State
     })
   end)
 
@@ -191,6 +224,10 @@ function WuzzyNest.init()
       action = 'Add-Crawl-Tasks-Result',
       data = 'OK'
     })
+    send({
+      device = 'patch@1.0',
+      cache = WuzzyNest.State
+    })
   end)
 
   Handlers.add('Remove-Crawl-Tasks', 'Remove-Crawl-Tasks', function (msg)
@@ -210,6 +247,10 @@ function WuzzyNest.init()
       action = 'Remove-Crawl-Tasks-Result',
       data = 'OK'
     })
+    send({
+      device = 'patch@1.0',
+      cache = WuzzyNest.State
+    })
   end)
 
   Handlers.add('Create-Crawler', 'Create-Crawler', function (msg)
@@ -225,7 +266,7 @@ function WuzzyNest.init()
       ['Crawler-Name'] = crawlerName,
       ['Crawler-Creator'] = msg.from
     })
-    WuzzyNest.State.CrawlerSpawnRefs[msg.id] = {
+    WuzzyNest.State.CrawlerSpawnRefs[xCreateCrawlerId] = {
       Creator = msg.from,
       CrawlerName = crawlerName
     }
@@ -234,6 +275,10 @@ function WuzzyNest.init()
       action = 'Create-Crawler-Result',
       data = 'OK',
       ['X-Create-Crawler-Id'] = xCreateCrawlerId
+    })
+    send({
+      device = 'patch@1.0',
+      cache = WuzzyNest.State
     })
   end)
 
@@ -289,8 +334,7 @@ function WuzzyNest.init()
       ['X-Create-Crawler-Id'] = xCreateCrawlerId,
       Name = crawlerRef.CrawlerName,
       Creator = crawlerRef.Creator,
-      Owner = crawlerRef.Creator,
-      Roles = {}
+      Owner = crawlerRef.Creator
     }
     WuzzyNest.State.CrawlerSpawnRefs[xCreateCrawlerId] = nil
 
@@ -300,6 +344,57 @@ function WuzzyNest.init()
       data = 'OK',
       ['Crawler-Id'] = crawlerId,
       ['X-Create-Crawler-Id'] = xCreateCrawlerId
+    })
+    send({
+      device = 'patch@1.0',
+      cache = WuzzyNest.State
+    })
+  end)
+
+  Handlers.add('Add-Crawler', 'Add-Crawler', function (msg)
+    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Add-Crawler' })
+    assert(type(msg['Crawler-Id']) == 'string', 'Crawler-Id is required')
+    assert(
+      not WuzzyNest.State.Crawlers[msg['Crawler-Id']],
+      'Crawler-Id already exists'
+    )
+
+    local crawlerName = msg['Crawler-Name'] or 'My Wuzzy Crawler'
+    WuzzyNest.State.Crawlers[msg['Crawler-Id']] = {
+      Creator = msg.from,
+      Owner = msg.from,
+      Name = crawlerName
+    }
+
+    send({
+      target = msg.from,
+      action = 'Crawler-Added',
+      data = 'OK',
+      ['Crawler-Id'] = msg['Crawler-Id']
+    })
+    send({
+      device = 'patch@1.0',
+      cache = WuzzyNest.State
+    })
+  end)
+
+  Handlers.add('Remove-Crawler', 'Remove-Crawler', function (msg)
+    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Remove-Crawler' })
+    assert(type(msg['Crawler-Id']) == 'string', 'Crawler-Id is required')
+    assert(
+      WuzzyNest.State.Crawlers[msg['Crawler-Id']],
+      'Crawler-Id does not exist'
+    )
+    WuzzyNest.State.Crawlers[msg['Crawler-Id']] = nil
+    send({
+      target = msg.from,
+      action = 'Crawler-Removed',
+      data = 'OK',
+      ['Crawler-Id'] = msg['Crawler-Id']
+    })
+    send({
+      device = 'patch@1.0',
+      cache = WuzzyNest.State
     })
   end)
 
@@ -318,8 +413,13 @@ function WuzzyNest.init()
       return
     end
   end)
+
+  WuzzyNest.State.Initialized = true
+  send({ device = 'patch@1.0', cache = WuzzyNest.State })
 end
 
-WuzzyNest.init()
+if not WuzzyNest.State.Initialized then
+  WuzzyNest.init()
+end
 
 return WuzzyNest

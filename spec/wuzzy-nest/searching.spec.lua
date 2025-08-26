@@ -1,6 +1,7 @@
 local codepath = 'wuzzy-nest.wuzzy-nest'
 
 describe('Wuzzy-Nest Searching', function()
+  _G.send = spy.new(function() end)
   local match = require('luassert.match')
   local utils = require('.utils')
   local WuzzyNest = require(codepath)
@@ -110,8 +111,10 @@ describe('Wuzzy-Nest Searching', function()
           results.SearchType == 'simple' and
           results.TotalCount == 2 and
           #results.Hits == 2 and
-          artbycityHit and artbycityHit.score == 1 and
-          wuzzyHit and wuzzyHit.score == 1
+          results.Hits[1].score == 1 and
+          results.Hits[1].doc.DocumentId == artbycityUrl and
+          results.Hits[2].score == 1 and
+          results.Hits[2].doc.DocumentId == wuzzyUrl
       end
     end
     assert:register('matcher', 'simple_search_2', is_simple_search_2)
@@ -149,26 +152,17 @@ describe('Wuzzy-Nest Searching', function()
     local function is_simple_search_4(state, args)
       return function(msg)
         local results = require('json').decode(msg.data)
-        local memeticblockHit = utils.find(
-          function(hit) return hit.doc.DocumentId == memeticblockUrl end,
-          results.Hits
-        )
-        local artbycityHit = utils.find(
-          function(hit) return hit.doc.DocumentId == artbycityUrl end,
-          results.Hits
-        )
-        local wuzzyHit = utils.find(
-          function(hit) return hit.doc.DocumentId == wuzzyUrl end,
-          results.Hits
-        )
         return msg.target == _G.owner and
           msg.action == 'Search-Result' and
           results.SearchType == 'simple' and
           results.TotalCount == 3 and
           #results.Hits == 3 and
-          memeticblockHit and memeticblockHit.score == 2 and
-          artbycityHit and artbycityHit.score == 1 and
-          wuzzyHit and wuzzyHit.score == 1
+          results.Hits[1].score == 2 and
+          results.Hits[1].doc.DocumentId == memeticblockUrl and
+          results.Hits[2].score == 1 and
+          results.Hits[2].doc.DocumentId == artbycityUrl and
+          results.Hits[3].score == 1 and
+          results.Hits[3].doc.DocumentId == wuzzyUrl
       end
     end
     assert:register('matcher', 'simple_search_4', is_simple_search_4)

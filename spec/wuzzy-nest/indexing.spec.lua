@@ -1,6 +1,7 @@
 local codepath = 'wuzzy-nest.wuzzy-nest'
 
 describe('Wuzzy-Nest Indexing', function()
+  _G.send = spy.new(function() end)
   local WuzzyNest = require(codepath)
   before_each(function()
     CacheOriginalGlobals()
@@ -11,13 +12,7 @@ describe('Wuzzy-Nest Indexing', function()
     package.loaded[codepath] = nil
   end)
 
-  pending('uses ~patch@1.0 whenever updating state', function() end)
-
   describe('Accepting Documents', function()
-    pending('Document Titles', function() end)
-    pending('Document Descriptions', function() end)
-    pending('Document Links', function() end)
-
     it('accepts Index-Document messages & tracks Document stats', function()
       _G.send = spy.new(function() end)
       local handler = GetHandler('Index-Document')
@@ -34,7 +29,9 @@ describe('Wuzzy-Nest Indexing', function()
           LastCrawledAt = tostring(now),
           URL = protocol1 .. '://' .. domain1 .. path1,
           ContentType = 'text/html',
-          Content = 'This is a test document.'
+          Content = 'This is a test document.',
+          Title = 'Test Document 1 Title',
+          Description = 'Test Document 1 Description'
         },
         {
           LastCrawledAt = tostring(now),
@@ -52,7 +49,9 @@ describe('Wuzzy-Nest Indexing', function()
         data = documents[1].Content,
         ['Document-Last-Crawled-At'] = documents[1].LastCrawledAt,
         ['Document-URL'] = documents[1].URL,
-        ['Document-Content-Type'] = documents[1].ContentType
+        ['Document-Content-Type'] = documents[1].ContentType,
+        ['Document-Title'] = documents[1].Title,
+        ['Document-Description'] = documents[1].Description
       })
       handler.handle({
         id = 'mock-message-id-2',
@@ -62,7 +61,9 @@ describe('Wuzzy-Nest Indexing', function()
         data = documents[2].Content,
         ['Document-Last-Crawled-At'] = documents[2].LastCrawledAt,
         ['Document-URL'] = documents[2].URL,
-        ['Document-Content-Type'] = documents[2].ContentType
+        ['Document-Content-Type'] = documents[2].ContentType,
+        ['Document-Title'] = documents[2].Title,
+        ['Document-Description'] = documents[2].Description
       })
 
       assert.spy(_G.send).was.called_with({
@@ -77,8 +78,8 @@ describe('Wuzzy-Nest Indexing', function()
         data = 'OK',
         ['Document-Id'] = documents[2].URL
       })
-      assert.is_not_nil(WuzzyNest.State.Documents[documents[1].URL])
-      assert.is_not_nil(WuzzyNest.State.Documents[documents[2].URL])
+      assert(WuzzyNest.State.Documents[1].DocumentId == documents[1].URL)
+      assert(WuzzyNest.State.Documents[2].DocumentId == documents[2].URL)
       assert.are_same({
         SubmittedBy = from,
         DocumentId = documents[1].URL,
@@ -89,8 +90,10 @@ describe('Wuzzy-Nest Indexing', function()
         URL = documents[1].URL,
         ContentType = documents[1].ContentType,
         Content = documents[1].Content,
-        TermCount = #documents[1].Content
-      }, WuzzyNest.State.Documents[documents[1].URL])
+        TermCount = #documents[1].Content,
+        Title = documents[1].Title,
+        Description = documents[1].Description
+      }, WuzzyNest.State.Documents[1])
       assert.are_same({
         SubmittedBy = from,
         DocumentId = documents[2].URL,
@@ -102,7 +105,7 @@ describe('Wuzzy-Nest Indexing', function()
         ContentType = documents[2].ContentType,
         Content = documents[2].Content,
         TermCount = #documents[2].Content
-      }, WuzzyNest.State.Documents[documents[2].URL])
+      }, WuzzyNest.State.Documents[2])
 
       assert(WuzzyNest.State.TotalDocuments == #documents)
       assert(
@@ -137,7 +140,7 @@ describe('Wuzzy-Nest Indexing', function()
       _G.send = spy.new(function() end)
       local handler = GetHandler('Index-Document')
       local baseUrl = 'http://www.example.com/info/path'
-      local url = baseUrl .. '?json=true&skip=100#middle-part'
+      local url = baseUrl .. '/back/../?json=true&skip=100#middle-part'
 
       handler.handle({
         id = 'mock-message-id-1',
@@ -150,7 +153,27 @@ describe('Wuzzy-Nest Indexing', function()
         ['Document-Content-Type'] = 'text/html'
       })
 
-      assert.is_not_nil(WuzzyNest.State.Documents[baseUrl])
+      assert(WuzzyNest.State.Documents[1].DocumentId == baseUrl)
+    end)
+
+    it('uses ~patch@1.0 after accepting docs', function()
+      _G.send = spy.new(function() end)
+
+      GetHandler('Index-Document').handle({
+        id = 'mock-message-id-1',
+        from = _G.owner,
+        target = 'wuzzy-nest-process-id',
+        action = 'Index-Document',
+        data = 'mock content',
+        ['Document-Last-Crawled-At'] = tostring(os.time()),
+        ['Document-URL'] = 'https://example.com',
+        ['Document-Content-Type'] = 'text/html'
+      })
+
+      assert.spy(_G.send).was.called_with({
+        device = 'patch@1.0',
+        cache = WuzzyNest.State
+      })
     end)
   end)
 
@@ -360,6 +383,35 @@ describe('Wuzzy-Nest Indexing', function()
       })
       assert.is_nil(WuzzyNest.State.Documents[url])
     end)
+
+    it('uses ~patch@1.0 after removing docs', function()
+      _G.send = spy.new(function() end)
+      local url = 'https://example.com'
+
+      GetHandler('Index-Document').handle({
+        id = 'mock-message-id-1',
+        from = _G.owner,
+        target = 'wuzzy-nest-process-id',
+        action = 'Index-Document',
+        data = 'mock content',
+        ['Document-Last-Crawled-At'] = tostring(os.time()),
+        ['Document-URL'] = url,
+        ['Document-Content-Type'] = 'text/html'
+      })
+      _G.send:clear()
+      GetHandler('Remove-Document').handle({
+        id = 'message-id-2',
+        from = _G.owner,
+        target = 'wuzzy-nest-process-id',
+        action = 'Remove-Document',
+        ['Document-Id'] = url
+      })
+
+      assert.spy(_G.send).was.called_with({
+        device = 'patch@1.0',
+        cache = WuzzyNest.State
+      })
+    end)
   end)
 
   describe('Updating Documents', function()
@@ -394,9 +446,9 @@ describe('Wuzzy-Nest Indexing', function()
         ['Document-Content-Type'] = 'text/html'
       })
 
-      assert(WuzzyNest.State.Documents[url].LastCrawledAt == tonumber(now))
-      assert(WuzzyNest.State.Documents[url].Content == newContent)
-      assert(WuzzyNest.State.Documents[url].TermCount == #newContent)
+      assert(WuzzyNest.State.Documents[1].LastCrawledAt == tonumber(now))
+      assert(WuzzyNest.State.Documents[1].Content == newContent)
+      assert(WuzzyNest.State.Documents[1].TermCount == #newContent)
       assert(WuzzyNest.State.TotalDocuments == 1)
       assert(WuzzyNest.State.TotalTermCount == #newContent)
       assert(WuzzyNest.State.AverageDocumentTermLength == #newContent)

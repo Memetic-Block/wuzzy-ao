@@ -50,6 +50,11 @@ function RestoreOriginalGlobals()
   -- NB: Restore original AO globals after using test spies
   _G.send = _G._send
   _G.spawn = _G._spawn
+  _G.process = {
+    Tags = {
+      ['Nest-Id'] = 'mock-nest-id'
+    }
+  }
 end
 
 local cookbookHtmlFile = io.open('spec/cookbook.html', 'rb')

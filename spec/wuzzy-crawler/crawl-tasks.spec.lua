@@ -1,9 +1,11 @@
 local codepath = 'wuzzy-crawler.wuzzy-crawler'
 
 describe('Wuzzy-Crawler Crawl-Tasks', function()
+  _G.send = spy.new(function() end)
   local WuzzyCrawler = require(codepath)
   before_each(function()
     CacheOriginalGlobals()
+    _G.send = spy.new(function() end)
     WuzzyCrawler = require(codepath)
   end)
   after_each(function()
@@ -113,7 +115,7 @@ describe('Wuzzy-Crawler Crawl-Tasks', function()
       })
 
       assert.are_same({
-        [tasks[1]] = {
+        [1] = {
           AddedBy = _G.owner,
           SubmittedUrl = tasks[1],
           URL = tasks[1],
@@ -121,7 +123,7 @@ describe('Wuzzy-Crawler Crawl-Tasks', function()
           Domain = 'memeticblock',
           Path = ''
         },
-        [tasks[2]] = {
+        [2] = {
           AddedBy = _G.owner,
           SubmittedUrl = tasks[2],
           URL = tasks[2],
@@ -129,7 +131,7 @@ describe('Wuzzy-Crawler Crawl-Tasks', function()
           Domain = 'wuzzy',
           Path = ''
         },
-        [tasks[3]] = {
+        [3] = {
           AddedBy = aliceAddress,
           SubmittedUrl = tasks[3],
           URL = tasks[3],
@@ -137,7 +139,7 @@ describe('Wuzzy-Crawler Crawl-Tasks', function()
           Domain = 'cookbook',
           Path = ''
         },
-        [tasks[4]] = {
+        [4] = {
           AddedBy = bobAddress,
           SubmittedUrl = tasks[4],
           URL = tasks[4],
@@ -148,7 +150,21 @@ describe('Wuzzy-Crawler Crawl-Tasks', function()
       }, WuzzyCrawler.State.CrawlTasks)
     end)
 
-    pending('uses ~patch@1.0 whenever updating state')
+    it('uses ~patch@1.0 whenever updating state', function()
+      _G.send = spy.new(function() end)
+      local tasks = {
+        'arns://memeticblock',
+        'arns://wuzzy'
+      }
+      GetHandler('Add-Crawl-Tasks').handle({
+        from = _G.owner,
+        data = tasks[1] .. '\n' .. tasks[2]
+      })
+      assert.spy(_G.send).was.called_with({
+        device = 'patch@1.0',
+        cache = WuzzyCrawler.State
+      })
+    end)
   end)
 
   describe('Remove-Crawl-Tasks', function()
@@ -210,10 +226,10 @@ describe('Wuzzy-Crawler Crawl-Tasks', function()
           tasks[3] .. '\n' ..
           tasks[4]
       })
-      assert.is_not_nil(WuzzyCrawler.State.CrawlTasks[tasks[1]])
-      assert.is_not_nil(WuzzyCrawler.State.CrawlTasks[tasks[2]])
-      assert.is_not_nil(WuzzyCrawler.State.CrawlTasks[tasks[3]])
-      assert.is_not_nil(WuzzyCrawler.State.CrawlTasks[tasks[4]])
+      assert.is_not_nil(WuzzyCrawler.State.CrawlTasks[1].URL == tasks[1])
+      assert.is_not_nil(WuzzyCrawler.State.CrawlTasks[2].URL == tasks[2])
+      assert.is_not_nil(WuzzyCrawler.State.CrawlTasks[3].URL == tasks[3])
+      assert.is_not_nil(WuzzyCrawler.State.CrawlTasks[4].URL == tasks[4])
 
       GetHandler('Remove-Crawl-Tasks').handle({
         from = _G.owner,
@@ -234,7 +250,7 @@ describe('Wuzzy-Crawler Crawl-Tasks', function()
       assert.is_nil(WuzzyCrawler.State.CrawlTasks[tasks[1]])
 
       assert.are_same({
-        [tasks[4]] = {
+        [1] = {
           AddedBy = _G.owner,
           SubmittedUrl = tasks[4],
           URL = tasks[4],
@@ -245,6 +261,25 @@ describe('Wuzzy-Crawler Crawl-Tasks', function()
       }, WuzzyCrawler.State.CrawlTasks)
     end)
 
-    pending('uses ~patch@1.0 whenever updating state')
+    it('uses ~patch@1.0 whenever updating state', function()
+      _G.send = spy.new(function() end)
+      local tasks = {
+        'arns://memeticblock',
+        'arns://wuzzy'
+      }
+      GetHandler('Add-Crawl-Tasks').handle({
+        from = _G.owner,
+        data = tasks[1] .. '\n' .. tasks[2]
+      })
+      _G.send:clear()
+      GetHandler('Remove-Crawl-Tasks').handle({
+        from = _G.owner,
+        data = tasks[1]
+      })
+      assert.spy(_G.send).was.called_with({
+        device = 'patch@1.0',
+        cache = WuzzyCrawler.State
+      })
+    end)
   end)
 end)
