@@ -1,13 +1,13 @@
 local codepath = 'wuzzy-crawler.wuzzy-crawler'
 
-describe('Wuzzy-Crawler Cron', function()
+describe('WuzzyCrawler Cron', function()
   _G.send = spy.new(function() end)
   local utils = require('.utils')
-  local WuzzyCrawler = require(codepath)
+  require(codepath)
   before_each(function()
     CacheOriginalGlobals()
     _G.send = spy.new(function() end)
-    WuzzyCrawler = require(codepath)
+    require(codepath)
   end)
   after_each(function()
     RestoreOriginalGlobals()
@@ -86,30 +86,6 @@ describe('Wuzzy-Crawler Cron', function()
     assert.is_nil(WuzzyCrawler.State.CrawlQueue[tasks[2]])
     assert.is_nil(WuzzyCrawler.State.CrawlQueue[tasks[3]])
     assert.is_nil(WuzzyCrawler.State.CrawlQueue[tasks[4]])
-  end)
-
-  it('uses ~patch@1.0 whenever updating state', function()
-    _G.send = spy.new(function() end)
-    local tasks = {
-      'arns://memeticblock',
-      'arns://wuzzy',
-      'arns://cookbook',
-      'arns://cookbook_ao'
-    }
-    GetHandler('Add-Crawl-Tasks').handle({
-      from = _G.owner,
-      data = tasks[1] .. '\n' ..
-        tasks[2] .. '\n' ..
-        tasks[3] .. '\n' ..
-        tasks[4]
-    })
-    _G.send:clear()
-
-    GetHandler('Cron').handle({ from = _G.authorities[1] })
-    assert.spy(_G.send).was.called_with({
-      device = 'patch@1.0',
-      cache = WuzzyCrawler.State
-    })
   end)
 
   it('clears url crawl memory when queueing Crawl Tasks', function()

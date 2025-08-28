@@ -1,14 +1,14 @@
 local codepath = 'wuzzy-crawler.wuzzy-crawler'
 
-describe('Wuzzy-Crawler Relay-Result', function()
+describe('WuzzyCrawler Relay-Result', function()
   _G.send = spy.new(function() end)
-  local WuzzyCrawler = require(codepath)
+  require(codepath)
   local utils = require('.utils')
   local StringUtils = require('common.strings')
   before_each(function()
     CacheOriginalGlobals()
     _G.send = spy.new(function() end)
-    WuzzyCrawler = require(codepath)
+    require(codepath)
   end)
   after_each(function()
     RestoreOriginalGlobals()

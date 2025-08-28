@@ -1,188 +1,152 @@
-local WuzzyNestRegistry = {
+WuzzyNestRegistry = {
   State = {
-    WuzzyNestModuleId = nil,
-    WuzzyNestSpawnRefs = {},
-    WuzzyNests = {}
+    Initialized = false,
+
+    Nests = {}
   }
 }
-
-WuzzyNestRegistry.State.WuzzyNestModuleId =
-  ao.env.Module.Id or
-    ao.env.Process.Tags['Wuzzy-Nest-Module-Id']
 
 function WuzzyNestRegistry.init()
   local json = require('json')
   local ACL = require('..common.acl')
-  local base64 = require('.base64')
-  ---@diagnostic disable-next-line: missing-parameter
-  local WuzzyNestCode = base64.decode(
-    require('..wuzzy-nest.wuzzy-nest-stringified')
-  )
-
   require('..common.handlers.acl')(ACL)
-  require('..common.handlers.state')(WuzzyNestRegistry)
 
-  Handlers.add(
-    'Set-Wuzzy-Nest-Module-Id',
-    Handlers.utils.hasMatchingTag('Action', 'Set-Wuzzy-Nest-Module-Id'),
-    function(msg)
-      ACL.assertHasOneOfRole(
-        msg.From,
-        { 'owner', 'admin', 'Set-Wuzzy-Nest-Module-Id' }
-      )
+  Handlers.add('Register', 'Register', function (msg)
+    local nestId = msg.from
+    assert(not WuzzyNestRegistry.State.Nests[nestId], 'Already Registered')
 
-      assert(
-        type(msg['Wuzzy-Nest-Module-Id']) == 'string' and
-          #msg['Wuzzy-Nest-Module-Id'] == 43,
-        'A valid Wuzzy-Nest-Module-Id is required'
-      )
-      local newWuzzyNestModuleId = msg['Wuzzy-Nest-Module-Id']
+    local owner = msg['nest-owner']
+    assert(owner and type(owner) == 'string', 'Missing or invalid Owner')
 
-      WuzzyNestRegistry.State.WuzzyNestModuleId = newWuzzyNestModuleId
+    assert(msg.data and #msg.data > 0, 'Missing ACL data')
+    local acl
+    pcall(function ()
+      acl = json.decode(msg.data)
+    end)
+    assert(acl and type(acl) == 'table', 'Invalid ACL data')
 
-      Send({
-        Target = msg.From,
-        Action = 'Set-Wuzzy-Nest-Module-Id-Result',
-        Data = 'OK',
-        ['Wuzzy-Nest-Module-Id'] = newWuzzyNestModuleId
+    WuzzyNestRegistry.State.Nests[nestId] = {
+      Owner = owner,
+      ACL = acl
+    }
+
+    send({
+      target = nestId,
+      action = 'Register-Result',
+      data = 'OK'
+    })
+  end)
+
+  Handlers.add('Unregister', 'Unregister', function (msg)
+    local nestId = msg.from
+    assert(WuzzyNestRegistry.State.Nests[nestId], 'Not Registered')
+
+    WuzzyNestRegistry.State.Nests[nestId] = nil
+
+    send({
+      target = nestId,
+      action = 'Unregister-Result',
+      data = 'OK'
+    })
+  end)
+
+  Handlers.add('Update-Registration', 'Update-Registration', function (msg)
+    local nestId = msg.from
+
+    local nest = WuzzyNestRegistry.State.Nests[nestId]
+    assert(nest, 'Not Registered')
+    local updated = false
+
+    local newOwner = msg['nest-owner']
+    if newOwner and type(newOwner) == 'string' then
+      nest.Owner = newOwner
+      updated = true
+    end
+
+    if msg.data and #msg.data > 0 then
+      local newAcl
+      pcall(function ()
+        newAcl = json.decode(msg.data)
+      end)
+      assert(newAcl and type(newAcl) == 'table', 'Invalid ACL data')
+      nest.ACL = newAcl
+      updated = true
+    end
+
+    assert(updated, 'No Updates Provided')
+
+    send({
+      target = nestId,
+      action = 'Update-Registration-Result',
+      data = 'OK'
+    })
+  end)
+
+  Handlers.add('List-Nests', 'List-Nests', function (msg)
+    local nests = {}
+    for nestId, info in pairs(WuzzyNestRegistry.State.Nests) do
+      table.insert(nests, {
+        Id = nestId,
+        Owner = info.Owner
       })
     end
-  )
 
-  Handlers.add(
-    'Create-Nest',
-    Handlers.utils.hasMatchingTag('Action', 'Create-Nest'),
-    function (msg)
-      local nestName = msg.Tags['Nest-Name'] or 'My Wuzzy Nest'
-      local xCreateNestId = msg.Id
-      Spawn(WuzzyNestRegistry.State.WuzzyNestModuleId, {
-        Tags = {
-          ['App-Name'] = 'Wuzzy',
-          ['Contract-Name'] = 'wuzzy-nest',
-          ['Authority'] = ao.authorities[1],
-          ['X-Create-Nest-Id'] = xCreateNestId,
-          ['Nest-Name'] = nestName,
-          ['Nest-Creator'] = msg.From
-        }
-      })
-      WuzzyNestRegistry.State.WuzzyNestSpawnRefs[msg.Id] = {
-        Creator = msg.From,
-        NestName = nestName
-      }
-      Send({
-        Target = msg.From,
-        Action = 'Create-Nest-Result',
-        Data = 'OK',
-        ['X-Create-Nest-Id'] = xCreateNestId
-      })
+    send({
+      target = msg.from,
+      action = 'List-Nests-Result',
+      data = json.encode(nests)
+    })
+  end)
+
+  Handlers.add('Get-Admins', 'Get-Admins', function (msg)
+    local nestId = msg['nest-id']
+    assert(nestId and type(nestId) == 'string', 'Missing or invalid nest-id')
+
+    local nest = WuzzyNestRegistry.State.Nests[nestId]
+    assert(nest, 'Nest not found')
+
+    local admins = {}
+    for user, roles in pairs(nest.ACL) do
+      if type(roles) == 'table' and roles['admin'] then
+        table.insert(admins, user)
+      end
     end
-  )
 
-  Handlers.add(
-    'Spawned',
-    Handlers.utils.hasMatchingTag('Action', 'Spawned'),
-    function (msg)
-      if msg.From ~= ao.id then
-        ao.log(
-          'Ignoring Spawned message from unknown process: ' ..
-            tostring(msg.From)
-        )
-        return
-      end
-
-      local fromProcess = msg.Tags['From-Process']
-      if fromProcess ~= ao.id then
-        ao.log(
-          'Ignoring Spawned message from unknown process: ' ..
-            tostring(fromProcess)
-        )
-        return
-      end
-
-      local ref = msg.Tags['X-Create-Nest-Id']
-      if not ref then
-        ao.log('Ignoring Spawned message without X-Create-Nest-Id tag')
-        return
-      end
-
-      local nestRef = WuzzyNestRegistry.State.WuzzyNestSpawnRefs[ref]
-      if not nestRef then
-        ao.log(
-          'Ignoring Spawned message with unknown X-Create-Nest-Id: ' ..
-            tostring(ref)
-        )
-        return
-      end
-
-      local nestId = msg.Tags['Process']
-      if not nestId or type(nestId) ~= 'string' then
-        ao.log(
-          'Ignoring Spawned message without valid Process tag: ' ..
-            tostring(nestId)
-        )
-        return
-      end
-
-      Send({
-        Target = nestId,
-        Action = 'Eval',
-        Data = WuzzyNestCode
+    send({
+      target = msg.from,
+      action = 'Get-Admins-Result',
+      data = json.encode({
+        NestId = nestId,
+        Admins = admins
       })
+    })
+  end)
 
-      WuzzyNestRegistry.State.WuzzyNests[nestId] = {
-        Ref = ref,
-        Name = nestRef.NestName,
-        Creator = nestRef.Creator,
-        Owner = nestRef.Creator,
-        Roles = {}
-      }
-      WuzzyNestRegistry.State.WuzzyNestSpawnRefs[ref] = nil
+  Handlers.add('Get-ACL-Users', 'Get-ACL-Users', function (msg)
+    local nestId = msg['nest-id']
+    assert(nestId and type(nestId) == 'string', 'Missing or invalid nest-id')
 
-      Send({
-        Target = nestRef.Creator,
-        Action = 'Nest-Spawned',
-        Data = 'OK',
-        ['Nest-Id'] = nestId
-      })
+    local nest = WuzzyNestRegistry.State.Nests[nestId]
+    assert(nest, 'Nest not found')
+
+    local users = {}
+    for user in pairs(nest.ACL) do
+      table.insert(users, user)
     end
-  )
 
-  Handlers.add(
-    'Nest-Update',
-    Handlers.utils.hasMatchingTag('Action', 'Nest-Update'),
-    function (msg)
-      local nest = WuzzyNestRegistry.State.WuzzyNests[msg.From]
-      assert(nest, 'Unknown Wuzzy-Nest process: ' .. tostring(msg.From))
-      assert(msg.Data, 'Update data is required for Nest-Update')
-
-      local nestUpdate = json.decode(msg.Data)
-
-      if nestUpdate.Owner then
-        assert(
-          type(nestUpdate.Owner) == 'string',
-          'Owner must be a string address'
-        )
-        nest.Owner = nestUpdate.Owner
-      end
-
-      if nestUpdate.Name then
-        assert(type(nestUpdate.Name) == 'string', 'Name must be a string')
-        assert(#nestUpdate.Name <= 255, 'Name must be at most 255 characters')
-        nest.Name = nestUpdate.Name
-      end
-
-      if nestUpdate.Roles then
-        ACL.updateRoles(nestUpdate.Roles, nest)
-      end
-
-      Send({
-        Target = msg.From,
-        Action = 'Nest-Update-Result',
-        Data = 'OK',
-        ['Nest-Update-Message-Id'] = msg.Id
+    send({
+      target = msg.from,
+      action = 'Get-ACL-Users-Result',
+      data = json.encode({
+        NestId = nestId,
+        Users = users
       })
-    end
-  )
+    })
+  end)
+
+  WuzzyNestRegistry.State.Initialized = true
 end
 
-WuzzyNestRegistry.init()
+if not WuzzyNestRegistry.State.Initialized then
+  WuzzyNestRegistry.init()
+end

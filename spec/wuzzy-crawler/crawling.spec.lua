@@ -1,12 +1,12 @@
 local codepath = 'wuzzy-crawler.wuzzy-crawler'
 
-describe('Wuzzy-Crawler Crawling', function()
+describe('WuzzyCrawler Crawling', function()
   _G.send = spy.new(function() end)
-  local WuzzyCrawler = require(codepath)
+  require(codepath)
   before_each(function()
     CacheOriginalGlobals()
     _G.send = spy.new(function() end)
-    WuzzyCrawler = require(codepath)
+    require(codepath)
   end)
   after_each(function()
     RestoreOriginalGlobals()
@@ -184,24 +184,6 @@ describe('Wuzzy-Crawler Crawling', function()
         Protocol = protocol,
         Domain = domain,
         Path = path
-      })
-    end)
-
-    it('uses ~patch@1.0 whenever updating state', function()
-      _G.send = spy.new(function() end)
-      local protocol = 'https'
-      local domain = 'example.com'
-      local path = '/some/path'
-      local url = protocol .. '://' .. domain .. path
-
-      GetHandler('Request-Crawl').handle({
-        from = _G.owner,
-        URL = url
-      })
-
-      assert.spy(_G.send).was.called_with({
-        device = 'patch@1.0',
-        cache = WuzzyCrawler.State
       })
     end)
   end)

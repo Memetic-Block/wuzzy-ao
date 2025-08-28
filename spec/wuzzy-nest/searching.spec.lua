@@ -1,6 +1,6 @@
 local codepath = 'wuzzy-nest.wuzzy-nest'
 
-describe('Wuzzy-Nest Searching', function()
+describe('WuzzyNest Searching', function()
   _G.send = spy.new(function() end)
   local match = require('luassert.match')
   local utils = require('.utils')
@@ -22,9 +22,9 @@ describe('Wuzzy-Nest Searching', function()
       target = 'wuzzy-nest-process-id',
       action = 'Index-Document',
       data = content,
-      ['Document-Last-Crawled-At'] = tostring(os.time()),
-      ['Document-URL'] = url,
-      ['Document-Content-Type'] = contentType
+      ['document-last-crawled-at'] = tostring(os.time()),
+      ['document-url'] = url,
+      ['document-content-type'] = contentType
     })
   end
 
@@ -196,7 +196,7 @@ describe('Wuzzy-Nest Searching', function()
       target = 'wuzzy-nest-process-id',
       action = 'Search',
       query = 'Wuzzy',
-      ['Search-Type'] = 'bm25'
+      ['search-type'] = 'bm25'
     })
     local function is_bm25_search_1(state, args)
       return function(msg)

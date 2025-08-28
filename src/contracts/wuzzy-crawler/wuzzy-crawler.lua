@@ -1,4 +1,4 @@
-local WuzzyCrawler = {
+WuzzyCrawler = {
   State = {
     --- @type boolean
     Initialized = false,
@@ -33,7 +33,7 @@ local WuzzyCrawler = {
 WuzzyCrawler.State.NestId = WuzzyCrawler.State.NestId or
   process.Tags['Nest-Id'] or id
 WuzzyCrawler.State.Gateway = WuzzyCrawler.State.Gateway or
-  process.Tags['Gateway'] or 'arweave.net'
+  process.Tags['Gateway'] or 'https://arweave.net'
 
 function WuzzyCrawler.init()
   local ACL = require('..common.acl')
@@ -58,10 +58,6 @@ function WuzzyCrawler.init()
       target = msg.from,
       action = 'Request-Crawl-Result',
       data = result
-    })
-    send({
-      device = 'patch@1.0',
-      cache = WuzzyCrawler.State
     })
   end)
 
@@ -101,10 +97,6 @@ function WuzzyCrawler.init()
       action = 'Add-Crawl-Tasks-Result',
       data = 'OK'
     })
-    send({
-      device = 'patch@1.0',
-      cache = WuzzyCrawler.State
-    })
   end)
 
   Handlers.add('Remove-Crawl-Tasks', 'Remove-Crawl-Tasks', function (msg)
@@ -131,16 +123,10 @@ function WuzzyCrawler.init()
       action = 'Remove-Crawl-Tasks-Result',
       data = 'OK'
     })
-    send({
-      device = 'patch@1.0',
-      cache = WuzzyCrawler.State
-    })
   end)
 
   Handlers.add('Cron', 'Cron', function (msg)
     assert(msg.from == authorities[1], 'Unauthorized Cron Caller')
-
-    local shouldUpdateStateCache = false
 
     if #WuzzyCrawler.State.CrawlQueue < 1 then
       print('Nothing in Crawl Queue')
@@ -152,7 +138,6 @@ function WuzzyCrawler.init()
 
       print('Processing Crawl Tasks: ' .. #WuzzyCrawler.State.CrawlTasks)
       WuzzyCrawler.State.CrawledURLs = {}
-      shouldUpdateStateCache = true
       for _, task in ipairs(WuzzyCrawler.State.CrawlTasks) do
         local result, err = WuzzyCrawler.enqueueCrawl(task.URL)
         if err then print('Enqueue Crawl Error:', err) end
@@ -166,14 +151,6 @@ function WuzzyCrawler.init()
       )
       if err then print('Dequeue Crawl Error:', err) end
       if result then print('Dequeue Crawl Result:', result) end
-      shouldUpdateStateCache = true
-    end
-
-    if shouldUpdateStateCache then
-      send({
-        device = 'patch@1.0',
-        cache = WuzzyCrawler.State
-      })
     end
   end)
 
@@ -250,9 +227,22 @@ function WuzzyCrawler.init()
       data = 'OK',
       ['Nest-Id'] = WuzzyCrawler.State.NestId
     })
+  end)
+
+  Handlers.add('Set-Gateway', 'Set-Gateway', function (msg)
+    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Set-Gateway' })
+    assert(
+      type(msg['Gateway']) == 'string' and msg['Gateway'] ~= '',
+      'Missing Gateway'
+    )
+
+    WuzzyCrawler.State.Gateway = msg['Gateway']
+
     send({
-      device = 'patch@1.0',
-      cache = WuzzyCrawler.State
+      target = msg.from,
+      action = 'Set-Gateway-Result',
+      data = 'OK',
+      ['Gateway'] = WuzzyCrawler.State.Gateway
     })
   end)
 
@@ -263,7 +253,10 @@ function WuzzyCrawler.init()
       local parsed = neturl.parse(url)
       local domain = parsed.host or parsed.authority
       local path = parsed.path
-      relayPath = 'https://' .. domain .. '.' .. WuzzyCrawler.State.Gateway
+      local parsedGateway = neturl.parse(WuzzyCrawler.State.Gateway)
+      local gatewayDomain = parsedGateway.host or parsedGateway.authority
+      local gatewayPort = parsedGateway.port and (':' .. tostring(parsedGateway.port)) or ''
+      relayPath = 'https://' .. domain .. '.' .. gatewayDomain .. gatewayPort
       if path and path ~= '' then
         relayPath = relayPath .. path
       end
@@ -271,7 +264,7 @@ function WuzzyCrawler.init()
       local parsed = neturl.parse(url)
       local txid = parsed.host or parsed.authority
       local path = parsed.path
-      relayPath = 'https://' .. WuzzyCrawler.State.Gateway .. '/' .. txid
+      relayPath = WuzzyCrawler.State.Gateway .. '/' .. txid
       if path and path ~= '' then
         relayPath = relayPath .. path
       end
@@ -444,11 +437,8 @@ function WuzzyCrawler.init()
   end
 
   WuzzyCrawler.State.Initialized = true
-  send({ device = 'patch@1.0', cache = WuzzyCrawler.State })
 end
 
 if not WuzzyCrawler.State.Initialized then
   WuzzyCrawler.init()
 end
-
-return WuzzyCrawler

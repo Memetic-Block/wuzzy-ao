@@ -1,21 +1,23 @@
 import path from 'path'
 import fs from 'fs'
 
-import { logger } from './util/logger'
+// import { logger } from './util/logger'
 import { bundleLua } from './util/lua-bundler'
+
+const logger = console
 
 const CONTRACT_NAMES = process.env.CONTRACT_NAMES
   ? process.env.CONTRACT_NAMES.split(',')
-  : fs.readdirSync(path.join(path.resolve(), './dist'))
+  : fs.readdirSync(path.join(path.resolve(), './src/contracts'))
 
 async function bundle() {
   const contracts = [
     { path: 'acl-test', name: 'acl-test' },
-    { path: 'wuzzy-crawler', name: 'wuzzy-crawler', stringifySource: true },
-    { path: 'wuzzy-nest', name: 'wuzzy-nest', stringifySource: true },
+    { path: 'wuzzy-crawler', name: 'wuzzy-crawler', stringifySource: true, removeReturnName: 'WuzzyCrawler' },
+    { path: 'wuzzy-nest', name: 'wuzzy-nest', stringifySource: true, removeReturnName: 'WuzzyNest' },
     { path: 'weavedrive-test', name: 'weavedrive-test' },
     { path: 'wuzzy-tx-oracle-test', name: 'wuzzy-tx-oracle-test' },
-    { path: 'wuzzy-nest-registry', name: 'wuzzy-nest-registry' },
+    { path: 'wuzzy-nest-registry', name: 'wuzzy-nest-registry', removeReturnName: 'WuzzyNestRegistry' },
     { path: 'relay-test', name: 'relay-test' }
   ]
 
@@ -40,7 +42,7 @@ async function bundle() {
       throw new Error(`Lua entry path not found: ${luaEntryPath}`)
     }
 
-    const bundledLua = bundleLua(luaEntryPath)
+    const bundledLua = bundleLua(luaEntryPath, contract.removeReturnName)
     if (!fs.existsSync(path.join(path.resolve(), `./dist/${contract.path}`))) {
       fs.mkdirSync(
         path.join(path.resolve(), `./dist/${contract.path}`),

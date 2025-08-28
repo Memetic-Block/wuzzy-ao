@@ -1,5 +1,11 @@
 Handlers.add('Cron', 'Cron', function (msg)
-  print('Got Cron message:', require('json').encode(msg))
+  local result = 'Got Cron message: ' .. require('json').encode(msg)
+  print(result)
+  send({
+    target = id,
+    action = 'Cron-Result',
+    data = result
+  })
   -- send({
   --   target = id,
   --   ['relay-path'] = 'https://memeticblock.com',

@@ -1,28 +1,16 @@
 local codepath = 'wuzzy-crawler.wuzzy-crawler'
 
-describe('Wuzzy-Crawler Initialization', function ()
+describe('WuzzyCrawler Initialization', function ()
   _G.send = spy.new(function() end)
-  local WuzzyCrawler = require(codepath)
+  require(codepath)
   before_each(function()
     CacheOriginalGlobals()
     _G.send = spy.new(function() end)
-    WuzzyCrawler = require(codepath)
+    require(codepath)
   end)
   after_each(function()
     RestoreOriginalGlobals()
     package.loaded[codepath] = nil
-  end)
-
-  it('should initialize with ~patch@1.0', function ()
-    _G.send = spy.new(function() end)
-    package.loaded[codepath] = nil
-    WuzzyCrawler = require(codepath)
-
-    assert.is_true(WuzzyCrawler.State.Initialized)
-    assert.spy(_G.send).was.called_with({
-      device = 'patch@1.0',
-      cache = WuzzyCrawler.State
-    })
   end)
 
   it('initially sets Nest-Id to tag value if present', function()
@@ -34,7 +22,7 @@ describe('Wuzzy-Crawler Initialization', function ()
     }
     _G.send = spy.new(function() end)
     package.loaded[codepath] = nil
-    WuzzyCrawler = require(codepath)
+    require(codepath)
     assert(WuzzyCrawler.State.NestId == nestId)
   end)
 
@@ -44,8 +32,32 @@ describe('Wuzzy-Crawler Initialization', function ()
     }
     _G.send = spy.new(function() end)
     package.loaded[codepath] = nil
-    WuzzyCrawler = require(codepath)
+    require(codepath)
 
     assert(WuzzyCrawler.State.NestId == _G.id)
+  end)
+
+  it('initially sets Gateway to tag value if present', function()
+    local gateway = 'https://custom-gateway.example.com'
+    _G.process = {
+      Tags = {
+        ['Gateway'] = gateway
+      }
+    }
+    _G.send = spy.new(function() end)
+    package.loaded[codepath] = nil
+    require(codepath)
+    assert(WuzzyCrawler.State.Gateway == gateway)
+  end)
+
+  it('initially sets Gateway to arweave.net if no Gateway tag', function()
+    _G.process = {
+      Tags = {}
+    }
+    _G.send = spy.new(function() end)
+    package.loaded[codepath] = nil
+    require(codepath)
+
+    assert(WuzzyCrawler.State.Gateway == 'https://arweave.net')
   end)
 end)

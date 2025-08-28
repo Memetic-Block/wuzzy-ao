@@ -1,12 +1,12 @@
 local codepath = 'wuzzy-crawler.wuzzy-crawler'
 
-describe('Wuzzy-Crawler Crawl-Tasks', function()
+describe('WuzzyCrawler Crawl-Tasks', function()
   _G.send = spy.new(function() end)
-  local WuzzyCrawler = require(codepath)
+  require(codepath)
   before_each(function()
     CacheOriginalGlobals()
     _G.send = spy.new(function() end)
-    WuzzyCrawler = require(codepath)
+    require(codepath)
   end)
   after_each(function()
     RestoreOriginalGlobals()
@@ -149,22 +149,6 @@ describe('Wuzzy-Crawler Crawl-Tasks', function()
         }
       }, WuzzyCrawler.State.CrawlTasks)
     end)
-
-    it('uses ~patch@1.0 whenever updating state', function()
-      _G.send = spy.new(function() end)
-      local tasks = {
-        'arns://memeticblock',
-        'arns://wuzzy'
-      }
-      GetHandler('Add-Crawl-Tasks').handle({
-        from = _G.owner,
-        data = tasks[1] .. '\n' .. tasks[2]
-      })
-      assert.spy(_G.send).was.called_with({
-        device = 'patch@1.0',
-        cache = WuzzyCrawler.State
-      })
-    end)
   end)
 
   describe('Remove-Crawl-Tasks', function()
@@ -259,27 +243,6 @@ describe('Wuzzy-Crawler Crawl-Tasks', function()
           Path = ''
         }
       }, WuzzyCrawler.State.CrawlTasks)
-    end)
-
-    it('uses ~patch@1.0 whenever updating state', function()
-      _G.send = spy.new(function() end)
-      local tasks = {
-        'arns://memeticblock',
-        'arns://wuzzy'
-      }
-      GetHandler('Add-Crawl-Tasks').handle({
-        from = _G.owner,
-        data = tasks[1] .. '\n' .. tasks[2]
-      })
-      _G.send:clear()
-      GetHandler('Remove-Crawl-Tasks').handle({
-        from = _G.owner,
-        data = tasks[1]
-      })
-      assert.spy(_G.send).was.called_with({
-        device = 'patch@1.0',
-        cache = WuzzyCrawler.State
-      })
     end)
   end)
 end)

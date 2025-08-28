@@ -1,6 +1,6 @@
-local codepath = 'wuzzy-nest.wuzzy-nest'
+local codepath = 'wuzzy-nest-registry.wuzzy-nest-registry'
 
-describe('WuzzyNest Initialization', function ()
+describe('WuzzyNestRegistry Initialization', function ()
   _G.send = spy.new(function() end)
   require(codepath)
   before_each(function()
@@ -19,6 +19,6 @@ describe('WuzzyNest Initialization', function ()
     package.loaded[codepath] = nil
     require(codepath)
 
-    assert.is_true(WuzzyNest.State.Initialized)
+    assert.is_true(WuzzyNestRegistry.State.Initialized)
   end)
 end)

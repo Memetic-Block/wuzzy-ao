@@ -207,53 +207,55 @@ function M.parseQuery(str, sep)
 	end
 
 	local values = {}
-	for key,val in str:gmatch(string.format('([^%s=]+)(=*[^%s]*)', sep, sep)) do
-		local key = decodeValue(key)
-		local keys = {}
-		key = key:gsub('%[([^%]]*)%]', function(v)
-				-- extract keys between balanced brackets
-				if string.find(v, "^-?%d+$") then
-					v = tonumber(v)
-				else
-					v = decodeValue(v)
+	if type(str) == 'string' and str ~= '' then
+		for key,val in str:gmatch(string.format('([^%s=]+)(=*[^%s]*)', sep, sep)) do
+			local key = decodeValue(key)
+			local keys = {}
+			key = key:gsub('%[([^%]]*)%]', function(v)
+					-- extract keys between balanced brackets
+					if string.find(v, "^-?%d+$") then
+						v = tonumber(v)
+					else
+						v = decodeValue(v)
+					end
+					table.insert(keys, v)
+					return "="
+			end)
+			key = key:gsub('=+.*$', "")
+			key = key:gsub('%s', "_") -- remove spaces in parameter name
+			val = val:gsub('^=+', "")
+
+			if not values[key] then
+				values[key] = {}
+			end
+			if #keys > 0 and type(values[key]) ~= 'table' then
+				values[key] = {}
+			elseif #keys == 0 and type(values[key]) == 'table' then
+				values[key] = decodeValue(val)
+			elseif M.options.cumulative_parameters
+				and type(values[key]) == 'string' then
+				values[key] = { values[key] }
+				table.insert(values[key], decodeValue(val))
+			end
+
+			local t = values[key]
+			for i,k in ipairs(keys) do
+				if type(t) ~= 'table' then
+					t = {}
 				end
-				table.insert(keys, v)
-				return "="
-		end)
-		key = key:gsub('=+.*$', "")
-		key = key:gsub('%s', "_") -- remove spaces in parameter name
-		val = val:gsub('^=+', "")
+				if k == "" then
+					k = #t+1
+				end
+				if not t[k] then
+					t[k] = {}
+				end
+				if i == #keys then
+					t[k] = val
+				end
+				t = t[k]
+			end
 
-		if not values[key] then
-			values[key] = {}
 		end
-		if #keys > 0 and type(values[key]) ~= 'table' then
-			values[key] = {}
-		elseif #keys == 0 and type(values[key]) == 'table' then
-			values[key] = decodeValue(val)
-		elseif M.options.cumulative_parameters
-			and type(values[key]) == 'string' then
-			values[key] = { values[key] }
-			table.insert(values[key], decodeValue(val))
-		end
-
-		local t = values[key]
-		for i,k in ipairs(keys) do
-			if type(t) ~= 'table' then
-				t = {}
-			end
-			if k == "" then
-				k = #t+1
-			end
-			if not t[k] then
-				t[k] = {}
-			end
-			if i == #keys then
-				t[k] = val
-			end
-			t = t[k]
-		end
-
 	end
 	setmetatable(values, { __tostring = M.buildQuery })
 	return values

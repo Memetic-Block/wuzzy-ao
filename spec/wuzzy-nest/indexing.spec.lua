@@ -1,11 +1,11 @@
 local codepath = 'wuzzy-nest.wuzzy-nest'
 
-describe('Wuzzy-Nest Indexing', function()
+describe('WuzzyNest Indexing', function()
   _G.send = spy.new(function() end)
-  local WuzzyNest = require(codepath)
+  require(codepath)
   before_each(function()
     CacheOriginalGlobals()
-    WuzzyNest = require(codepath)
+    require(codepath)
   end)
   after_each(function()
     RestoreOriginalGlobals()
@@ -47,11 +47,11 @@ describe('Wuzzy-Nest Indexing', function()
         target = 'wuzzy-nest-process-id',
         action = 'Index-Document',
         data = documents[1].Content,
-        ['Document-Last-Crawled-At'] = documents[1].LastCrawledAt,
-        ['Document-URL'] = documents[1].URL,
-        ['Document-Content-Type'] = documents[1].ContentType,
-        ['Document-Title'] = documents[1].Title,
-        ['Document-Description'] = documents[1].Description
+        ['document-last-crawled-at'] = documents[1].LastCrawledAt,
+        ['document-url'] = documents[1].URL,
+        ['document-content-type'] = documents[1].ContentType,
+        ['document-title'] = documents[1].Title,
+        ['document-description'] = documents[1].Description
       })
       handler.handle({
         id = 'mock-message-id-2',
@@ -59,24 +59,24 @@ describe('Wuzzy-Nest Indexing', function()
         target = 'wuzzy-nest-process-id',
         action = 'Index-Document',
         data = documents[2].Content,
-        ['Document-Last-Crawled-At'] = documents[2].LastCrawledAt,
-        ['Document-URL'] = documents[2].URL,
-        ['Document-Content-Type'] = documents[2].ContentType,
-        ['Document-Title'] = documents[2].Title,
-        ['Document-Description'] = documents[2].Description
+        ['document-last-crawled-at'] = documents[2].LastCrawledAt,
+        ['document-url'] = documents[2].URL,
+        ['document-content-type'] = documents[2].ContentType,
+        ['document-title'] = documents[2].Title,
+        ['document-description'] = documents[2].Description
       })
 
       assert.spy(_G.send).was.called_with({
         target = from,
         action = 'Index-Document-Result',
         data = 'OK',
-        ['Document-Id'] = documents[1].URL
+        ['document-id'] = documents[1].URL
       })
       assert.spy(_G.send).was.called_with({
         target = from,
         action = 'Index-Document-Result',
         data = 'OK',
-        ['Document-Id'] = documents[2].URL
+        ['document-id'] = documents[2].URL
       })
       assert(WuzzyNest.State.Documents[1].DocumentId == documents[1].URL)
       assert(WuzzyNest.State.Documents[2].DocumentId == documents[2].URL)
@@ -129,14 +129,14 @@ describe('Wuzzy-Nest Indexing', function()
           target = 'wuzzy-nest-process-id',
           action = 'Index-Document',
           data = 'Test document content',
-          ['Document-Last-Crawled-At'] = tostring(os.time()),
-          ['Document-URL'] = 'http://example.com/test',
-          ['Document-Content-Type'] = 'text/html'
+          ['document-last-crawled-at'] = tostring(os.time()),
+          ['document-url'] = 'http://example.com/test',
+          ['document-content-type'] = 'text/html'
         })
       end, 'Permission Denied')
     end)
 
-    it('normalizes Document-Id to scheme://domain/path', function()
+    it('normalizes document-id to scheme://domain/path', function()
       _G.send = spy.new(function() end)
       local handler = GetHandler('Index-Document')
       local baseUrl = 'http://www.example.com/info/path'
@@ -148,37 +148,17 @@ describe('Wuzzy-Nest Indexing', function()
         target = 'wuzzy-nest-process-id',
         action = 'Index-Document',
         data = 'This is a test document',
-        ['Document-Last-Crawled-At'] = tostring(os.time()),
-        ['Document-URL'] = url,
-        ['Document-Content-Type'] = 'text/html'
+        ['document-last-crawled-at'] = tostring(os.time()),
+        ['document-url'] = url,
+        ['document-content-type'] = 'text/html'
       })
 
       assert(WuzzyNest.State.Documents[1].DocumentId == baseUrl)
     end)
-
-    it('uses ~patch@1.0 after accepting docs', function()
-      _G.send = spy.new(function() end)
-
-      GetHandler('Index-Document').handle({
-        id = 'mock-message-id-1',
-        from = _G.owner,
-        target = 'wuzzy-nest-process-id',
-        action = 'Index-Document',
-        data = 'mock content',
-        ['Document-Last-Crawled-At'] = tostring(os.time()),
-        ['Document-URL'] = 'https://example.com',
-        ['Document-Content-Type'] = 'text/html'
-      })
-
-      assert.spy(_G.send).was.called_with({
-        device = 'patch@1.0',
-        cache = WuzzyNest.State
-      })
-    end)
   end)
 
   describe('Validation', function()
-    it('requires Document-Last-Crawled-At', function()
+    it('requires document-last-crawled-at', function()
       _G.send = spy.new(function() end)
       local handler = GetHandler('Index-Document')
 
@@ -189,13 +169,13 @@ describe('Wuzzy-Nest Indexing', function()
           target = 'wuzzy-nest-process-id',
           action = 'Index-Document',
           data = 'Test document content',
-          ['Document-URL'] = 'http://example.com/test',
-          ['Document-Content-Type'] = 'text/html'
+          ['document-url'] = 'http://example.com/test',
+          ['document-content-type'] = 'text/html'
         })
-      end, 'Missing Document-Last-Crawled-At')
+      end, 'Missing document-last-crawled-at')
     end)
 
-    it('validates Document-Last-Crawled-At', function()
+    it('validates document-last-crawled-at', function()
       _G.send = spy.new(function() end)
       local handler = GetHandler('Index-Document')
       local now = 'yesterday'
@@ -207,14 +187,14 @@ describe('Wuzzy-Nest Indexing', function()
           target = 'wuzzy-nest-process-id',
           action = 'Index-Document',
           data = 'Test document content',
-          ['Document-Last-Crawled-At'] = now,
-          ['Document-URL'] = 'http://example.com/test',
-          ['Document-Content-Type'] = 'text/html'
+          ['document-last-crawled-at'] = now,
+          ['document-url'] = 'http://example.com/test',
+          ['document-content-type'] = 'text/html'
         })
-      end, 'Invalid Document-Last-Crawled-At: ' .. now)
+      end, 'Invalid document-last-crawled-at: ' .. now)
     end)
 
-    it('requires Document-URL', function()
+    it('requires document-url', function()
       _G.send = spy.new(function() end)
       local handler = GetHandler('Index-Document')
 
@@ -225,14 +205,14 @@ describe('Wuzzy-Nest Indexing', function()
           target = 'wuzzy-nest-process-id',
           action = 'Index-Document',
           data = 'Test document content',
-          ['Document-Last-Crawled-At'] = tostring(os.time()),
-          -- ['Document-URL'] = 'http://example.com/test',
-          ['Document-Content-Type'] = 'text/html'
+          ['document-last-crawled-at'] = tostring(os.time()),
+          -- ['document-url'] = 'http://example.com/test',
+          ['document-content-type'] = 'text/html'
         })
-      end, 'Missing Document-URL')
+      end, 'Missing document-url')
     end)
 
-    it('validates Document-URL', function()
+    it('validates document-url', function()
       _G.send = spy.new(function() end)
       local handler = GetHandler('Index-Document')
       local url = 'invalid-url'
@@ -244,14 +224,14 @@ describe('Wuzzy-Nest Indexing', function()
           target = 'wuzzy-nest-process-id',
           action = 'Index-Document',
           data = 'Test document content',
-          ['Document-Last-Crawled-At'] = tostring(os.time()),
-          ['Document-URL'] = url,
-          ['Document-Content-Type'] = 'text/html'
+          ['document-last-crawled-at'] = tostring(os.time()),
+          ['document-url'] = url,
+          ['document-content-type'] = 'text/html'
         })
-      end, 'Invalid Document-URL: ' .. url)
+      end, 'Invalid document-url: ' .. url)
     end)
 
-    it('requires Document-Content-Type', function()
+    it('requires document-content-type', function()
       _G.send = spy.new(function() end)
       local handler = GetHandler('Index-Document')
 
@@ -262,13 +242,13 @@ describe('Wuzzy-Nest Indexing', function()
           target = 'wuzzy-nest-process-id',
           action = 'Index-Document',
           data = 'Test document content',
-          ['Document-Last-Crawled-At'] = tostring(os.time()),
-          ['Document-URL'] = 'https://arweave.net'
+          ['document-last-crawled-at'] = tostring(os.time()),
+          ['document-url'] = 'https://arweave.net'
         })
-      end, 'Missing Document-Content-Type')
+      end, 'Missing document-content-type')
     end)
 
-    it('validates Document-Content-Type', function()
+    it('validates document-content-type', function()
       _G.send = spy.new(function() end)
       local handler = GetHandler('Index-Document')
       local contentType = 'text/wuzzy'
@@ -280,11 +260,11 @@ describe('Wuzzy-Nest Indexing', function()
           target = 'wuzzy-nest-process-id',
           action = 'Index-Document',
           data = 'Test document content',
-          ['Document-Last-Crawled-At'] = tostring(os.time()),
-          ['Document-URL'] = 'https://arweave.net',
-          ['Document-Content-Type'] = contentType
+          ['document-last-crawled-at'] = tostring(os.time()),
+          ['document-url'] = 'https://arweave.net',
+          ['document-content-type'] = contentType
         })
-      end, 'Invalid Document-Content-Type: ' .. contentType)
+      end, 'Invalid document-content-type: ' .. contentType)
     end)
 
     it('requires document content in message data', function()
@@ -297,16 +277,16 @@ describe('Wuzzy-Nest Indexing', function()
           from = _G.owner,
           target = 'wuzzy-nest-process-id',
           action = 'Index-Document',
-          ['Document-Last-Crawled-At'] = tostring(os.time()),
-          ['Document-URL'] = 'https://arweave.net',
-          ['Document-Content-Type'] = 'text/html'
+          ['document-last-crawled-at'] = tostring(os.time()),
+          ['document-url'] = 'https://arweave.net',
+          ['document-content-type'] = 'text/html'
         })
       end, 'Missing Document Content')
     end)
   end)
 
   describe('Removing Documents', function()
-    it('requires Document-Id to remove a Document', function()
+    it('requires document-id to remove a Document', function()
       _G.send = spy.new(function() end)
       local handler = GetHandler('Remove-Document')
 
@@ -317,7 +297,7 @@ describe('Wuzzy-Nest Indexing', function()
           target = 'wuzzy-nest-process-id',
           action = 'Remove-Document'
         })
-      end, 'Document-Id is required')
+      end, 'document-id is required')
     end)
 
     it('throws if document does not exist', function()
@@ -330,7 +310,7 @@ describe('Wuzzy-Nest Indexing', function()
           from = _G.owner,
           target = 'wuzzy-nest-process-id',
           action = 'Remove-Document',
-          ['Document-Id'] = 'non-existent-doc-id'
+          ['document-id'] = 'non-existent-doc-id'
         })
       end, 'Document not found')
     end)
@@ -345,7 +325,7 @@ describe('Wuzzy-Nest Indexing', function()
           from = 'unknown-user',
           target = 'wuzzy-nest-process-id',
           action = 'Remove-Document',
-          ['Document-Id'] = 'test-document-id'
+          ['document-id'] = 'test-document-id'
         })
       end, 'Permission Denied')
     end)
@@ -359,9 +339,9 @@ describe('Wuzzy-Nest Indexing', function()
         target = 'wuzzy-nest-process-id',
         action = 'Index-Document',
         data = 'Test document content',
-        ['Document-Last-Crawled-At'] = tostring(os.time()),
-        ['Document-URL'] = url,
-        ['Document-Content-Type'] = 'text/html'
+        ['document-last-crawled-at'] = tostring(os.time()),
+        ['document-url'] = url,
+        ['document-content-type'] = 'text/html'
       })
 
       _G.send = spy.new(function() end)
@@ -372,45 +352,16 @@ describe('Wuzzy-Nest Indexing', function()
         from = _G.owner,
         target = 'wuzzy-nest-process-id',
         action = 'Remove-Document',
-        ['Document-Id'] = url
+        ['document-id'] = url
       })
 
       assert.spy(_G.send).was.called_with({
         target = _G.owner,
         action = 'Remove-Document-Result',
         data = 'OK',
-        ['Document-Id'] = url
+        ['document-id'] = url
       })
       assert.is_nil(WuzzyNest.State.Documents[url])
-    end)
-
-    it('uses ~patch@1.0 after removing docs', function()
-      _G.send = spy.new(function() end)
-      local url = 'https://example.com'
-
-      GetHandler('Index-Document').handle({
-        id = 'mock-message-id-1',
-        from = _G.owner,
-        target = 'wuzzy-nest-process-id',
-        action = 'Index-Document',
-        data = 'mock content',
-        ['Document-Last-Crawled-At'] = tostring(os.time()),
-        ['Document-URL'] = url,
-        ['Document-Content-Type'] = 'text/html'
-      })
-      _G.send:clear()
-      GetHandler('Remove-Document').handle({
-        id = 'message-id-2',
-        from = _G.owner,
-        target = 'wuzzy-nest-process-id',
-        action = 'Remove-Document',
-        ['Document-Id'] = url
-      })
-
-      assert.spy(_G.send).was.called_with({
-        device = 'patch@1.0',
-        cache = WuzzyNest.State
-      })
     end)
   end)
 
@@ -430,9 +381,9 @@ describe('Wuzzy-Nest Indexing', function()
         target = 'wuzzy-nest-process-id',
         action = 'Index-Document',
         data = initialContent,
-        ['Document-Last-Crawled-At'] = earlier,
-        ['Document-URL'] = url,
-        ['Document-Content-Type'] = 'text/html'
+        ['document-last-crawled-at'] = earlier,
+        ['document-url'] = url,
+        ['document-content-type'] = 'text/html'
       })
 
       handler.handle({
@@ -441,9 +392,9 @@ describe('Wuzzy-Nest Indexing', function()
         target = 'wuzzy-nest-process-id',
         action = 'Index-Document',
         data = newContent,
-        ['Document-Last-Crawled-At'] = now,
-        ['Document-URL'] = url,
-        ['Document-Content-Type'] = 'text/html'
+        ['document-last-crawled-at'] = now,
+        ['document-url'] = url,
+        ['document-content-type'] = 'text/html'
       })
 
       assert(WuzzyNest.State.Documents[1].LastCrawledAt == tonumber(now))
