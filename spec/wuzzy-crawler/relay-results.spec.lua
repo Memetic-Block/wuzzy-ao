@@ -23,7 +23,7 @@ describe('WuzzyCrawler Relay-Result', function()
 
   it('parses html and submits crawled documents', function()
     _G.send = spy.new(function() end)
-    local parseHtmlSpy = spy.on(WuzzyCrawler, 'parseHTML')
+    local parseHtmlSpy = spy.on(_G, 'ParseHTML')
     local relayPath = 'https://example.com/some/path'
     local contentType = 'text/html'
     local title = 'Page Title'
@@ -46,7 +46,7 @@ describe('WuzzyCrawler Relay-Result', function()
       body = body,
       ['relay-path'] = relayPath,
       ['content-type'] = contentType,
-      ['block-timestamp'] = now
+      ['date'] = now
     })
 
     assert.spy(parseHtmlSpy).was.called_with(body)
@@ -55,12 +55,11 @@ describe('WuzzyCrawler Relay-Result', function()
       target = WuzzyCrawler.State.NestId,
       action = 'Index-Document',
       data = expectedContent,
-      ['Document-Id'] = relayPath,
-      ['Document-Last-Crawled-At'] = now,
-      ['Document-URL'] = relayPath,
-      ['Document-Content-Type'] = contentType,
-      ['Document-Title'] = title,
-      ['Document-Description'] = desc
+      ['document-last-crawled-at'] = now,
+      ['document-url'] = relayPath,
+      ['document-content-type'] = contentType,
+      ['document-title'] = title,
+      ['document-description'] = desc
     })
   end)
 
@@ -76,7 +75,7 @@ describe('WuzzyCrawler Relay-Result', function()
       body = body,
       ['relay-path'] = relayPath,
       ['content-type'] = contentType,
-      ['block-timestamp'] = now
+      ['date'] = now
     })
 
     assert.spy(parseHtmlSpy).was.called(0)
@@ -85,10 +84,9 @@ describe('WuzzyCrawler Relay-Result', function()
       target = WuzzyCrawler.State.NestId,
       action = 'Index-Document',
       data = body,
-      ['Document-Id'] = relayPath,
-      ['Document-Last-Crawled-At'] = now,
-      ['Document-URL'] = relayPath,
-      ['Document-Content-Type'] = contentType
+      ['document-last-crawled-at'] = now,
+      ['document-url'] = relayPath,
+      ['document-content-type'] = contentType
     })
   end)
 
@@ -104,7 +102,7 @@ describe('WuzzyCrawler Relay-Result', function()
       body = body,
       ['relay-path'] = relayPath,
       ['content-type'] = contentType,
-      ['block-timestamp'] = now
+      ['date'] = now
     })
 
     assert.spy(parseHtmlSpy).was.called(0)
@@ -114,14 +112,19 @@ describe('WuzzyCrawler Relay-Result', function()
   it('adds discovered links to crawl queue', function()
     _G.send = spy.new(function() end)
     local url = 'https://cookbook.arweave.net'
-    WuzzyCrawler.State.CrawlTasks = { url }
-    WuzzyCrawler.State.CrawledURLs[url] = tostring(os.time())
+        WuzzyCrawler.State.CrawlTasks = {
+      {
+        Domain = 'cookbook.arweave.net',
+        URL = url
+      }
+    }
+    WuzzyCrawler.State.CrawledURLs = { url }
     GetHandler('Relay-Result').handle({
       from = _G.id,
       body = _G.CookbookHtmlContent,
       ['relay-path'] = url,
       ['content-type'] = 'text/html',
-      ['block-timestamp'] = tostring(os.time())
+      ['date'] = tostring(os.time())
     })
     -- print('crawl queue:', #WuzzyCrawler.State.CrawlQueue)
     -- print('cookbook links:', #_G.CookbookLinks)
@@ -150,12 +153,17 @@ describe('WuzzyCrawler Relay-Result', function()
 
   it('normalizes discovered links', function()
     _G.send = spy.new(function() end)
-    local enqueueCrawlSpy = spy.on(WuzzyCrawler, 'enqueueCrawl')
+    local enqueueCrawlSpy = spy.on(_G, 'EnqueueCrawl')
     local relayPath = 'https://cookbook.arweave.net'
     local url =
       'http://cookbook.arweave.net/info/path/../to/page?json=true&skip=100#mid-dle'
     local expectedUrl = 'http://cookbook.arweave.net/info/to/page'
-    WuzzyCrawler.State.CrawlTasks = { relayPath }
+    WuzzyCrawler.State.CrawlTasks = {
+      {
+        Domain = 'cookbook.arweave.net',
+        URL = relayPath
+      }
+    }
     GetHandler('Relay-Result').handle({
       from = _G.id,
       body = [[
@@ -167,7 +175,7 @@ describe('WuzzyCrawler Relay-Result', function()
       ]],
       ['relay-path'] = relayPath,
       ['content-type'] = 'text/html',
-      ['block-timestamp'] = tostring(os.time())
+      ['date'] = tostring(os.time())
     })
 
     assert.spy(enqueueCrawlSpy).was.called(1)
@@ -178,7 +186,7 @@ describe('WuzzyCrawler Relay-Result', function()
     _G.send = spy.new(function() end)
     local enqueueCrawlSpy = spy.on(WuzzyCrawler, 'enqueueCrawl')
     local url = 'https://cookbook.arweave.net'
-    WuzzyCrawler.State.CrawledURLs[url] = tostring(os.time())
+    WuzzyCrawler.State.CrawledURLs = { url }
     GetHandler('Relay-Result').handle({
       from = _G.id,
       body = [[
@@ -190,7 +198,7 @@ describe('WuzzyCrawler Relay-Result', function()
       ]],
       ['relay-path'] = url,
       ['content-type'] = 'text/html',
-      ['block-timestamp'] = tostring(os.time())
+      ['date'] = tostring(os.time())
     })
 
     assert.spy(enqueueCrawlSpy).was.called(0)
@@ -201,7 +209,7 @@ describe('WuzzyCrawler Relay-Result', function()
     local enqueueCrawlSpy = spy.on(WuzzyCrawler, 'enqueueCrawl')
     local relayPath = 'https://cookbook.arweave.net'
     local otherDomainUrl = 'https://google.com/search'
-    WuzzyCrawler.State.CrawledURLs[relayPath] = tostring(os.time())
+    WuzzyCrawler.State.CrawledURLs = { relayPath }
     GetHandler('Relay-Result').handle({
       from = _G.id,
       body = [[
@@ -213,7 +221,7 @@ describe('WuzzyCrawler Relay-Result', function()
       ]],
       ['relay-path'] = relayPath,
       ['content-type'] = 'text/html',
-      ['block-timestamp'] = tostring(os.time())
+      ['date'] = tostring(os.time())
     })
 
     assert.spy(enqueueCrawlSpy).was.called(0)

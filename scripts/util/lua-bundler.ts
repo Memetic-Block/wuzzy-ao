@@ -101,13 +101,9 @@ function exploreNodes(node: Module, cwd: string): Module[] {
   return requiredModules;
 }
 
-export function bundleLua(entryLuaPath: string, removeReturnName?: string) {
+export function bundleLua(entryLuaPath: string) {
   const project = createProjectStructure(entryLuaPath)
   const [bundledLua] = createExecutableFromProject(project)
-
-  if (removeReturnName) {
-    return bundledLua.replace(`return ${removeReturnName}`, '')
-  }
 
   return bundledLua
 }

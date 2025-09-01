@@ -13,11 +13,11 @@ const CONTRACT_NAMES = process.env.CONTRACT_NAMES
 async function bundle() {
   const contracts = [
     { path: 'acl-test', name: 'acl-test' },
-    { path: 'wuzzy-crawler', name: 'wuzzy-crawler', stringifySource: true, removeReturnName: 'WuzzyCrawler' },
-    { path: 'wuzzy-nest', name: 'wuzzy-nest', stringifySource: true, removeReturnName: 'WuzzyNest' },
+    { path: 'wuzzy-crawler', name: 'wuzzy-crawler', stringifySource: true },
+    { path: 'wuzzy-nest', name: 'wuzzy-nest', stringifySource: true },
     { path: 'weavedrive-test', name: 'weavedrive-test' },
     { path: 'wuzzy-tx-oracle-test', name: 'wuzzy-tx-oracle-test' },
-    { path: 'wuzzy-nest-registry', name: 'wuzzy-nest-registry', removeReturnName: 'WuzzyNestRegistry' },
+    { path: 'wuzzy-nest-registry', name: 'wuzzy-nest-registry' },
     { path: 'relay-test', name: 'relay-test' }
   ]
 
@@ -42,7 +42,7 @@ async function bundle() {
       throw new Error(`Lua entry path not found: ${luaEntryPath}`)
     }
 
-    const bundledLua = bundleLua(luaEntryPath, contract.removeReturnName)
+    const bundledLua = bundleLua(luaEntryPath)
     if (!fs.existsSync(path.join(path.resolve(), `./dist/${contract.path}`))) {
       fs.mkdirSync(
         path.join(path.resolve(), `./dist/${contract.path}`),

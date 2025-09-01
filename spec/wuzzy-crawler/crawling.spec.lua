@@ -194,7 +194,7 @@ describe('WuzzyCrawler Crawling', function()
       local url = 'http://example.com/some/path'
       WuzzyCrawler.State.CrawlQueue[1] = { URL = url }
 
-      WuzzyCrawler.dequeueCrawl(url)
+      DequeueCrawl(url)
 
       assert.spy(_G.send).was.called_with({
         target = _G.id,
@@ -213,7 +213,7 @@ describe('WuzzyCrawler Crawling', function()
       local url = protocol .. '://' .. domain .. path
       WuzzyCrawler.State.CrawlQueue[1] = { URL = url }
 
-      WuzzyCrawler.dequeueCrawl(url)
+      DequeueCrawl(url)
 
       assert.spy(_G.send).was.called_with({
         target = _G.id,
@@ -232,7 +232,7 @@ describe('WuzzyCrawler Crawling', function()
       local url = protocol .. '://' .. txid .. path
       WuzzyCrawler.State.CrawlQueue[1] = { URL = url }
 
-      WuzzyCrawler.dequeueCrawl(url)
+      DequeueCrawl(url)
 
       assert.spy(_G.send).was.called_with({
         target = _G.id,

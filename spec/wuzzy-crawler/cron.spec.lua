@@ -18,22 +18,21 @@ describe('WuzzyCrawler Cron', function()
   it('ignores unknown Cron messages', function()
     _G.send = spy.new(function() end)
     assert.has_error(function()
-      GetHandler('Cron').handle({ from = _G.owner })
-    end, 'Unauthorized Cron Caller')
+      GetHandler('Cron').handle({ from = 'alice-address' })
+    end, 'Permission Denied')
   end)
 
   it('does nothing it if has no Crawl Tasks', function()
     _G.send = spy.new(function() end)
     WuzzyCrawler.enqueueCrawl = spy.new(function() end)
     WuzzyCrawler.dequeueCrawl = spy.new(function() end)
-    GetHandler('Cron').handle({ from = _G.authorities[1] })
+    GetHandler('Cron').handle({ from = _G.owner })
     assert.spy(WuzzyCrawler.enqueueCrawl).was.called(0)
   end)
 
   it('queues all assigned Crawl Tasks if queue is empty', function()
     _G.send = spy.new(function() end)
-    WuzzyCrawler.enqueueCrawl = spy.new(function() end)
-    WuzzyCrawler.dequeueCrawl = spy.new(function() end)
+    local enqueueCrawlSpy = spy.on(_G, 'EnqueueCrawl')
     local tasks = {
       'arns://memeticblock',
       'arns://wuzzy'
@@ -43,15 +42,15 @@ describe('WuzzyCrawler Cron', function()
       data = tasks[1] .. '\n' .. tasks[2]
     })
 
-    GetHandler('Cron').handle({ from = _G.authorities[1] })
-    assert.spy(WuzzyCrawler.enqueueCrawl).was.called(2)
-    assert.spy(WuzzyCrawler.enqueueCrawl).was.called_with(tasks[1])
-    assert.spy(WuzzyCrawler.enqueueCrawl).was.called_with(tasks[2])
+    GetHandler('Cron').handle({ from = _G.owner })
+    assert.spy(enqueueCrawlSpy).was.called(2)
+    assert.spy(enqueueCrawlSpy).was.called_with(tasks[1])
+    assert.spy(enqueueCrawlSpy).was.called_with(tasks[2])
   end)
 
   it('processes a queue item each Cron call, if any', function()
     _G.send = spy.new(function() end)
-    local dequeueCrawlSpy = spy.on(WuzzyCrawler, 'dequeueCrawl')
+    local dequeueCrawlSpy = spy.on(_G, 'DequeueCrawl')
     local tasks = {
       'arns://memeticblock',
       'arns://wuzzy',
@@ -66,19 +65,19 @@ describe('WuzzyCrawler Cron', function()
         tasks[4]
     })
 
-    GetHandler('Cron').handle({ from = _G.authorities[1] })
+    GetHandler('Cron').handle({ from = _G.owner })
     assert.spy(dequeueCrawlSpy).was.called_with(tasks[1])
     assert(#utils.keys(WuzzyCrawler.State.CrawlQueue) == 3)
 
-    GetHandler('Cron').handle({ from = _G.authorities[1] })
+    GetHandler('Cron').handle({ from = _G.owner })
     assert.spy(dequeueCrawlSpy).was.called_with(tasks[2])
     assert(#utils.keys(WuzzyCrawler.State.CrawlQueue) == 2)
 
-    GetHandler('Cron').handle({ from = _G.authorities[1] })
+    GetHandler('Cron').handle({ from = _G.owner })
     assert.spy(dequeueCrawlSpy).was.called_with(tasks[3])
     assert(#utils.keys(WuzzyCrawler.State.CrawlQueue) == 1)
 
-    GetHandler('Cron').handle({ from = _G.authorities[1] })
+    GetHandler('Cron').handle({ from = _G.owner })
     assert.spy(dequeueCrawlSpy).was.called_with(tasks[4])
     assert(#utils.keys(WuzzyCrawler.State.CrawlQueue) == 0)
 
@@ -90,8 +89,6 @@ describe('WuzzyCrawler Cron', function()
 
   it('clears url crawl memory when queueing Crawl Tasks', function()
     _G.send = spy.new(function() end)
-    WuzzyCrawler.enqueueCrawl = spy.new(function() end)
-    WuzzyCrawler.dequeueCrawl = spy.new(function() end)
     local tasks = {
       'arns://memeticblock',
       'arns://wuzzy'
@@ -104,9 +101,9 @@ describe('WuzzyCrawler Cron', function()
     WuzzyCrawler.State.CrawledURLs[tasks[1]] = tostring(os.time())
     WuzzyCrawler.State.CrawledURLs[tasks[2]] = tostring(os.time())
 
-    GetHandler('Cron').handle({ from = _G.authorities[1] })
-
-    assert(#utils.keys(WuzzyCrawler.State.CrawledURLs) == 0)
+    GetHandler('Cron').handle({ from = _G.owner })
+    -- NB: Since we're immediately crawling, there will be one task in memory
+    assert(#utils.keys(WuzzyCrawler.State.CrawledURLs) == 1)
   end)
 
   pending('only queues Crawl Tasks if enough time has elapsed', function() end)

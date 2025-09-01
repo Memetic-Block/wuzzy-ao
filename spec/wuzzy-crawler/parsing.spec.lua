@@ -20,7 +20,7 @@ describe('WuzzyCrawler Parsing', function()
     local desc =
       'A collection of little developer guides to build on the permaweb'
 
-    local result = WuzzyCrawler.parseHTML(_G.CookbookHtmlContent)
+    local result = ParseHTML(_G.CookbookHtmlContent)
 
     assert(result.content ~= nil, 'Failed to parse HTML')
     assert(result.content ~= _G.CookbookHtmlContent)

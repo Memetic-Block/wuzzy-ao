@@ -1,6 +1,9 @@
 return {
   search = function (query, state)
     local StringUtils = require('..common.strings')
+
+    -- TODO -> split search into terms and add scores for each term?
+
     local hits = {}
     for _, doc in ipairs(state.Documents) do
       local count = StringUtils.count(doc.Content, query)

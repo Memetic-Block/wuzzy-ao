@@ -360,100 +360,97 @@ local function parse(text,limit) -- {{{
 
 	local tpr={}
 
-	if not opts.keep_danger_placeholders then -- {{{ little speedup by cost of potential parsing breakages
-		-- search unused "invalid" bytes {{{
-		local busy,i={},0;
-		repeat -- {{{
-			local cc = char(i)
-			if not(text:match(cc)) then -- {{{
-				if not(tpr["<"]) or not(tpr[">"]) then -- {{{
-					if not(busy[i]) then -- {{{
-						if not(tpr["<"]) then -- {{{
-							tpr["<"] = cc;
-						elseif not(tpr[">"]) then
-							tpr[">"] = cc;
-						end -- }}}
-						busy[i] = true
-						dbg("c:{%s}||cc:{%d}||tpr[c]:{%s}",str(c),cc:byte(),str(tpr[c]))
-						dbg("busy[i]:{%s},i:{%d}",str(busy[i]),i)
-						dbg("[FindPH]:#LINE# Success! || i=%d",i)
-					else -- if !busy
-						dbg("[FindPH]:#LINE# Busy! || i=%d",i)
-					end -- if !busy -- }}}
-					dbg("c:{%s}||cc:{%d}||tpr[c]:{%s}",c,cc:byte(),str(tpr[c]))
-					dbg("%s",str(busy[i]))
-				else -- if < or >
-					dbg("[FindPH]:#LINE# Done!",i)
-					break
-				end -- if < or > -- }}}
-			else -- text!match(cc)
-				dbg("[FindPH]:#LINE# Text contains this byte! || i=%d",i)
-			end -- text!match(cc) -- }}}
-			local skip=1
-			if i==31 then
-				skip=96 -- ASCII
-			end
-			i=i+skip
-		until (i==255) -- }}}
-		i=nil
-		--- }}}
+-- 	if not opts.keep_danger_placeholders then -- {{{ little speedup by cost of potential parsing breakages
+-- 		-- search unused "invalid" bytes {{{
+-- 		local busy,i={},0;
+-- 		repeat -- {{{
+-- 			local cc = char(i)
+-- 			if not(text:match(cc)) then -- {{{
+-- 				if not(tpr["<"]) or not(tpr[">"]) then -- {{{
+-- 					if not(busy[i]) then -- {{{
+-- 						if not(tpr["<"]) then -- {{{
+-- 							tpr["<"] = cc;
+-- 						elseif not(tpr[">"]) then
+-- 							tpr[">"] = cc;
+-- 						end -- }}}
+-- 						busy[i] = true
+-- 						dbg("c:{%s}||cc:{%d}||tpr[c]:{%s}",str(c),cc:byte(),str(tpr[c]))
+-- 						dbg("busy[i]:{%s},i:{%d}",str(busy[i]),i)
+-- 						dbg("[FindPH]:#LINE# Success! || i=%d",i)
+-- 					else -- if !busy
+-- 						dbg("[FindPH]:#LINE# Busy! || i=%d",i)
+-- 					end -- if !busy -- }}}
+-- 					dbg("c:{%s}||cc:{%d}||tpr[c]:{%s}",c,cc:byte(),str(tpr[c]))
+-- 					dbg("%s",str(busy[i]))
+-- 				else -- if < or >
+-- 					dbg("[FindPH]:#LINE# Done!",i)
+-- 					break
+-- 				end -- if < or > -- }}}
+-- 			else -- text!match(cc)
+-- 				dbg("[FindPH]:#LINE# Text contains this byte! || i=%d",i)
+-- 			end -- text!match(cc) -- }}}
+-- 			local skip=1
+-- 			if i==31 then
+-- 				skip=96 -- ASCII
+-- 			end
+-- 			i=i+skip
+-- 		until (i==255) -- }}}
+-- 		i=nil
+-- 		--- }}}
+-- 		if not(tpr["<"]) or not(tpr[">"]) then
+-- 			err("Impossible to find at least two unused byte codes in this HTML-code. We need it to escape bracket-contained placeholders inside tags.")
+-- 			err("Consider enabling 'keep_danger_placeholders' option (to silence this error, if parser wasn't failed with current HTML-code) or manually replace few random bytes, to free up the codes.")
+-- 		else
+-- 			dbg("[FindPH]:#LINE# Found! || '<'=%d, '>'=%d",tpr["<"]:byte(),tpr[">"]:byte())
+-- 		end
 
-		if not(tpr["<"]) or not(tpr[">"]) then
-			err("Impossible to find at least two unused byte codes in this HTML-code. We need it to escape bracket-contained placeholders inside tags.")
-			err("Consider enabling 'keep_danger_placeholders' option (to silence this error, if parser wasn't failed with current HTML-code) or manually replace few random bytes, to free up the codes.")
-		else
-			dbg("[FindPH]:#LINE# Found! || '<'=%d, '>'=%d",tpr["<"]:byte(),tpr[">"]:byte())
-		end
-
---	dbg("tpr[>] || tpr[] || #busy%d")
-
-		-- g {{{
-		local function g(id,...)
-			local arg={...}
-			local orig=arg[id]
-			arg[id]=arg[id]:gsub("(.)",tpr)
-			if arg[id] ~= orig then
-				tpl=true
-				dbg("[g]:#LINE# orig: %s", str(orig))
-				dbg("[g]:#LINE# replaced: %s",str(arg[id]))
-			end
-			dbg("[g]:#LINE# called, id: %s, arg[id]: %s, args { "..(("{%s}, "):rep(#arg):gsub(", $","")).." }",id,arg[id],...)
-			dbg("[g]:#LINE# concat(arg): %s",table.concat(arg))
-			return table.concat(arg)
-		end
-		-- g }}}
-
-		-- tpl-placeholders and attributes {{{
-		text=text
-			:gsub(
-				"(=[%s]-)".. -- only match attr.values, and not random strings between two random apostrophs
-				"(%b'')",
-				function(...)return g(2,...)end
-			)
-			:gsub(
-				"(=[%s]-)".. -- same for "
-				'(%b"")',
-				function(...)return g(2,...)end
-			) -- Escape "<"/">" inside attr.values (see issue #50)
-			:gsub(
-				"(<".. -- Match "<",
-				(opts.tpl_skip_pattern or "[^!]").. -- with exclusion pattern (for example, to ignore comments, which aren't template placeholders, but can legally contain "<"/">" inside.
-				")([^>]+)".. -- If matched, we want to escape '<'s if we meet them inside tag
-				"(>)",
-				function(...)return g(2,...)end
-			)
-			:gsub(
-				"("..
-				(tpr["<"] or "__FAILED__").. -- Here we search for "<", we escaped in previous gsub (and don't break things if we have no escaping replacement)
-				")("..
-				(opts.tpl_marker_pattern or "[^%w%s]").. -- Capture templating symbol
-				")([%g%s]-)".. -- match placeholder's content
-				"(%2)(>)".. -- placeholder's tail
-				"([^>]*>)", -- remainings
-				function(...)return g(5,...)end
-			)
-		-- }}}
-	end -- }}}
+-- --	dbg("tpr[>] || tpr[] || #busy%d")
+-- 		-- g {{{
+-- 		local function g(id,...)
+-- 			local arg={...}
+-- 			local orig=arg[id]
+-- 			arg[id]=arg[id]:gsub("(.)",tpr)
+-- 			if arg[id] ~= orig then
+-- 				tpl=true
+-- 				dbg("[g]:#LINE# orig: %s", str(orig))
+-- 				dbg("[g]:#LINE# replaced: %s",str(arg[id]))
+-- 			end
+-- 			dbg("[g]:#LINE# called, id: %s, arg[id]: %s, args { "..(("{%s}, "):rep(#arg):gsub(", $","")).." }",id,arg[id],...)
+-- 			dbg("[g]:#LINE# concat(arg): %s",table.concat(arg))
+-- 			return table.concat(arg)
+-- 		end
+-- 		-- g }}}
+-- 		-- tpl-placeholders and attributes {{{
+-- 		text=text
+-- 			:gsub(
+-- 				"(=[%s]-)".. -- only match attr.values, and not random strings between two random apostrophs
+-- 				"(%b'')",
+-- 				function(...)return g(2,...)end
+-- 			)
+-- 			:gsub(
+-- 				"(=[%s]-)".. -- same for "
+-- 				'(%b"")',
+-- 				function(...)return g(2,...)end
+-- 			) -- Escape "<"/">" inside attr.values (see issue #50)
+-- 			:gsub(
+-- 				"(<".. -- Match "<",
+-- 				(opts.tpl_skip_pattern or "[^!]").. -- with exclusion pattern (for example, to ignore comments, which aren't template placeholders, but can legally contain "<"/">" inside.
+-- 				")([^>]+)".. -- If matched, we want to escape '<'s if we meet them inside tag
+-- 				"(>)",
+-- 				function(...)return g(2,...)end
+-- 			)
+-- 			:gsub(
+-- 				"("..
+-- 				(tpr["<"] or "__FAILED__").. -- Here we search for "<", we escaped in previous gsub (and don't break things if we have no escaping replacement)
+-- 				")("..
+-- 				(opts.tpl_marker_pattern or "[^%w%s]").. -- Capture templating symbol
+-- 				")([%g%s]-)".. -- match placeholder's content
+-- 				"(%2)(>)".. -- placeholder's tail
+-- 				"([^>]*>)", -- remainings
+-- 				function(...)return g(5,...)end
+-- 			)
+-- 		-- }}}
+-- 	end -- }}}
 
 	local index = 0
 	local root = ElementNode:new(index, str(text))
@@ -558,12 +555,14 @@ local function parse(text,limit) -- {{{
 			closingloop = (closingloop or 0) + 1
 		end -- }}}
 	end -- }}}
+
 	if tpl then -- {{{
 		dbg("tpl")
 		for k,v in pairs(tpr) do
 			root._text = root._text:gsub(v,k)
 		end
 	end -- }}}
+
 	return root
 end -- }}}
 HtmlParser.parse = parse

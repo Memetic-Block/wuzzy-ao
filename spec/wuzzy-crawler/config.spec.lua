@@ -56,14 +56,14 @@ describe('WuzzyCrawler Config', function ()
         from = _G.owner,
         target = 'wuzzy-nest-process-id',
         action = 'Set-Nest-Id',
-        ['Nest-Id'] = 'nest-1'
+        ['nest-id'] = 'nest-1'
       })
       assert.spy(_G.send).was.called(1)
       assert.spy(_G.send).was.called_with({
         target = _G.owner,
         action = 'Set-Nest-Id-Result',
         data = 'OK',
-        ['Nest-Id'] = 'nest-1'
+        ['nest-id'] = 'nest-1'
       })
       _G.send:clear()
 
@@ -72,14 +72,14 @@ describe('WuzzyCrawler Config', function ()
         from = aliceAddress,
         target = 'wuzzy-nest-process-id',
         action = 'Set-Nest-Id',
-        ['Nest-Id'] = 'nest-2'
+        ['nest-id'] = 'nest-2'
       })
       assert.spy(_G.send).was.called(1)
       assert.spy(_G.send).was.called_with({
         target = aliceAddress,
         action = 'Set-Nest-Id-Result',
         data = 'OK',
-        ['Nest-Id'] = 'nest-2'
+        ['nest-id'] = 'nest-2'
       })
       _G.send:clear()
 
@@ -88,14 +88,14 @@ describe('WuzzyCrawler Config', function ()
         from = bobAddress,
         target = 'wuzzy-nest-process-id',
         action = 'Set-Nest-Id',
-        ['Nest-Id'] = 'nest-3'
+        ['nest-id'] = 'nest-3'
       })
       assert.spy(_G.send).was.called(1)
       assert.spy(_G.send).was.called_with({
         target = bobAddress,
         action = 'Set-Nest-Id-Result',
         data = 'OK',
-        ['Nest-Id'] = 'nest-3'
+        ['nest-id'] = 'nest-3'
       })
       _G.send:clear()
     end)
@@ -144,14 +144,14 @@ describe('WuzzyCrawler Config', function ()
         from = _G.owner,
         target = 'wuzzy-nest-process-id',
         action = 'Set-Gateway',
-        ['Gateway'] = 'https://frostor.xyz'
+        ['gateway'] = 'https://frostor.xyz'
       })
       assert.spy(_G.send).was.called(1)
       assert.spy(_G.send).was.called_with({
         target = _G.owner,
         action = 'Set-Gateway-Result',
         data = 'OK',
-        ['Gateway'] = 'https://frostor.xyz'
+        ['gateway'] = 'https://frostor.xyz'
       })
       _G.send:clear()
 
@@ -160,14 +160,14 @@ describe('WuzzyCrawler Config', function ()
         from = aliceAddress,
         target = 'wuzzy-nest-process-id',
         action = 'Set-Gateway',
-        ['Gateway'] = 'https://love4src.com'
+        ['gateway'] = 'https://love4src.com'
       })
       assert.spy(_G.send).was.called(1)
       assert.spy(_G.send).was.called_with({
         target = aliceAddress,
         action = 'Set-Gateway-Result',
         data = 'OK',
-        ['Gateway'] = 'https://love4src.com'
+        ['gateway'] = 'https://love4src.com'
       })
       _G.send:clear()
 
@@ -176,14 +176,14 @@ describe('WuzzyCrawler Config', function ()
         from = bobAddress,
         target = 'wuzzy-nest-process-id',
         action = 'Set-Gateway',
-        ['Gateway'] = 'https://another.gateway'
+        ['gateway'] = 'https://another.gateway'
       })
       assert.spy(_G.send).was.called(1)
       assert.spy(_G.send).was.called_with({
         target = bobAddress,
         action = 'Set-Gateway-Result',
         data = 'OK',
-        ['Gateway'] = 'https://another.gateway'
+        ['gateway'] = 'https://another.gateway'
       })
       _G.send:clear()
     end)

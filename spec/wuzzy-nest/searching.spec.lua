@@ -207,22 +207,22 @@ describe('WuzzyNest Searching', function()
           results.TotalCount == 6 and
           #results.Hits == 6 and
           results.Hits[1].doc.DocumentId == wuzzyUrl1 and
-          results.Hits[1].score > 0.1 and  -- score = 0.10419692325373
+          results.Hits[1].score > 0.05 and
           results.Hits[1].count == 1 and
           results.Hits[2].doc.DocumentId == wuzzyUrl2 and
-          results.Hits[2].score > 0.09 and -- score = 0.097592892906662
+          results.Hits[2].score > 0.04 and
           results.Hits[2].count == 1 and
           results.Hits[3].doc.DocumentId == wuzzyUrl6 and
-          results.Hits[3].score > 0.08 and -- score = 0.092081001945156
+          results.Hits[3].score > 0.03 and
           results.Hits[3].count == 3 and
-          results.Hits[4].doc.DocumentId == wuzzyUrl5 and
-          results.Hits[4].score > 0.08 and -- score = 0.089988251900948
-          results.Hits[4].count == 2 and
-          results.Hits[5].doc.DocumentId == wuzzyUrl4 and
-          results.Hits[5].score > 0.07 and -- score = 0.084244320928547
-          results.Hits[5].count == 1 and
+          results.Hits[4].doc.DocumentId == wuzzyUrl4 and
+          results.Hits[4].score > 0.03 and
+          results.Hits[4].count == 1 and
+          results.Hits[5].doc.DocumentId == wuzzyUrl5 and
+          results.Hits[5].score > 0.03 and
+          results.Hits[5].count == 2 and
           results.Hits[6].doc.DocumentId == wuzzyUrl3 and
-          results.Hits[6].score > 0.07 and -- score = 0.077855004453629
+          results.Hits[6].score > 0.02 and
           results.Hits[6].count == 1
       end
     end

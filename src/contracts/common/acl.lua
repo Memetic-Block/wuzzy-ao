@@ -10,8 +10,9 @@ local ACLUtils = {
 
 function ACLUtils.assertHasOneOfRole(address, roles)
   for _, role in pairs(roles) do
-    
-    if role == 'owner' and address == owner then
+    if
+      role == 'owner' and address == owner or
+      role == 'owner' and address == id then
       return true
     elseif ACLUtils.State.Roles[role]
       and ACLUtils.State.Roles[role][address] ~= nil

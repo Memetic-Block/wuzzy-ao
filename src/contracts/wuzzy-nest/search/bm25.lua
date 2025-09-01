@@ -12,7 +12,7 @@ function BM25Search.search(query, state, opts)
   local K = opts and opts.k or 1.2
   local hits = {}
 
-  -- TODO -> split query into terms
+  -- TODO -> split query into terms & search each term
 
   if state.TotalDocuments == 0 or state.AverageDocumentTermLength == 0 then
     return hits -- No documents to search

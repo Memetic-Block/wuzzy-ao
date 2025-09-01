@@ -1,4 +1,5 @@
 WuzzyCrawler = {
+  Version = '0.0.1-hackathon',
   State = {
     --- @type boolean
     Initialized = false,
@@ -9,41 +10,42 @@ WuzzyCrawler = {
     --- @type string|nil
     Gateway = nil,
 
-    --- @type table<number, { AddedBy: string, URL: string }>
+    --- @type table<number, {
+    ---   AddedBy: string,
+    ---   URL: string,
+    ---   SubmittedUrl: string,
+    ---   Protocol: string,
+    ---   Domain: string,
+    ---   Path: string,
+    --- }>
     CrawlTasks = {},
 
-    --- @type table<string, boolean>
-    SupportedMimeTypes = {
-      ['text/html'] = true,
-      ['text/plain'] = true,
-      ['application/x.arweave-manifest+json'] = true
-    },
-
     --- @type table<number, {
-    ---   Name: string|nil,
-    ---   URL: string }>
+    ---   SubmittedUrl: string,
+    ---   URL: string,
+    ---   Protocol: string,
+    ---   Domain: string,
+    ---   Path: string,
+    --- }>
     CrawlQueue = {},
 
-    -- Crawl Memory
-    --- @type table<string, string>
+    --- CrawledURLs memory, wiped when the CrawlQueue is drained completely
+    --- @type table<number, string>
     CrawledURLs = {}
   }
 }
 
-WuzzyCrawler.State.NestId = WuzzyCrawler.State.NestId or
-  process.Tags['Nest-Id'] or id
-WuzzyCrawler.State.Gateway = WuzzyCrawler.State.Gateway or
-  process.Tags['Gateway'] or 'https://arweave.net'
+WuzzyCrawler.State.NestId = process['nest-id'] or id
+WuzzyCrawler.State.Gateway = process['gateway'] or 'https://arweave.net'
 
 function WuzzyCrawler.init()
   local ACL = require('..common.acl')
   local utils = require('.utils')
   local StringUtils = require('..common.strings')
-  local HtmlParser = require('..common.lua-htmlparser.htmlparser')
   local neturl = require('..lib.neturl')
-
+  local HtmlParser = require('..common.lua-htmlparser.htmlparser')
+  require('..lib.ao-string-ext')
   require('..common.handlers.acl')(ACL)
-  require('..common.handlers.state')(WuzzyCrawler)
 
   Handlers.add('Request-Crawl', 'Request-Crawl', function (msg)
     ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Request-Crawl' })
@@ -51,7 +53,7 @@ function WuzzyCrawler.init()
     local url = msg['URL']
     assert(url ~= nil, 'Missing URL to crawl')
 
-    local result, err = WuzzyCrawler.enqueueCrawl(url)
+    local result, err = EnqueueCrawl(url)
     assert(not err, err)
 
     send({
@@ -65,7 +67,7 @@ function WuzzyCrawler.init()
     ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Add-Crawl-Tasks' })
     assert(msg.data and #msg.data > 0, 'Missing Crawl Task Data')
 
-    for url in msg.data:gmatch('[^\r\n]+') do
+    for url in string.gmatch(msg.data, '[^\r\n]+') do
       -- TODO -> validate url
       -- TODO -> Safely parse url
       local parsedUrl = neturl.parse(url)
@@ -106,7 +108,7 @@ function WuzzyCrawler.init()
     )
     assert(msg.data and #msg.data > 0, 'Missing Crawl Task Data to remove')
 
-    for url in msg.data:gmatch('[^\r\n]+') do
+    for url in string.gmatch(msg.data, '[^\r\n]+') do
       local found = false
       for i, task in ipairs(WuzzyCrawler.State.CrawlTasks) do
         if task.URL == url then
@@ -126,39 +128,18 @@ function WuzzyCrawler.init()
   end)
 
   Handlers.add('Cron', 'Cron', function (msg)
-    assert(msg.from == authorities[1], 'Unauthorized Cron Caller')
+    ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Cron' })
 
-    if #WuzzyCrawler.State.CrawlQueue < 1 then
-      print('Nothing in Crawl Queue')
-
-      if #WuzzyCrawler.State.CrawlTasks < 1 then
-        print('No Crawl Tasks to process')
-        return
-      end
-
-      print('Processing Crawl Tasks: ' .. #WuzzyCrawler.State.CrawlTasks)
-      WuzzyCrawler.State.CrawledURLs = {}
-      for _, task in ipairs(WuzzyCrawler.State.CrawlTasks) do
-        local result, err = WuzzyCrawler.enqueueCrawl(task.URL)
-        if err then print('Enqueue Crawl Error:', err) end
-        if result then print('Enqueue Crawl Result:', result) end
-      end
-    end
-
-    if #WuzzyCrawler.State.CrawlQueue > 0 then
-      local result, err = WuzzyCrawler.dequeueCrawl(
-        WuzzyCrawler.State.CrawlQueue[1].URL
-      )
-      if err then print('Dequeue Crawl Error:', err) end
-      if result then print('Dequeue Crawl Result:', result) end
-    end
+    CronTick()
   end)
 
   Handlers.add('Relay-Result', 'Relay-Result', function (msg)
     assert(msg.from == id, 'Unauthorized Relay-Result Caller')
-
-    if msg['content-type'] == 'text/html' then
-      local parsed = WuzzyCrawler.parseHTML(msg.body)
+    -- print('Relay-Result msg:', require('json').encode(msg))
+    if StringUtils.starts_with(msg['content-type'], 'text/html') then
+      print('Parsing HTML for url: ' .. tostring(msg['relay-path']))
+      local parsed = ParseHTML(msg.body)
+      print('Got links from html parse:', require('json').encode(parsed.links))
       local links = utils.map(
         function (link)
           if StringUtils.starts_with(link, '/') then
@@ -166,42 +147,76 @@ function WuzzyCrawler.init()
             local protocol = parsedUrl.scheme
             local domain = parsedUrl.host or parsedUrl.authority
             return protocol .. '://' .. domain .. link
+          elseif StringUtils.starts_with(link, 'http://') or
+                 StringUtils.starts_with(link, 'https://') or
+                 StringUtils.starts_with(link, 'ar://') or
+                 StringUtils.starts_with(link, 'arns://') then
+            return link
+          else
+            -- relative link
+            local parsedUrl = neturl.parse(msg['relay-path']):normalize()
+            local protocol = parsedUrl.scheme
+            local domain = parsedUrl.host or parsedUrl.authority
+            local path = parsedUrl.path
+            if path:sub(-1) == '/' then
+              path = path:sub(1, -2)
+            end
+            local basePath = path:match('(.*/)')
+            if not basePath then
+              basePath = '/'
+            end
+            return protocol .. '://' .. domain .. basePath .. link
+
           end
 
           return link
         end,
         parsed.links
       )
+      print('Normalized links:', require('json').encode(links))
 
-      WuzzyCrawler.submitDocument({
-        Id = msg['relay-path'],
-        URL = msg['relay-path'],
-        ContentType = msg['content-type'],
-        LastCrawledAt = msg['block-timestamp'],
-        Content = parsed.content,
-        Title = parsed.title,
-        Description = parsed.description,
-        Links = parsed.links
-      })
-
+      -- s="Sat, 29 Oct 1994 19:43:31 GMT"
+      -- local date = msg['date'] or ''
+      -- local pattern = '%a+, (%d+) (%a+) (%d+) (%d+):(%d+):(%d+) GMT'
+      -- local day,month,year,hour,min,sec=date:match(pattern)
+      -- MON={Jan=1,Feb=2,Mar=3,Apr=4,May=5,Jun=6,Jul=7,Aug=8,Sep=9,Oct=10,Nov=11,Dec=12}
+      -- month=MON[month]
+      -- local lastCrawledAt = tostring(os.time({day=day,month=month,year=year,hour=hour,min=min,sec=sec}))
+      -- print('using last crawled at: ' .. msg['date'])
       for _, url in ipairs(links) do
-        -- print('Discovered link:', url)
-        if WuzzyCrawler.State.CrawledURLs[url] then
-          -- print('Already crawled:', url)
-        elseif not WuzzyCrawler.isInCrawlTaskDomains(url) then
-          -- print('Not in crawl tasks:', url)
+        print('Discovered link:', url)
+        if utils.includes(url, WuzzyCrawler.State.CrawledURLs) then
+          print('Already crawled:', url)
+        elseif not IsInCrawlTaskDomains(url) then
+          print('Not in crawl tasks:', url)
         else
-          local result, err = WuzzyCrawler.enqueueCrawl(url)
-          if err then print('Enqueue Crawl Error:', err) end
-          -- if result then print('Enqueue Crawl Result:', result) end
+          local result, err = EnqueueCrawl(url)
+          if err then print('Enqueue Crawled Link Error:', err) end
+          if result then print('Enqueue Crawled Link Result:', result) end
         end
       end
-    elseif msg['content-type'] == 'text/plain' then
-      WuzzyCrawler.submitDocument({
+      if (type(parsed.content) == 'string' and parsed.content ~= '') then
+        print('Submitting parsed HTML content with length ' .. tostring(#parsed.content))
+        SubmitDocument({
+          Id = msg['relay-path'],
+          URL = msg['relay-path'],
+          ContentType = msg['content-type'],
+          LastCrawledAt = msg['date'],
+          Content = parsed.content,
+          Title = parsed.title,
+          Description = parsed.description,
+          Links = parsed.links
+        })
+      else
+        print('No content extracted from HTML for url:', msg['relay-path'])
+      end
+
+    elseif StringUtils.starts_with(msg['content-type'], 'text/plain') then
+      SubmitDocument({
         Id = msg['relay-path'],
         URL = msg['relay-path'],
         ContentType = msg['content-type'],
-        LastCrawledAt = msg['block-timestamp'],
+        LastCrawledAt = msg['date'],
         Content = msg.body
       })
     else
@@ -215,38 +230,38 @@ function WuzzyCrawler.init()
   Handlers.add('Set-Nest-Id', 'Set-Nest-Id', function (msg)
     ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Set-Nest-Id' })
     assert(
-      type(msg['Nest-Id']) == 'string' and msg['Nest-Id'] ~= '',
+      type(msg['nest-id']) == 'string' and msg['nest-id'] ~= '',
       'Missing Nest-Id'
     )
 
-    WuzzyCrawler.State.NestId = msg['Nest-Id']
+    WuzzyCrawler.State.NestId = msg['nest-id']
 
     send({
       target = msg.from,
       action = 'Set-Nest-Id-Result',
       data = 'OK',
-      ['Nest-Id'] = WuzzyCrawler.State.NestId
+      ['nest-id'] = WuzzyCrawler.State.NestId
     })
   end)
 
   Handlers.add('Set-Gateway', 'Set-Gateway', function (msg)
     ACL.assertHasOneOfRole(msg.from, { 'owner', 'admin', 'Set-Gateway' })
     assert(
-      type(msg['Gateway']) == 'string' and msg['Gateway'] ~= '',
+      type(msg['gateway']) == 'string' and msg['gateway'] ~= '',
       'Missing Gateway'
     )
 
-    WuzzyCrawler.State.Gateway = msg['Gateway']
+    WuzzyCrawler.State.Gateway = msg['gateway']
 
     send({
       target = msg.from,
       action = 'Set-Gateway-Result',
       data = 'OK',
-      ['Gateway'] = WuzzyCrawler.State.Gateway
+      ['gateway'] = WuzzyCrawler.State.Gateway
     })
   end)
 
-  function WuzzyCrawler.dequeueCrawl(url)
+  function DequeueCrawl(url)
     local relayPath = url
 
     if StringUtils.starts_with(url, 'arns://') then
@@ -280,7 +295,10 @@ function WuzzyCrawler.init()
     for i, task in ipairs(WuzzyCrawler.State.CrawlQueue) do
       if task.URL == url then
         table.remove(WuzzyCrawler.State.CrawlQueue, i)
-        WuzzyCrawler.State.CrawledURLs[url] = tostring(os.time())
+        table.insert(
+          WuzzyCrawler.State.CrawledURLs,
+          url
+        )
         break
       end
     end
@@ -288,17 +306,29 @@ function WuzzyCrawler.init()
     return 'Crawled ' .. url
   end
 
-  function WuzzyCrawler.enqueueCrawl(url)
-    -- TODO -> validate url
-    -- TODO -> Safely parse url
+  function EnqueueCrawl(url)
     local parsedUrl = neturl.parse(url):normalize()
     local protocol = parsedUrl.scheme
     local domain = parsedUrl.host or parsedUrl.authority
     local path = parsedUrl.path
-
     if protocol and domain and path then
       if utils.includes(protocol, { 'http', 'https', 'arns', 'ar' }) then
         local baseUrl = protocol .. '://' .. domain .. path
+        local existingQueueItem = utils.find(
+          function(item) return item.URL == baseUrl end,
+          WuzzyCrawler.State.CrawlQueue
+        )
+        if existingQueueItem then
+          return 'URL already in crawl queue: ' .. baseUrl
+        end
+        local existingMemoryItem = utils.find(
+          function(item) return item == baseUrl end,
+          WuzzyCrawler.State.CrawledURLs
+        )
+        if existingMemoryItem then
+          return 'URL already crawled this run: ' .. baseUrl
+        end
+
         table.insert(WuzzyCrawler.State.CrawlQueue, {
           SubmittedUrl = url,
           URL = baseUrl,
@@ -316,23 +346,21 @@ function WuzzyCrawler.init()
     end
   end
 
-  function WuzzyCrawler.submitDocument(document)
+  function SubmitDocument(document)
+    print('Submitting Document ' .. document.Id .. ' to Nest ' .. WuzzyCrawler.State.NestId)
     send({
       target = WuzzyCrawler.State.NestId,
       action = 'Index-Document',
       data = document.Content,
-      ['Document-Id'] = document.Id,
-      ['Document-Last-Crawled-At'] = document.LastCrawledAt,
-      ['Document-URL'] = document.URL,
-      ['Document-Content-Type'] = document.ContentType,
-      ['Document-Title'] = document.Title,
-      ['Document-Description'] = document.Description
+      ['document-last-crawled-at'] = document.LastCrawledAt,
+      ['document-url'] = document.URL,
+      ['document-content-type'] = document.ContentType,
+      ['document-title'] = document.Title,
+      ['document-description'] = document.Description
     })
   end
 
-  function WuzzyCrawler.parseHTML(html)
-    -- TODO -> Safely call stuff below
-
+  function ParseHTML(html)
     local root = HtmlParser.parse(html, 10000)
     local titleElement = root:select('title')[1]
     local title = titleElement and titleElement:getcontent() or ''
@@ -350,6 +378,7 @@ function WuzzyCrawler.init()
       if href:sub(-1) == '/' then
         href = href:sub(1, -2)
       end
+      
       if
         href and
         href ~= '' and
@@ -371,6 +400,9 @@ function WuzzyCrawler.init()
     -- Get all text content from body, including child elements
     local content = body:getcontent() or ''
 
+    -- Remove script tags and their content (case-insensitive)
+    content = content:gsub('<[Ss][Cc][Rr][Ii][Pp][Tt][^>]*>.-</[Ss][Cc][Rr][Ii][Pp][Tt]>', ' ')
+
     -- Strip all HTML tags to get just the text content
     content = content:gsub('<[^>]*>', ' ') -- Remove all HTML tags
 
@@ -388,7 +420,7 @@ function WuzzyCrawler.init()
     content = content:gsub('&trade;', '™')
     content = content:gsub('&hellip;', '…')
     content = content:gsub('&mdash;', '—')
-    content = content:gsub('&ndash;', '–')
+    content = content:gsub('&ndash;', '-')
     content = content:gsub('&ldquo;', '"')
     content = content:gsub('&rdquo;', '"')
     content = content:gsub('&lsquo;', "'")
@@ -416,13 +448,12 @@ function WuzzyCrawler.init()
     }
   end
 
-  function WuzzyCrawler.isInCrawlTaskDomains(url)
+  function IsInCrawlTaskDomains(url)
     local parsedUrl = neturl.parse(url):normalize()
     local domain = parsedUrl.host or parsedUrl.authority
     local crawlTaskDomains = utils.map(
       function(task)
-        local parsedCrawlTaskUrl = neturl.parse(task):normalize()
-        return parsedCrawlTaskUrl.host or parsedCrawlTaskUrl.authority
+        return task.Domain
       end,
       WuzzyCrawler.State.CrawlTasks
     )
@@ -436,7 +467,44 @@ function WuzzyCrawler.init()
     return false
   end
 
+  function CronTick()
+    if #WuzzyCrawler.State.CrawlQueue < 1 then
+      print('Nothing in Crawl Queue')
+
+      if #WuzzyCrawler.State.CrawlTasks < 1 then
+        print('No Crawl Tasks to process')
+        return
+      end
+
+      print('Processing Crawl Tasks: ' .. #WuzzyCrawler.State.CrawlTasks)
+      WuzzyCrawler.State.CrawledURLs = {}
+      for _, task in ipairs(WuzzyCrawler.State.CrawlTasks) do
+        print('Enqueue Crawl: ' .. task.URL)
+        local result, err = EnqueueCrawl(task.URL)
+        if err then print('Enqueue Crawl Error:', err) end
+        if result then print('Enqueue Crawl Result:', result) end
+      end
+    end
+
+    print('Processing Crawl Queue: ' .. #WuzzyCrawler.State.CrawlQueue)
+    if #WuzzyCrawler.State.CrawlQueue > 0 then
+      local result, err = DequeueCrawl(
+        WuzzyCrawler.State.CrawlQueue[1].URL
+      )
+      if err then print('Dequeue Crawl Error:', err) end
+      if result then print('Dequeue Crawl Result:', result) end
+    end
+  end
+
   WuzzyCrawler.State.Initialized = true
+
+  Handlers.add(
+    'Owner-Fallback',
+    function(msg) return msg.from == owner end,
+    function (msg)
+      CronTick()
+    end
+  )
 end
 
 if not WuzzyCrawler.State.Initialized then

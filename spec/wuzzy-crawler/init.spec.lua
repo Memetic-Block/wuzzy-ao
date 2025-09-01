@@ -15,11 +15,7 @@ describe('WuzzyCrawler Initialization', function ()
 
   it('initially sets Nest-Id to tag value if present', function()
     local nestId = 'custom-nest-id-123'
-    _G.process = {
-      Tags = {
-        ['Nest-Id'] = nestId
-      }
-    }
+    _G.process = { ['nest-id'] = nestId }
     _G.send = spy.new(function() end)
     package.loaded[codepath] = nil
     require(codepath)
@@ -39,11 +35,7 @@ describe('WuzzyCrawler Initialization', function ()
 
   it('initially sets Gateway to tag value if present', function()
     local gateway = 'https://custom-gateway.example.com'
-    _G.process = {
-      Tags = {
-        ['Gateway'] = gateway
-      }
-    }
+    _G.process = { ['gateway'] = gateway }
     _G.send = spy.new(function() end)
     package.loaded[codepath] = nil
     require(codepath)

@@ -2,6 +2,7 @@ package.path = './src/contracts/?.lua;' ..
   './src/contracts/common/?.lua;' ..
   './src/contracts/wuzzy-nest/?.lua;' ..
   './src/contracts/wuzzy-crawler/?.lua;' ..
+  './src/views/?.lua;' ..
   package.path
 
 -- NB: Preserve original print() as AO overwrites it
@@ -73,3 +74,19 @@ end
 local cookbookLinksContent = cookbookLinksFile:read('*a')
 cookbookLinksFile:close()
 _G.CookbookLinks = require('json').decode(cookbookLinksContent)
+
+local memeticBlockIndexFile = io.open('spec/memeticblock-index.txt', 'rb')
+if not memeticBlockIndexFile then
+  print('no test memetic block index file!')
+  return nil
+end
+_G.MemeticBlockIndexContent = memeticBlockIndexFile:read('*a')
+memeticBlockIndexFile:close()
+
+local memeticBlockAboutFile = io.open('spec/memeticblock-about.txt', 'rb')
+if not memeticBlockAboutFile then
+  print('no test memetic block about file!')
+  return nil
+end
+_G.MemeticBlockAboutContent = memeticBlockAboutFile:read('*a')
+memeticBlockAboutFile:close()
