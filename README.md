@@ -6,6 +6,8 @@ A decentralized search engine built on AO (Actor Oriented) architecture, providi
 
 Wuzzy AO consists of smart contracts (processes) written in Lua that run on the AO network. The system enables decentralized web crawling, content indexing, and search functionality through a network of autonomous processes.
 
+Take a look at the [documentation](https://docs_wuzzy.arweave.net)!
+
 ## Architecture
 
 The system is composed of several core components:
