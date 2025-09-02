@@ -33,6 +33,9 @@ The system is composed of several core components:
 - Arweave wallet
 - Lua 5.3 & busted (for spec tests)
 
+### Quickstart Guide
+Check out the [Wuzzy Docs Quickstart Guide](https://docs_wuzzy.arweave.net/guide/index.html)
+
 ### Installation
 
 ```bash
@@ -44,16 +47,6 @@ npm run bundle
 
 # Run tests (requires Lua 5.3 & busted)
 npm test
-```
-
-### Environment Setup
-
-Create a `.env` file with the following variables:
-
-```bash
-PRIVATE_KEY=path/to/your/arweave-wallet.json
-CONTRACT_VERSION=dev
-GATEWAY=https://arweave.net
 ```
 
 ### Building Contracts
@@ -79,6 +72,8 @@ aos my-process-name --url https://some.hyperbeam.node
 ```
 
 ## Contract Details
+
+Check out the [Wuzzy API Docs](https://docs_wuzzy.arweave.net/api/index.html)
 
 ### WuzzyCrawler
 
@@ -173,13 +168,13 @@ AGPLv3 License - see LICENSE file for details
 
 ## Related Projects
 
-- [Wuzzy Site](https://github.com/memetic-block/wuzzy-site) - Frontend web application
-- [Wuzzy Docs](https://github.com/memetic-block/wuzzy-docs) - Documentation site
+- [Wuzzy Site Repo](https://github.com/memetic-block/wuzzy-site) - Frontend web application
+- [Wuzzy Docs Repo](https://github.com/memetic-block/wuzzy-docs) - Documentation site
 
 ## Support
 
 For questions and support:
-- Check the [documentation](https://github.com/memetic-block/wuzzy-docs)
+- Check the [documentation](https://docs_wuzzy.arweave.net)
 - Open an issue on GitHub
 - Contact the development team
 
