@@ -15,7 +15,7 @@ const aosModuleId = process.env.AOS_MODULE_ID ||
 
 const CONTRACT_NAME = process.env.CONTRACT_NAME || ''
 if (!CONTRACT_NAME) {
-  throw new Error('CONTRACT_NAME is not set!')
+  throw new Error('CONTRACT_NAME is not set! Example: CONTRACT_NAME=wuzzy-nest')
 }
 const LUA_SOURCE_TXID = process.env.LUA_SOURCE_TX_ID || ''
 if (!LUA_SOURCE_TXID) {
@@ -38,7 +38,7 @@ export async function spawn(
   arweaveWalletJwk: JWKInterface,
   spawnTags?: { name: string; value: string }[]
 ) {
-  logger.info(`Spawning new AO Process for [${contractName}]`)
+  logger.info(`Spawning new AO Legacynet Process for [${contractName}]`)
   logger.info(`Using LUA Source TX ID [${luaSourceTxId}]`)
   logger.info(`Using AO Module ID [${aosModuleId}]`)
   logger.info(`Using Scheduler Unit Address [${schedulerUnitAddress}]`)
@@ -46,7 +46,7 @@ export async function spawn(
   logger.info(`Using Deployer Public Key [${arweaveWalletJwk.n}]`)
   const signer = createDataItemSigner(arweaveWalletJwk)
 
-  logger.info(`Spawning new AO Process...`)
+  logger.info(`Spawning new AO Legacynet Process...`)
   if (spawnTags && spawnTags.length > 0) {
     logger.info(`With additional spawn tags: ${JSON.stringify(spawnTags)}`)
   }
@@ -59,6 +59,7 @@ export async function spawn(
       { name: 'Contract-Name', value: contractName },
       { name: 'Authority', value: messagingUnitAddress },
       { name: 'Timestamp', value: Date.now().toString() },
+      { name: 'Network', value: 'legacynet' },
       {
         name: 'Source-Code-TX-ID',
         value: luaSourceTxId
@@ -67,10 +68,13 @@ export async function spawn(
     ]
   })
 
-  logger.info(`Sending EVAL of [${contractName}] to AO Process [${processId}]`)
+  logger.info(`Sending EVAL of [${contractName}] to AO Legacynet Process [${processId}]`)
+  
+  // Read the bundled legacynet contract
+  const contractPath = join(resolve(), `./dist/legacynet/${contractName}/process.lua`)
   await sendAosMessage({
     processId,
-    data: readFileSync(join(resolve(), `./dist/${contractName}.lua`), 'utf8'),
+    data: readFileSync(contractPath, 'utf8'),
     signer,
     tags: [
       { name: 'Action', value: 'Eval' },
@@ -83,13 +87,16 @@ export async function spawn(
   })
 
   logger.info(
-    `Process spawned & EVAL action sent for [${contractName}] at [${processId}]`
+    `Legacynet process spawned & EVAL action sent for [${contractName}] at [${processId}]`
   )
+  
+  return processId
 }
 
-spawn(CONTRACT_NAME, LUA_SOURCE_TXID, JWK, SPAWN_TAGS).then(() => {
-  logger.info('Spawn AO Process executed successfully!')
+spawn(CONTRACT_NAME, LUA_SOURCE_TXID, JWK, SPAWN_TAGS).then((processId) => {
+  logger.info(`Spawn AO Legacynet Process executed successfully!`)
+  logger.info(`Process ID: ${processId}`)
 }).catch(error => {
-  logger.error(`Error executing spawn AO Process:`, error)
+  logger.error(`Error executing spawn AO Legacynet Process:`, error)
   process.exit(1)
 })

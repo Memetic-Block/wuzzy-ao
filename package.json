@@ -6,8 +6,11 @@
   "scripts": {
     "build": "npm run bundle && tsx scripts/build.ts",
     "bundle": "npm run clean && tsx scripts/bundle.ts",
+    "bundle:legacynet": "tsx scripts/bundle-legacynet.ts",
     "clean": "rimraf [ dist ]",
-    "test": "npm run build && mocha test/spec/**/*.spec.ts"
+    "spawn:legacynet": "tsx scripts/spawn-legacynet.ts",
+    "test": "npm run build && mocha test/spec/**/*.spec.ts",
+    "test:legacynet": "npm run bundle:legacynet && mocha test/legacynet/spec/**/*.spec.ts"
   },
   "keywords": [],
   "author": "Jim Toth",
