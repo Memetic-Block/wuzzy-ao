@@ -126,49 +126,30 @@ local function updateDocumentStats(content, existingDocument)
   }
 end
 
-Handlers.add('Index-Document', 'Index-Document', function (msg)
-  ACL.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Index-Document' })
-
-  local url = msg.Tags['Document-URL']
-  print('got document-url', url)
-  assert(url, 'Missing Document-URL')
-  local parsed = parseAndNormalizeUrl(url)
+-- Helper: Create and upsert a document, returning the documentId
+--- @param params { submittedBy: string, url: string, lastCrawledAt: string, contentType: string, content: string, title: string|nil, description: string|nil }
+--- @return string documentId
+local function upsertDocument(params)
+  local parsed = parseAndNormalizeUrl(params.url)
   local documentId = parsed.normalizedUrl
-  print('got document-id', documentId)
-
-  local lastCrawledAt = msg.Tags['Document-Last-Crawled-At']
-  assert(type(lastCrawledAt) == 'string', 'Missing Document-Last-Crawled-At')
-  print('got document-last-crawled-at', lastCrawledAt)
-
-  local contentType = msg.Tags['Document-Content-Type']
-  assert(type(contentType) == 'string' and contentType ~= '', 'Missing or invalid Document-Content-Type')
-  print('got document-content-type', contentType)
 
   local existingDocumentIndex, existingDocument = findDocumentByIdWithIndex(documentId)
-  print('got existingDocument', existingDocument and 'found' or 'not found')
-
-  assert(msg.Data and #msg.Data > 0, 'Missing Document Content')
-  local stats = updateDocumentStats(msg.Data, existingDocument)
-  print('got term count', stats.termCount)
-  print('new total term count', WuzzyNest.State.TotalTermCount)
-  print('new total content length', WuzzyNest.State.TotalContentLength)
-  print('new total documents', WuzzyNest.State.TotalDocuments)
-  print('new avg doc length', WuzzyNest.State.AverageDocumentTermLength)
+  local stats = updateDocumentStats(params.content, existingDocument)
 
   local doc = {
-    SubmittedBy = msg.From,
+    SubmittedBy = params.submittedBy,
     DocumentId = documentId,
-    LastCrawledAt = lastCrawledAt,
+    LastCrawledAt = params.lastCrawledAt,
     Protocol = parsed.protocol,
     Domain = parsed.domain,
     Path = parsed.path,
-    URL = url,
-    ContentType = contentType,
-    Content = msg.Data,
+    URL = params.url,
+    ContentType = params.contentType,
+    Content = params.content,
     ContentLength = stats.contentLength,
     TermCount = stats.termCount,
-    Title = msg.Tags['Document-Title'],
-    Description = msg.Tags['Document-Description']
+    Title = params.title,
+    Description = params.description
   }
 
   if existingDocumentIndex then
@@ -176,6 +157,33 @@ Handlers.add('Index-Document', 'Index-Document', function (msg)
   else
     table.insert(WuzzyNest.State.Documents, doc)
   end
+
+  return documentId
+end
+
+Handlers.add('Index-Document', 'Index-Document', function (msg)
+  ACL.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Index-Document' })
+
+  local url = msg.Tags['Document-URL']
+  assert(url, 'Missing Document-URL')
+
+  local lastCrawledAt = msg.Tags['Document-Last-Crawled-At']
+  assert(type(lastCrawledAt) == 'string', 'Missing Document-Last-Crawled-At')
+
+  local contentType = msg.Tags['Document-Content-Type']
+  assert(type(contentType) == 'string' and contentType ~= '', 'Missing or invalid Document-Content-Type')
+
+  assert(msg.Data and #msg.Data > 0, 'Missing Document Content')
+
+  local documentId = upsertDocument({
+    submittedBy = msg.From,
+    url = url,
+    lastCrawledAt = lastCrawledAt,
+    contentType = contentType,
+    content = msg.Data,
+    title = msg.Tags['Document-Title'],
+    description = msg.Tags['Document-Description']
+  })
 
   -- Notify original requester if this was a queued crawl request
   local pendingRequest = WuzzyNest.State.PendingCrawlRequests[documentId]
@@ -216,33 +224,15 @@ Handlers.add('Bulk-Index-Document', 'Bulk-Index-Document', function (msg)
       assert(type(docData.LastCrawledAt) == 'string', 'Missing LastCrawledAt')
       assert(type(docData.ContentType) == 'string', 'Missing ContentType')
 
-      local parsed = parseAndNormalizeUrl(docData.URL)
-      local documentId = parsed.normalizedUrl
-
-      local existingDocumentIndex, existingDocument = findDocumentByIdWithIndex(documentId)
-      local stats = updateDocumentStats(docData.Content, existingDocument)
-
-      local doc = {
-        SubmittedBy = msg.From,
-        DocumentId = documentId,
-        LastCrawledAt = docData.LastCrawledAt,
-        Protocol = parsed.protocol,
-        Domain = parsed.domain,
-        Path = parsed.path,
-        URL = docData.URL,
-        ContentType = docData.ContentType,
-        Content = docData.Content,
-        ContentLength = stats.contentLength,
-        TermCount = stats.termCount,
-        Title = docData.Title,
-        Description = docData.Description
-      }
-
-      if existingDocumentIndex then
-        WuzzyNest.State.Documents[existingDocumentIndex] = doc
-      else
-        table.insert(WuzzyNest.State.Documents, doc)
-      end
+      local documentId = upsertDocument({
+        submittedBy = msg.From,
+        url = docData.URL,
+        lastCrawledAt = docData.LastCrawledAt,
+        contentType = docData.ContentType,
+        content = docData.Content,
+        title = docData.Title,
+        description = docData.Description
+      })
 
       table.insert(indexed, documentId)
     end)
