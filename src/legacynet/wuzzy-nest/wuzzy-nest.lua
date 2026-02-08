@@ -1,64 +1,39 @@
 -- Wuzzy Nest for AO Legacynet
-
-WuzzyNest = {
-  Version = '0.0.1-legacynet',
-  State = {
-    --- @type table<number, {
-    ---   SubmittedBy: string,
-    ---   DocumentId: string,
-    ---   LastCrawledAt: string,
-    ---   Protocol: string,
-    ---   Domain: string,
-    ---   Path: string,
-    ---   URL: string,
-    ---   ContentType: string,
-    ---   Content: string,
-    ---   TermCount: number,
-    ---   ContentLength: number,
-    ---   Title: string,
-    ---   Description: string,
-    --- }>
-    Documents = {},
-
-    --- @type number
-    TotalDocuments = 0,
-
-    --- @type number
-    TotalTermCount = 0,
-
-    --- @type number
-    TotalContentLength = 0,
-
-    --- @type number
-    AverageDocumentTermLength = 0,
-
-    --- @type table<number, {
-    ---   CrawlerId: string,
-    ---   Creator: string,
-    ---   Owner: string,
-    ---   Name: string,
-    --- }>
-    Crawlers = {},
-
-    --- @type number
-    --- Round-robin index for crawler selection
-    NextCrawlerIndex = 1,
-
-    --- @type table<string, {
-    ---   RequesterId: string,
-    ---   CrawlerId: string,
-    ---   RequestedAt: number,
-    --- }>
-    --- Pending crawl requests keyed by URL for tracking
-    PendingCrawlRequests = {}
-  }
-}
-
 local json = require('json')
-local utils = require('.common.utils')
-local neturl = require('.lib.neturl')
-local ACL = require('.common.acl')
-require('.common.handlers.acl')(ACL)
+local utils = require('.utils')
+local neturl = require('..lib.neturl')
+acl = require('..common.acl')
+version = version or '0.0.1-legacynet'
+registry_address = registry_address or ao.env.Process.Tags['Registry-Address'] or nil
+total_documents = total_documents or 0
+total_term_count = total_term_count or 0
+total_content_length = total_content_length or 0
+average_document_term_length = average_document_term_length or 0
+
+--- @type table<number, {
+---   submitted_by: string,
+---   document_id: string,
+---   last_crawled_at: string,
+---   protocol: string,
+---   domain: string,
+---   path: string,
+---   url: string,
+---   content_type: string,
+---   content: string,
+---   term_count: number,
+---   content_length: number,
+---   title: string,
+---   description: string,
+--- }>
+documents = documents or {}
+
+--- @type table<number, {
+---   url: string,
+---   requester_id: string,
+---   requested_at: number,
+--- }>
+--- Pending crawl requests as a numerically indexed FIFO queue
+pending_crawl_requests = pending_crawl_requests or {}
 
 -- Helper: Parse and normalize a URL, returning components and normalized form
 --- @param url string
@@ -86,8 +61,8 @@ end
 --- @param documentId string
 --- @return number|nil, table|nil
 local function findDocumentByIdWithIndex(documentId)
-  for i, doc in ipairs(WuzzyNest.State.Documents) do
-    if doc.DocumentId == documentId then
+  for i, doc in ipairs(documents) do
+    if doc.document_id == documentId then
       return i, doc
     end
   end
@@ -100,30 +75,42 @@ end
 --- @return { termCount: number, contentLength: number }
 local function updateDocumentStats(content, existingDocument)
   local termCount = select(2, string.gsub(content, '[^%s%p]+', ''))
-  local oldTermCount = existingDocument and existingDocument.TermCount or 0
-  WuzzyNest.State.TotalTermCount =
-    WuzzyNest.State.TotalTermCount + termCount - oldTermCount
+  local oldTermCount = existingDocument and existingDocument.term_count or 0
+  total_term_count =
+    total_term_count + termCount - oldTermCount
 
   local contentLength = #content
-  local oldContentLength = existingDocument and existingDocument.ContentLength or 0
-  WuzzyNest.State.TotalContentLength =
-    WuzzyNest.State.TotalContentLength + contentLength - oldContentLength
+  local oldContentLength = existingDocument and existingDocument.content_length or 0
+  total_content_length =
+    total_content_length + contentLength - oldContentLength
 
   if not existingDocument then
-    WuzzyNest.State.TotalDocuments = WuzzyNest.State.TotalDocuments + 1
+    total_documents = total_documents + 1
   end
 
-  if WuzzyNest.State.TotalDocuments > 0 then
-    WuzzyNest.State.AverageDocumentTermLength =
-      WuzzyNest.State.TotalTermCount / WuzzyNest.State.TotalDocuments
+  if total_documents > 0 then
+    average_document_term_length =
+      total_term_count / total_documents
   else
-    WuzzyNest.State.AverageDocumentTermLength = 0
+    average_document_term_length = 0
   end
 
   return {
     termCount = termCount,
     contentLength = contentLength
   }
+end
+
+-- Helper: Find a pending crawl request by URL, returning index and entry
+--- @param url string
+--- @return number|nil, table|nil
+local function findPendingCrawlRequestByUrl(url)
+  for i, req in ipairs(pending_crawl_requests) do
+    if req.url == url then
+      return i, req
+    end
+  end
+  return nil, nil
 end
 
 -- Helper: Create and upsert a document, returning the documentId
@@ -137,32 +124,90 @@ local function upsertDocument(params)
   local stats = updateDocumentStats(params.content, existingDocument)
 
   local doc = {
-    SubmittedBy = params.submittedBy,
-    DocumentId = documentId,
-    LastCrawledAt = params.lastCrawledAt,
-    Protocol = parsed.protocol,
-    Domain = parsed.domain,
-    Path = parsed.path,
-    URL = params.url,
-    ContentType = params.contentType,
-    Content = params.content,
-    ContentLength = stats.contentLength,
-    TermCount = stats.termCount,
-    Title = params.title,
-    Description = params.description
+    submitted_by = params.submittedBy,
+    document_id = documentId,
+    last_crawled_at = params.lastCrawledAt,
+    protocol = parsed.protocol,
+    domain = parsed.domain,
+    path = parsed.path,
+    url = params.url,
+    content_type = params.contentType,
+    content = params.content,
+    content_length = stats.contentLength,
+    term_count = stats.termCount,
+    title = params.title,
+    description = params.description
   }
 
   if existingDocumentIndex then
-    WuzzyNest.State.Documents[existingDocumentIndex] = doc
+    documents[existingDocumentIndex] = doc
   else
-    table.insert(WuzzyNest.State.Documents, doc)
+    table.insert(documents, doc)
   end
 
   return documentId
 end
 
+Handlers.add('Update-Roles', 'Update-Roles', function (msg)
+  acl.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Update-Roles' })
+
+  acl.utils.updateRoles(json.decode(msg.Data))
+
+  ao.send({
+    Target = msg.From,
+    Action = 'Update-Roles-Response',
+    Data = 'OK'
+  })
+  ao.send({
+    device = 'patch@1.0',
+    acl = acl.state
+  })
+end)
+
+Handlers.add('View-Roles', 'View-Roles', function (msg)
+  ao.send({
+    Target = msg.From,
+    Action = 'View-Roles-Response',
+    Data = json.encode(acl.state)
+  })
+end)
+
+Handlers.add('View-State', 'View-State', function (msg)
+  ao.send({
+    Target = msg.From,
+    Action = 'View-State-Response',
+    Data = json.encode({
+      owner = Owner,
+      acl = acl.state,
+      state = {
+        -- documents = documents, -- NB: Omit documents from state response for now (can be large)
+        total_documents = total_documents,
+        total_term_count = total_term_count,
+        total_content_length = total_content_length,
+        average_document_term_length = average_document_term_length,
+        pending_crawl_requests = pending_crawl_requests
+      }
+    })
+  })
+end)
+
+Handlers.add('Register', 'Register',function (msg)
+  acl.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Register' })
+  if msg.Tags['Registry-Address'] then
+    registry_address = msg.Tags['Registry-Address']
+  end
+   ao.send({
+    Target = registry_address,
+    Action = 'Register-Nest',
+    Data = json.encode({
+      owner = Owner,
+      acl = acl.state
+    })
+  })
+end)
+
 Handlers.add('Index-Document', 'Index-Document', function (msg)
-  ACL.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Index-Document' })
+  acl.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Index-Document' })
 
   local url = msg.Tags['Document-URL']
   assert(url, 'Missing Document-URL')
@@ -186,18 +231,28 @@ Handlers.add('Index-Document', 'Index-Document', function (msg)
   })
 
   -- Notify original requester if this was a queued crawl request
-  local pendingRequest = WuzzyNest.State.PendingCrawlRequests[documentId]
+  local pendingIndex, pendingRequest = findPendingCrawlRequestByUrl(documentId)
   if pendingRequest then
     ao.send({
-      Target = pendingRequest.RequesterId,
+      Target = pendingRequest.requester_id,
       Action = 'Crawl-Completed',
       ['Document-Id'] = documentId,
       ['URL'] = url,
       ['Crawler-Id'] = msg.From,
       Data = 'OK'
     })
-    WuzzyNest.State.PendingCrawlRequests[documentId] = nil
+    table.remove(pending_crawl_requests, pendingIndex)
   end
+
+  ao.send({
+    device = 'patch@1.0',
+    documents = documents,
+    total_documents = total_documents,
+    total_term_count = total_term_count,
+    total_content_length = total_content_length,
+    average_document_term_length = average_document_term_length,
+    pending_crawl_requests = pending_crawl_requests
+  })
 
   ao.send({
     Target = msg.From,
@@ -208,7 +263,7 @@ Handlers.add('Index-Document', 'Index-Document', function (msg)
 end)
 
 Handlers.add('Bulk-Index-Document', 'Bulk-Index-Document', function (msg)
-  ACL.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Index-Document' })
+  acl.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Index-Document' })
 
   assert(msg.Data and #msg.Data > 0, 'Missing Documents Data')
   local documents = json.decode(msg.Data)
@@ -219,43 +274,52 @@ Handlers.add('Bulk-Index-Document', 'Bulk-Index-Document', function (msg)
 
   for i, docData in ipairs(documents) do
     local ok, err = pcall(function()
-      assert(type(docData.URL) == 'string', 'Missing URL')
-      assert(type(docData.Content) == 'string' and #docData.Content > 0, 'Missing Content')
-      assert(type(docData.LastCrawledAt) == 'string', 'Missing LastCrawledAt')
-      assert(type(docData.ContentType) == 'string', 'Missing ContentType')
+      assert(type(docData.url) == 'string', 'Missing url')
+      assert(type(docData.content) == 'string' and #docData.content > 0, 'Missing content')
+      assert(type(docData.last_crawled_at) == 'string', 'Missing last_crawled_at')
+      assert(type(docData.content_type) == 'string', 'Missing content_type')
 
       local documentId = upsertDocument({
         submittedBy = msg.From,
-        url = docData.URL,
-        lastCrawledAt = docData.LastCrawledAt,
-        contentType = docData.ContentType,
-        content = docData.Content,
-        title = docData.Title,
-        description = docData.Description
+        url = docData.url,
+        lastCrawledAt = docData.last_crawled_at,
+        contentType = docData.content_type,
+        content = docData.content,
+        title = docData.title,
+        description = docData.description
       })
 
       table.insert(indexed, documentId)
     end)
 
     if not ok then
-      table.insert(errors, { Index = i, Error = err })
+      table.insert(errors, { index = i, error = err })
     end
   end
+
+  ao.send({
+    device = 'patch@1.0',
+    documents = documents,
+    total_documents = total_documents,
+    total_term_count = total_term_count,
+    total_content_length = total_content_length,
+    average_document_term_length = average_document_term_length
+  })
 
   ao.send({
     Target = msg.From,
     Action = 'Bulk-Index-Document-Result',
     Data = json.encode({
-      Indexed = indexed,
-      IndexedCount = #indexed,
-      Errors = errors,
-      ErrorCount = #errors
+      indexed = indexed,
+      indexed_count = #indexed,
+      errors = errors,
+      error_count = #errors
     })
   })
 end)
 
 Handlers.add('Remove-Document', 'Remove-Document', function (msg)
-  ACL.utils.assertHasOneOfRole(
+  acl.utils.assertHasOneOfRole(
     msg.From,
     { 'owner', 'admin', 'Remove-Document' }
   )
@@ -265,8 +329,14 @@ Handlers.add('Remove-Document', 'Remove-Document', function (msg)
   local existingIndex, existingDocument = findDocumentByIdWithIndex(documentId)
   assert(existingDocument, 'Document not found')
 
-  table.remove(WuzzyNest.State.Documents, existingIndex)
-  WuzzyNest.State.TotalDocuments = WuzzyNest.State.TotalDocuments - 1
+  table.remove(documents, existingIndex)
+  total_documents = total_documents - 1
+
+  ao.send({
+    device = 'patch@1.0',
+    documents = documents,
+    total_documents = total_documents
+  })
 
   ao.send({
     Target = msg.From,
@@ -285,13 +355,13 @@ Handlers.add('Search', 'Search', function (msg)
 
   -- STUB: Return all documents as hits (no actual search/ranking)
   local hits = {}
-  for _, doc in ipairs(WuzzyNest.State.Documents) do
+  for _, doc in ipairs(documents) do
     table.insert(hits, {
-      DocumentId = doc.DocumentId,
-      URL = doc.URL,
-      Title = doc.Title,
-      Description = doc.Description,
-      Score = 1
+      document_id = doc.document_id,
+      url = doc.url,
+      title = doc.title,
+      description = doc.description,
+      score = 1
     })
   end
 
@@ -299,152 +369,51 @@ Handlers.add('Search', 'Search', function (msg)
     Target = msg.From,
     Action = 'Search-Result',
     Data = json.encode({
-      SearchType = searchType,
-      Hits = hits,
-      TotalCount = #hits
+      search_type = searchType,
+      hits = hits,
+      total_count = #hits
     })
   })
 end)
 
-Handlers.add('Add-Crawler', 'Add-Crawler', function (msg)
-  ACL.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Add-Crawler' })
-  assert(type(msg.Tags['Crawler-Id']) == 'string', 'Crawler-Id is required')
-  local existingCrawler = utils.find(
-    function(crawler)
-      return crawler.CrawlerId == msg.Tags['Crawler-Id']
-    end,
-    WuzzyNest.State.Crawlers
-  )
-  assert(not existingCrawler, 'Crawler-Id already exists')
-
-  local crawlerName = msg.Tags['Crawler-Name'] or 'My Wuzzy Crawler'
-  table.insert(WuzzyNest.State.Crawlers, {
-    CrawlerId = msg.Tags['Crawler-Id'],
-    Creator = msg.From,
-    Owner = msg.From,
-    Name = crawlerName
-  })
-  ACL.utils.updateRoles({
-    Grant = { [msg.Tags['Crawler-Id']] = { 'Index-Document', 'Report-Crawl-Failure' } }
-  })
-
-  ao.send({
-    Target = msg.From,
-    Action = 'Crawler-Added',
-    Data = 'OK',
-    ['Crawler-Id'] = msg.Tags['Crawler-Id']
-  })
-end)
-
-Handlers.add('Remove-Crawler', 'Remove-Crawler', function (msg)
-  ACL.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Remove-Crawler' })
-  assert(type(msg.Tags['Crawler-Id']) == 'string', 'Crawler-Id is required')
-  local existingCrawlerIndex = nil
-  local existingCrawler = nil
-  for i, crawler in ipairs(WuzzyNest.State.Crawlers) do
-    if crawler.CrawlerId == msg.Tags['Crawler-Id'] then
-      existingCrawlerIndex = i
-      existingCrawler = crawler
-      break
-    end
-  end
-  assert(existingCrawler, 'Crawler-Id does not exist')
-
-  table.remove(WuzzyNest.State.Crawlers, existingCrawlerIndex)
-  ACL.utils.updateRoles({
-    Revoke = { [msg.Tags['Crawler-Id']] = { 'Index-Document', 'Report-Crawl-Failure' } }
-  })
-
-  ao.send({
-    Target = msg.From,
-    Action = 'Crawler-Removed',
-    Data = 'OK',
-    ['Crawler-Id'] = msg.Tags['Crawler-Id']
-  })
-end)
-
 Handlers.add('Queue-Crawl-Request', 'Queue-Crawl-Request', function (msg)
-  ACL.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Queue-Crawl-Request' })
+  acl.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Queue-Crawl-Request' })
 
   local url = msg.Tags['URL']
   local parsed = parseAndNormalizeUrl(url)
   local normalizedUrl = parsed.normalizedUrl
 
-  -- Check we have crawlers
-  assert(#WuzzyNest.State.Crawlers > 0, 'No crawlers registered')
-
-  -- Select crawler: use specified Crawler-Id or round-robin
-  local crawler = nil
-  local specifiedCrawlerId = msg.Tags['Crawler-Id']
-  if specifiedCrawlerId then
-    crawler = utils.find(
-      function(c) return c.CrawlerId == specifiedCrawlerId end,
-      WuzzyNest.State.Crawlers
-    )
-    assert(crawler, 'Specified Crawler-Id not found: ' .. specifiedCrawlerId)
-  else
-    -- Round-robin selection
-    local crawlerIndex = ((WuzzyNest.State.NextCrawlerIndex - 1) % #WuzzyNest.State.Crawlers) + 1
-    crawler = WuzzyNest.State.Crawlers[crawlerIndex]
-    WuzzyNest.State.NextCrawlerIndex = crawlerIndex + 1
+  -- Only queue if not already pending (first-in wins, no update)
+  local existingIndex = findPendingCrawlRequestByUrl(normalizedUrl)
+  if not existingIndex then
+    table.insert(pending_crawl_requests, {
+      url = normalizedUrl,
+      requester_id = msg.From,
+      requested_at = msg.Timestamp or 0
+    })
   end
-
-  -- Track pending request
-  WuzzyNest.State.PendingCrawlRequests[normalizedUrl] = {
-    RequesterId = msg.From,
-    CrawlerId = crawler.CrawlerId,
-    RequestedAt = msg.Timestamp or 0
-  }
-
-  -- Forward request to crawler
-  ao.send({
-    Target = crawler.CrawlerId,
-    Action = 'Request-Crawl',
-    ['URL'] = url,
-    ['Request-Id'] = normalizedUrl
-  })
 
   ao.send({
     Target = msg.From,
     Action = 'Queue-Crawl-Request-Result',
     ['URL'] = url,
     ['Normalized-URL'] = normalizedUrl,
-    ['Assigned-Crawler'] = crawler.CrawlerId,
     Data = 'OK'
   })
-end)
-
-Handlers.add('Report-Crawl-Failure', 'Report-Crawl-Failure', function (msg)
-  ACL.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Report-Crawl-Failure' })
-
-  local url = msg.Tags['URL']
-  local parsed = parseAndNormalizeUrl(url)
-  local normalizedUrl = parsed.normalizedUrl
-
-  local reason = msg.Tags['Reason'] or 'Unknown error'
-
-  -- Look up pending request
-  local pendingRequest = WuzzyNest.State.PendingCrawlRequests[normalizedUrl]
-
-  if pendingRequest then
-    -- Notify original requester of failure
-    ao.send({
-      Target = pendingRequest.RequesterId,
-      Action = 'Crawl-Failed',
-      ['URL'] = url,
-      ['Normalized-URL'] = normalizedUrl,
-      ['Crawler-Id'] = msg.From,
-      ['Reason'] = reason,
-      Data = reason
-    })
-    WuzzyNest.State.PendingCrawlRequests[normalizedUrl] = nil
-  end
-
   ao.send({
-    Target = msg.From,
-    Action = 'Report-Crawl-Failure-Result',
-    ['URL'] = url,
-    ['Normalized-URL'] = normalizedUrl,
-    Data = 'OK'
+    device = 'patch@1.0',
+    pending_crawl_requests = pending_crawl_requests
   })
 end)
+
+-- Patch initial state to device
+ao.send({
+  device = 'patch@1.0',
+  documents = documents,
+  total_documents = total_documents,
+  total_term_count = total_term_count,
+  total_content_length = total_content_length,
+  average_document_term_length = average_document_term_length,
+  pending_crawl_requests = pending_crawl_requests,
+  registry_address = registry_address
+})

@@ -42,3 +42,4 @@ secret-key-base64.txt
 
 src/contracts/*/*-stringified.lua
 !src/contracts/lib
+!src/legacynet/lib

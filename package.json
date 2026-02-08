@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npm run bundle && tsx scripts/build.ts",
     "bundle": "npm run clean && tsx scripts/bundle.ts",
+    "bundle:legacynet": "npm run clean && tsx scripts/legacynet/bundle.ts",
     "clean": "rimraf [ dist ]",
     "test": "npm run build && mocha test/spec/**/*.spec.ts"
   },

@@ -7,10 +7,12 @@ import { createData, Signer } from 'arbundles'
 import { logger } from './logger'
 
 export const CU_URL = process.env.CU_URL
-const {
+export const {
   message: aoMessage,
   result: aoResult,
+  results: aoResults,
   dryrun: aoDryRun,
+  getMessages: aoGetMessages
 } = aoConnect({ CU_URL, MODE: 'legacy' })
 
 export type SendAosBaseOptions = {
