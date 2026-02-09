@@ -1,8 +1,10 @@
 -- Wuzzy Nest Registry for AO Legacynet
 local json = require('json')
+local crypto = require('.crypto')
 acl = require('..common.acl')
 nests = nests or {}
-registry_whitelist_enabled = registry_whitelist_enabled or true
+registration_codes = registration_codes or {}
+registration_code_required = registration_code_required ~= false
 
 local MAX_PAGE_SIZE = 1000
 local DEFAULT_PAGE_SIZE = 100
@@ -56,6 +58,21 @@ local function paginate(entries, cursor, limit)
   }
 end
 
+-- Hash a registration code secret using SHA2-512, returning the hex digest.
+local function hashRegistrationCode(secret)
+  return crypto.digest.sha2_512(secret).asHex()
+end
+
+-- Validate a registration code secret against stored hashes.
+-- Returns the hash if valid, or nil if no match.
+local function validateRegistrationCode(secret)
+  local hash = hashRegistrationCode(secret)
+  if registration_codes[hash] then
+    return hash
+  end
+  return nil
+end
+
 -- Parse and validate nest state from a View-State-Response message.
 -- Returns { owner = string, acl = table }
 local function parseNestState(data)
@@ -99,30 +116,118 @@ Handlers.add('View-Roles', 'View-Roles', function (msg)
   })
 end)
 
-Handlers.add('Toggle-Whitelist', 'Toggle-Whitelist', function (msg)
-  acl.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Toggle-Whitelist' })
+-- Toggle-Registration-Code
+-- Owner/admin toggles whether a registration code is required for Register-Nest.
+-- Tags: Enabled ("true" or "false")
+Handlers.add('Toggle-Registration-Code', 'Toggle-Registration-Code', function (msg)
+  acl.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Toggle-Registration-Code' })
   local enabled = msg.Tags['Enabled']
   assert(type(enabled) == 'string', 'Enabled tag is required and must be a string')
   assert(enabled == 'true' or enabled == 'false', 'Enabled tag must be "true" or "false"')
 
-  registry_whitelist_enabled = (enabled == 'true')
+  registration_code_required = (enabled == 'true')
 
   ao.send({
     Target = msg.From,
-    Action = 'Toggle-Whitelist-Response',
-    Data = registry_whitelist_enabled and 'enabled' or 'disabled'
+    Action = 'Toggle-Registration-Code-Response',
+    Data = registration_code_required and 'enabled' or 'disabled'
   })
   ao.send({
     device = 'patch@1.0',
-    registry_whitelist_enabled = registry_whitelist_enabled
+    registration_code_required = registration_code_required
+  })
+end)
+
+-- Add-Registration-Code
+-- Owner/admin stores a SHA2-512 hash of a registration code secret.
+-- Tags: Registration-Hash (required, hex-encoded SHA2-512 hash)
+Handlers.add('Add-Registration-Code', 'Add-Registration-Code', function (msg)
+  acl.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Add-Registration-Code' })
+
+  local hash = msg.Tags['Registration-Hash']
+  assert(
+    type(hash) == 'string' and #hash > 0,
+    'Registration-Hash tag is required'
+  )
+  assert(
+    hash:match('^[0-9a-fA-F]+$'),
+    'Registration-Hash must be a valid hex string'
+  )
+
+  registration_codes[hash] = true
+
+  ao.send({
+    Target = msg.From,
+    Action = 'Add-Registration-Code-Response',
+    Data = 'OK'
+  })
+  ao.send({
+    device = 'patch@1.0',
+    registration_codes = registration_codes
+  })
+end)
+
+-- Remove-Registration-Code
+-- Owner/admin removes a registration code by its hash.
+-- Tags: Registration-Hash (required, hex-encoded SHA2-512 hash to remove)
+Handlers.add('Remove-Registration-Code', 'Remove-Registration-Code', function (msg)
+  acl.utils.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Remove-Registration-Code' })
+
+  local hash = msg.Tags['Registration-Hash']
+  assert(
+    type(hash) == 'string' and #hash > 0,
+    'Registration-Hash tag is required'
+  )
+
+  assert(registration_codes[hash], 'Registration code not found')
+  registration_codes[hash] = nil
+
+  ao.send({
+    Target = msg.From,
+    Action = 'Remove-Registration-Code-Response',
+    Data = 'OK'
+  })
+  ao.send({
+    device = 'patch@1.0',
+    registration_codes = registration_codes
+  })
+end)
+
+-- List-Registration-Codes
+-- View stored registration code hashes (not the secrets).
+Handlers.add('List-Registration-Codes', 'List-Registration-Codes', function (msg)
+  local hashes = {}
+  for hash, _ in pairs(registration_codes) do
+    table.insert(hashes, hash)
+  end
+
+  ao.send({
+    Target = msg.From,
+    Action = 'List-Registration-Codes-Response',
+    ['Total'] = tostring(#hashes),
+    Data = json.encode(hashes)
   })
 end)
 
 -- Register-Nest
--- Completes registration or update by extracting owner and ACL from the nest's state.
+-- Completes registration by validating a Registration-Code secret against stored hashes
+-- and extracting owner and ACL from the nest's state.
+-- Tags: Registration-Code (required when registration_code_required is true)
 Handlers.add('Register-Nest', 'Register-Nest', function (msg)
-  if registry_whitelist_enabled then
-    acl.utils.assertHasOneOfRole(msg.From, { 'Register-Nest' })
+  local codeHash = nil
+
+  if registration_code_required then
+    local code = msg.Tags['Registration-Code']
+    assert(
+      type(code) == 'string' and #code > 0,
+      'Registration-Code tag is required'
+    )
+
+    codeHash = validateRegistrationCode(code)
+    assert(
+      codeHash ~= nil,
+      'Invalid registration code'
+    )
   end
 
   local nestState = parseNestState(msg.Data)
@@ -135,9 +240,15 @@ Handlers.add('Register-Nest', 'Register-Nest', function (msg)
     acl = nestState.acl
   })
 
+  -- Burn the used registration code
+  if codeHash ~= nil then
+    registration_codes[codeHash] = nil
+  end
+
   ao.send({
     device = 'patch@1.0',
-    nests = nests
+    nests = nests,
+    registration_codes = registration_codes
   })
 end)
 
@@ -298,12 +409,19 @@ Handlers.add('View-State', 'View-State', function (msg)
   ao.send({
     Target = msg.From,
     Action = 'View-State-Response',
-    Data = json.encode({ nests = nests, acl = acl.state })
+    Data = json.encode({
+      nests = nests,
+      acl = acl.state,
+      registration_codes = registration_codes,
+      registration_code_required = registration_code_required
+    })
   })
 end)
 
 -- Patch initial state to device
 ao.send({
   device = 'patch@1.0',
-  nests = nests
+  nests = nests,
+  registration_codes = registration_codes,
+  registration_code_required = registration_code_required
 })
