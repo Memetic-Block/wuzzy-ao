@@ -31,7 +31,8 @@ export async function publish(
       tags: [
         { name: 'Content-Type', value: 'application/lua' },
         { name: 'Author', value: 'Memetic Block' },
-        { name: 'Data-Protocol', value: 'ao' }
+        { name: 'Data-Protocol', value: 'ao' },
+        { name: 'App-Name', value: 'Wuzzy'}
       ]
     }
   })
