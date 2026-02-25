@@ -48,28 +48,23 @@ async function sendActionMessage() {
   console.log(`Resolving authority for [${HB_URL}]...`)
   const authority = await resolveAuthority(HB_URL)
   const scheduler = SCHEDULER || authority
-  console.log(`Wallet:       ${address}`)
-  console.log(`HB Node:      ${HB_URL}`)
-  console.log(`Scheduler:    ${scheduler}`)
-  console.log(`Authority:    ${authority}`)
-  console.log(`Process ID:   ${processId}`)
-  console.log(`Process Name: ${PROCESS_NAME}`)
-  console.log(`Action:       ${action}`)
+  console.log(`Wallet:          ${address}`)
+  console.log(`HB Node:         ${HB_URL}`)
+  console.log(`Scheduler:       ${scheduler}`)
+  console.log(`Authority:       ${authority}`)
+  console.log(`Process ID:      ${processId}`)
+  console.log(`Process Name:    ${PROCESS_NAME}`)
+  console.log(`Action:          ${action}`)
   console.log(`Additional Tags: ${JSON.stringify(additionalTags)}`)
+  if (data) {
+    console.info(`Data: ${data}`)
+  }
   const tags = [
     { name: 'Action', value: action },
     ...additionalTags
   ]
 
   console.info(`Sending Action [${action}] to Process [${processId}] with Node [${process.env.HB_URL}]`)
-
-  if (additionalTags.length > 0) {
-    console.info(`Tags: ${JSON.stringify(additionalTags)}`)
-  }
-
-  if (data) {
-    console.info(`Data: ${data}`)
-  }
 
   const messageId = await ao.message({
     process: processId,

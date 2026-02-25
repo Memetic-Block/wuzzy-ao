@@ -2,6 +2,7 @@
 local json = require('json')
 local crypto = require('.crypto')
 acl = require('..common.acl')
+
 nests = nests or {}
 registration_codes = registration_codes or {}
 registration_code_required = registration_code_required ~= false
@@ -94,25 +95,13 @@ end
 Handlers.add('Update-Roles', 'Update-Roles', function (msg)
   acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Update-Roles' })
   acl = acl.updateRoles(require('json').decode(msg.Data), acl)
-  Send({
-    Target = msg.From,
-    Action = 'Update-Roles-Response',
-    Data = 'OK'
-  })
-  Send({
-    Target = ao.id,
-    device = 'patch@1.0',
-    acl = acl
-  })
+  Send({ Target = msg.From, Action = 'Update-Roles-Response', Data = 'OK' })
+  Send({ device = 'patch@1.0', acl = acl })
 end)
 
 -- View ACL Roles --
 Handlers.add('View-Roles', 'View-Roles', function (msg)
-  Send({
-    Target = msg.From,
-    Action = 'View-Roles-Response',
-    Data = json.encode(acl.state)
-  })
+  Send({ Target = msg.From, Action = 'View-Roles-Response', Data = json.encode(acl.state) })
 end)
 
 -- Toggle-Registration-Code
@@ -131,11 +120,7 @@ Handlers.add('Toggle-Registration-Code', 'Toggle-Registration-Code', function (m
     Action = 'Toggle-Registration-Code-Response',
     Data = registration_code_required and 'enabled' or 'disabled'
   })
-  Send({
-    Target = ao.id,
-    device = 'patch@1.0',
-    registration_code_required = registration_code_required
-  })
+  Send({ device = 'patch@1.0', registration_code_required = registration_code_required })
 end)
 
 -- Add-Registration-Code
@@ -143,29 +128,14 @@ end)
 -- Tags: Registration-Hash (required, hex-encoded SHA2-512 hash)
 Handlers.add('Add-Registration-Code', 'Add-Registration-Code', function (msg)
   acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Add-Registration-Code' })
-
   local hash = msg.Tags['Registration-Hash']
-  assert(
-    type(hash) == 'string' and #hash > 0,
-    'Registration-Hash tag is required'
-  )
-  assert(
-    hash:match('^[0-9a-fA-F]+$'),
-    'Registration-Hash must be a valid hex string'
-  )
+  assert(type(hash) == 'string' and #hash > 0, 'Registration-Hash tag is required')
+  assert(hash:match('^[0-9a-fA-F]+$'), 'Registration-Hash must be a valid hex string')
 
   registration_codes[hash] = true
 
-  Send({
-    Target = msg.From,
-    Action = 'Add-Registration-Code-Response',
-    Data = 'OK'
-  })
-  Send({
-    Target = ao.id,
-    device = 'patch@1.0',
-    registration_codes = registration_codes
-  })
+  Send({ Target = msg.From, Action = 'Add-Registration-Code-Response', Data = 'OK' })
+  Send({ device = 'patch@1.0', registration_codes = registration_codes })
 end)
 
 -- Remove-Registration-Code
@@ -173,26 +143,14 @@ end)
 -- Tags: Registration-Hash (required, hex-encoded SHA2-512 hash to remove)
 Handlers.add('Remove-Registration-Code', 'Remove-Registration-Code', function (msg)
   acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Remove-Registration-Code' })
-
   local hash = msg.Tags['Registration-Hash']
-  assert(
-    type(hash) == 'string' and #hash > 0,
-    'Registration-Hash tag is required'
-  )
-
+  assert(type(hash) == 'string' and #hash > 0, 'Registration-Hash tag is required')
   assert(registration_codes[hash], 'Registration code not found')
+
   registration_codes[hash] = nil
 
-  Send({
-    Target = msg.From,
-    Action = 'Remove-Registration-Code-Response',
-    Data = 'OK'
-  })
-  Send({
-    Target = ao.id,
-    device = 'patch@1.0',
-    registration_codes = registration_codes
-  })
+  Send({ Target = msg.From, Action = 'Remove-Registration-Code-Response', Data = 'OK' })
+  Send({ device = 'patch@1.0', registration_codes = registration_codes })
 end)
 
 -- List-Registration-Codes
@@ -217,7 +175,6 @@ end)
 -- Tags: Registration-Code (required when registration_code_required is true)
 Handlers.add('Register-Nest', 'Register-Nest', function (msg)
   local codeHash = nil
-
   if registration_code_required then
     local code = msg.Tags['Registration-Code']
     assert(
@@ -231,10 +188,8 @@ Handlers.add('Register-Nest', 'Register-Nest', function (msg)
       'Invalid registration code'
     )
   end
-
   local nestState = parseNestState(msg.Data)
   local idx = findNestIndex(msg.From)
-
   assert(idx == nil, 'Nest is already registered: ' .. tostring(msg.From))
   table.insert(nests, {
     id = msg.From,
@@ -249,24 +204,11 @@ Handlers.add('Register-Nest', 'Register-Nest', function (msg)
     registration_codes_updated = true
   end
 
-  Send({
-    Target = msg.From,
-    Action = 'Register-Nest-Response',
-    Data = 'OK'
-  })
+  Send({ Target = msg.From, Action = 'Register-Nest-Response', Data = 'OK' })
   if registration_codes_updated then
-    Send({
-      Target = ao.id,
-      device = 'patch@1.0',
-      nests = nests,
-      registration_codes = registration_codes
-    })
+    Send({ device = 'patch@1.0', nests = nests, registration_codes = registration_codes })
   else
-    Send({
-      Target = ao.id,
-      device = 'patch@1.0',
-      nests = nests
-    })
+    Send({ device = 'patch@1.0', nests = nests })
   end
 end)
 
@@ -274,23 +216,12 @@ end)
 -- A nest process removes itself from the registry.
 Handlers.add('Unregister', 'Unregister', function (msg)
   local idx = findNestIndex(msg.From)
-  assert(
-    idx ~= nil,
-    'Nest is not registered: ' .. tostring(msg.From)
-  )
+  assert(idx ~= nil, 'Nest is not registered: ' .. tostring(msg.From))
 
   table.remove(nests, idx)
 
-  Send({
-    Target = msg.From,
-    Action = 'Unregister-Response',
-    Data = 'OK'
-  })
-  Send({
-    Target = ao.id,
-    device = 'patch@1.0',
-    nests = nests
-  })
+  Send({ Target = msg.From, Action = 'Unregister-Response', Data = 'OK' })
+  Send({ device = 'patch@1.0', nests = nests })
 end)
 
 -- Batch-Unregister
@@ -298,11 +229,7 @@ end)
 -- data: JSON-encoded array of nest IDs to unregister.
 Handlers.add('Batch-Unregister', 'Batch-Unregister', function (msg)
   acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Batch-Unregister' })
-
-  assert(
-    type(msg.Data) == 'string' and #msg.Data > 0,
-    'Data is required'
-  )
+  assert(type(msg.Data) == 'string' and #msg.Data > 0, 'Data is required')
   local nestIds = json.decode(msg.Data)
   assert(type(nestIds) == 'table', 'Data must be a JSON array of nest IDs')
 
@@ -316,16 +243,8 @@ Handlers.add('Batch-Unregister', 'Batch-Unregister', function (msg)
     end
   end
 
-  Send({
-    Target = msg.From,
-    Action = 'Batch-Unregister-Response',
-    Data = 'OK'
-  })
-  Send({
-    Target = ao.id,
-    device = 'patch@1.0',
-    nests = nests
-  })
+  Send({ Target = msg.From, Action = 'Batch-Unregister-Response', Data = 'OK' })
+  Send({ device = 'patch@1.0', nests = nests })
 end)
 
 -- Update-Registration
@@ -342,16 +261,8 @@ Handlers.add('Update-Registration', 'Update-Registration', function (msg)
   nests[idx].owner = nestState.owner
   nests[idx].acl = nestState.acl
 
-  Send({
-    Target = msg.From,
-    Action = 'Update-Registration-Response',
-    Data = 'OK'
-  })
-  Send({
-    Target = ao.id,
-    device = 'patch@1.0',
-    nests = nests
-  })
+  Send({ Target = msg.From, Action = 'Update-Registration-Response', Data = 'OK' })
+  Send({ device = 'patch@1.0', nests = nests })
 end)
 
 -- List-Nests
@@ -360,13 +271,11 @@ end)
 Handlers.add('List-Nests', 'List-Nests', function (msg)
   local ownerFilter = msg.Tags['Owner']
   local entries = {}
-
   for _, nest in ipairs(nests) do
     if ownerFilter == nil or ownerFilter == '' or nest.owner == ownerFilter then
       table.insert(entries, nest)
     end
   end
-
   local page = paginate(entries, msg.Tags['Cursor'], msg.Tags['Limit'])
 
   Send({
@@ -384,13 +293,9 @@ end)
 -- Tags: Address (optional, defaults to msg.From), Cursor (optional), Limit (optional, default 100, max 1000)
 Handlers.add('List-Nests-By-Address', 'List-Nests-By-Address', function (msg)
   local address = msg.Tags['Address'] or msg.From
-  assert(
-    type(address) == 'string' and #address > 0,
-    'Address is required'
-  )
+  assert(type(address) == 'string' and #address > 0, 'Address is required')
 
   local entries = {}
-
   for _, nest in ipairs(nests) do
     local matched = false
 
@@ -440,7 +345,6 @@ Handlers.add('View-State', 'View-State', function (msg)
 end)
 
 Send({
-  Target = ao.id,
   device = 'patch@1.0',
   acl = acl,
   nests = nests,

@@ -17,6 +17,18 @@ if (!processId) {
   throw new Error('PROCESS_ID is not set!')
 }
 const PROCESS_NAME = process.env.PROCESS_NAME || 'default'
+const tagsInput = process.env.TAGS
+let additionalTags: { name: string; value: string }[] = []
+if (tagsInput) {
+  try {
+    additionalTags = JSON.parse(tagsInput)
+    if (!Array.isArray(additionalTags)) {
+      throw new Error('TAGS must be a JSON array')
+    }
+  } catch (e) {
+    throw new Error(`Failed to parse TAGS as JSON: ${e.message}`)
+  }
+}
 const wallet = loadWallet(WALLET_PATH)
 const signer = createSigner(wallet)
 const ao = connect({
@@ -48,7 +60,8 @@ async function doEval() {
     data,
     tags: [
       { name: 'Action', value: 'Eval' },
-      { name: 'App-Name', value: 'Wuzzy' }
+      { name: 'App-Name', value: 'Wuzzy' },
+    ...additionalTags
     ],
     signer
   })

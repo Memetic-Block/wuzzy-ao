@@ -13,13 +13,7 @@ const CONTRACT_NAMES = process.env.CONTRACT_NAMES
 async function bundle() {
   const contracts: { path: string; name: string; stringifySource?: boolean }[] = [
     { path: 'nest-registry', name: 'nest-registry' },
-    // { path: 'acl-test', name: 'acl-test' },
-    // { path: 'wuzzy-crawler', name: 'wuzzy-crawler', stringifySource: true },
-    // { path: 'wuzzy-nest', name: 'wuzzy-nest', stringifySource: true },
-    // { path: 'weavedrive-test', name: 'weavedrive-test' },
-    // { path: 'wuzzy-tx-oracle-test', name: 'wuzzy-tx-oracle-test' },
-    // { path: 'wuzzy-nest-registry', name: 'wuzzy-nest-registry' },
-    // { path: 'relay-test', name: 'relay-test' }
+    { path: 'nest', name: 'nest' }
   ]
 
   logger.info(
