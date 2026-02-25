@@ -1,19 +1,21 @@
-local _acl = {
-  roles = {
-    -- admin   = { 'address1' = true, 'address2' = true }
-    -- [role1] = { 'address3' = true, 'address4' = true }
-    -- [role2] = { 'address5' = true, 'address6' = true }
+local ACLUtils = {
+  State = {
+    Roles = {
+      -- admin   = { 'address1' = true, 'address2' = true }
+      -- [role1] = { 'address3' = true, 'address4' = true }
+      -- [role2] = { 'address5' = true, 'address6' = true }
+    }
   }
 }
 
-function _acl.assertHasOneOfRole(address, roles)
+function ACLUtils.assertHasOneOfRole(address, roles)
   for _, role in pairs(roles) do
     if
-      role == 'owner' and address == Owner or
-      role == 'owner' and address == ao.id then
+      role == 'owner' and address == owner or
+      role == 'owner' and address == id then
       return true
-    elseif _acl.roles[role]
-      and _acl.roles[role][address] ~= nil
+    elseif ACLUtils.State.Roles[role]
+      and ACLUtils.State.Roles[role][address] ~= nil
     then
       return true
     end
@@ -21,8 +23,8 @@ function _acl.assertHasOneOfRole(address, roles)
   assert(false, 'Permission Denied')
 end
 
-function _acl.updateRoles(updateRolesDto, state)
-  state = state or _acl
+function ACLUtils.updateRoles(updateRolesDto, state)
+  state = state or ACLUtils.State
 
   if updateRolesDto.Grant ~= nil then
     for address, roles in pairs(updateRolesDto.Grant) do
@@ -36,10 +38,10 @@ function _acl.updateRoles(updateRolesDto, state)
           type(role) == 'string',
           'Role must be a string: ' .. tostring(role)
         )
-        if state.roles[role] == nil then
-          state.roles[role] = {}
+        if state.Roles[role] == nil then
+          state.Roles[role] = {}
         end
-        state.roles[role][address] = true
+        state.Roles[role][address] = true
       end
     end
   end
@@ -56,15 +58,13 @@ function _acl.updateRoles(updateRolesDto, state)
           type(role) == 'string',
           'Role must be a string: ' .. tostring(role)
         )
-        if state.roles[role] == nil then
-          state.roles[role] = {}
+        if state.Roles[role] == nil then
+          state.Roles[role] = {}
         end
-        state.roles[role][address] = nil
+        state.Roles[role][address] = nil
       end
     end
   end
-
-  return state
 end
 
-return _acl
+return ACLUtils

@@ -1,17 +1,22 @@
 import {
   createDataItemSigner,
-  connect as aoConnect
+  connect as aoConnect,
+  message as aoMessage,
+  result as aoResult,
+  dryrun as aoDryRun
 } from '@permaweb/aoconnect'
-import { createData, Signer } from 'arbundles'
+import { createData, Signer } from '@dha-team/arbundles'
 
 import { logger } from './logger'
 
 export const CU_URL = process.env.CU_URL
-const {
-  message: aoMessage,
-  result: aoResult,
-  dryrun: aoDryRun,
-} = aoConnect({ CU_URL, MODE: 'legacy' })
+export const AO_URL = process.env.AO_URL
+export const AO_MODE = process.env.AO_MODE || 'legacy'
+// const {
+//   message: aoMessage,
+//   result: aoResult,
+//   dryrun: aoDryRun,
+// } = aoConnect({ URL: AO_URL, MODE: 'mainnet' })
 
 export type SendAosBaseOptions = {
   processId: string

@@ -1,28 +1,27 @@
 import 'dotenv/config'
 import { createReadStream, readFileSync, statSync } from 'fs'
 import { ArweaveSigner, TurboFactory, TurboSigner } from '@ardrive/turbo-sdk'
-import { logger } from './util/logger'
 
-const CONTRACT_VERSION = process.env.CONTRACT_VERSION || 'dev'
-const CONTRACT_NAME = process.env.CONTRACT_NAME || ''
-if (!CONTRACT_NAME) {
-  throw new Error('CONTRACT_NAME is not set!')
+const VIEW_VERSION = process.env.VIEW_VERSION || 'dev'
+const VIEW_NAME = process.env.VIEW_NAME || ''
+if (!VIEW_NAME) {
+  throw new Error('VIEW_NAME is not set!')
 }
-const PRIVATE_KEY = process.env.PRIVATE_KEY || ''
-if (!PRIVATE_KEY) {
-  throw new Error('PRIVATE_KEY is not set!')
+const WALLET_PATH = process.env.WALLET_PATH || ''
+if (!WALLET_PATH) {
+  throw new Error('WALLET_PATH is not set!')
 }
-const JWK = JSON.parse(readFileSync(PRIVATE_KEY, 'utf-8'))
+const JWK = JSON.parse(readFileSync(WALLET_PATH, 'utf-8'))
 const SIGNER = new ArweaveSigner(JWK)
 
 export async function publish(
-  contractName: string,
-  contractVersion: string,
+  viewName: string,
+  viewVersion: string,
   signer: TurboSigner
 ) {
-  logger.info(`Publishing LUA View Source for [${contractName}]`)
-  logger.info(`Using contract version: ${contractVersion}`)
-  const bundledLuaPath = `./src/views/${contractName}.lua`
+  console.info(`Publishing LUA View Source for [${viewName}]`)
+  console.info(`Using view version: ${viewVersion}`)
+  const bundledLuaPath = `./src/views/${viewName}.lua`
   const bundledLuaSize = statSync(bundledLuaPath).size
   const turbo = TurboFactory.authenticated({ signer })
   const uploadResult = await turbo.uploadFile({
@@ -37,16 +36,16 @@ export async function publish(
     }
   })
 
-  logger.info(
-    `Publish ${contractName} source result: ${JSON.stringify(uploadResult)}`
+  console.info(
+    `Publish ${viewName} source result: ${JSON.stringify(uploadResult)}`
   )
 }
 
-publish(CONTRACT_NAME, CONTRACT_VERSION, SIGNER).then(() => {
-  logger.info('Publish contract script executed successfully!')
+publish(VIEW_NAME, VIEW_VERSION, SIGNER).then(() => {
+  console.info('Publish view script executed successfully!')
 }).catch(error => {
-  logger.error(
-    `Error executing publish contract script: ${error.message}`,
+  console.error(
+    `Error executing publish view script: ${error.message}`,
     error.stack
   )
   process.exit(1)

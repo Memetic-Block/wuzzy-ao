@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
-import { logger } from './util/logger'
+import { logger } from '../util/logger'
 
 const HYPERBEAM_ENDPOINT = process.env.HYPERBEAM_ENDPOINT || ''
 if (!HYPERBEAM_ENDPOINT) {
