@@ -45,29 +45,30 @@ nest_registry = nest_registry or ao.env.Process.Tags['Nest-Registry'] or 'none'
 --- @type table<number, Crawler>
 crawlers = crawlers or {}
 
+--- @class CrawlRequest
+--- @field URL         string
+--- @field RequestedBy string
+--- @field Status      CrawlRequestStatus
+
+--- @alias CrawlRequestStatus
+---| '"queued"'      # CrawlRequest is queued and waiting to be processed
+---| '"in_progress"' # CrawlRequest is currently being processed by one or more crawlers
+---| '"completed"'   # CrawlRequest has been completed and the document has been indexed
+
+--- @type table<number, CrawlRequest>
+crawl_requests = crawl_requests or {}
+
 -- Update ACL Roles --
 Handlers.add('Update-Roles', 'Update-Roles', function (msg)
   acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Update-Roles' })
   acl = acl.updateRoles(require('json').decode(msg.Data), acl)
-  Send({
-    Target = msg.From,
-    Action = 'Update-Roles-Response',
-    Data = 'OK'
-  })
-  Send({
-    Target = ao.id,
-    device = 'patch@1.0',
-    acl = acl
-  })
+  Send({ Target = msg.From, Action = 'Update-Roles-Response', Data = 'OK' })
+  Send({ device = 'patch@1.0', acl = acl })
 end)
 
 -- View ACL Roles --
 Handlers.add('View-Roles', 'View-Roles', function (msg)
-  Send({
-    Target = msg.From,
-    Action = 'View-Roles-Response',
-    Data = json.encode(acl.state)
-  })
+  Send({ Target = msg.From, Action = 'View-Roles-Response', Data = json.encode(acl.state) })
 end)
 
 -- Index Document --
@@ -256,6 +257,27 @@ Handlers.add('Remove-Crawler', 'Remove-Crawler', function (msg)
   Send({ device = 'patch@1.0', crawlers = crawlers })
 end)
 
+-- Request Crawl --
+Handlers.add('Request-Crawl', 'Request-Crawl', function (msg)
+  assert(type(msg.Tags['URL']) == 'string', 'URL is required')
+
+  table.insert(crawl_requests, { URL = msg.Tags['URL'], RequestedBy = msg.From })
+
+  Send({ Target = msg.From, Action = 'Crawl-Requested', Data = 'OK', URL = msg.Tags['URL'] })
+  Send({ device = 'patch@1.0', crawl_requests = crawl_requests })
+end)
+
+-- Cron --
+Handlers.add('Cron', 'Cron', function (msg)
+  acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Cron' })
+
+  if #crawl_requests > 0 then
+    Send({ Target = crawlers[math.random(1, #crawlers)].CrawlerId, Action = 'Crawl', URL = crawl_requests[1].URL })
+    crawl_requests[1].Status = 'in_progress'
+    Send({ device = 'patch@1.0', crawl_requests = crawl_requests })
+  end
+end)
+
 -- Optional Registration with Nest Registry --
 if nest_registry ~= 'none' then
   Send({
@@ -269,6 +291,7 @@ end
 -- Initial state patch --
 Send({
   device = 'patch@1.0',
+  acl = acl,
   documents = documents,
   total_documents = total_documents,
   total_term_count = total_term_count,
@@ -276,5 +299,6 @@ Send({
   average_document_term_length = average_document_term_length,
   registration_code = registration_code,
   nest_registry = nest_registry,
-  crawlers = crawlers
+  crawlers = crawlers,
+  crawl_requests = crawl_requests
 })

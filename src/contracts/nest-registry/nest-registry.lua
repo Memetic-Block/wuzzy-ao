@@ -344,6 +344,7 @@ Handlers.add('View-State', 'View-State', function (msg)
   })
 end)
 
+-- Initial state patch --
 Send({
   device = 'patch@1.0',
   acl = acl,
