@@ -13,7 +13,10 @@ const CONTRACT_NAMES = process.env.CONTRACT_NAMES
 async function bundle() {
   const contracts: { path: string; name: string; stringifySource?: boolean }[] = [
     { path: 'nest-registry', name: 'nest-registry' },
-    { path: 'nest', name: 'nest' }
+    { path: 'nest', name: 'nest' },
+    { path: 'crawl-request-queue', name: 'crawl-request-queue' },
+    { path: 'crawler', name: 'crawler' },
+    { path: 'data-test', name: 'data-test' }
   ]
 
   logger.info(
@@ -49,7 +52,8 @@ async function bundle() {
       bundledLua
     )
 
-    fs.copyFileSync('./src/lib/hyper-aos.lua', `./dist/${contract.path}/ao.lua`)
+    // NB: This is required when building modules, but the source for hyper-aos is out of date
+    // fs.copyFileSync('./src/lib/hyper-aos.lua', `./dist/${contract.path}/ao.lua`)
 
     if (contract.stringifySource) {
       const base64Code = Buffer.from(bundledLua, 'utf-8').toString('base64')

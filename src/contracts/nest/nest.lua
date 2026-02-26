@@ -1,4 +1,10 @@
--- Wuzzy Nest Registry for hyper-aos
+-- Wuzzy Nest for hyper-aos
+--
+-- Core indexing/storage process. Holds crawled documents and provides
+-- document CRUD. Integrates with:
+--   - Nest Registry: self-registers on init via registration code
+--   - Crawl Request Queue: forwards crawl requests, auto-trusts endorsed crawlers
+
 local json = require('json')
 local utils = require('.utils')
 local neturl = require('..lib.neturl')
@@ -18,6 +24,7 @@ acl = require('..common.acl')
 --- @field ContentLength number
 --- @field Title         string
 --- @field Description   string
+
 --- @type table<number, Document>
 documents = documents or {}
 
@@ -39,24 +46,8 @@ registration_code = registration_code or ao.env.Process.Tags['Registration-Code'
 --- @type string
 nest_registry = nest_registry or ao.env.Process.Tags['Nest-Registry'] or 'none'
 
---- @class Crawler
---- @field CrawlerId string
---- @field Owner     string
---- @type table<number, Crawler>
-crawlers = crawlers or {}
-
---- @class CrawlRequest
---- @field URL         string
---- @field RequestedBy string
---- @field Status      CrawlRequestStatus
-
---- @alias CrawlRequestStatus
----| '"queued"'      # CrawlRequest is queued and waiting to be processed
----| '"in_progress"' # CrawlRequest is currently being processed by one or more crawlers
----| '"completed"'   # CrawlRequest has been completed and the document has been indexed
-
---- @type table<number, CrawlRequest>
-crawl_requests = crawl_requests or {}
+--- @type string
+crawl_request_queue = crawl_request_queue or ao.env.Process.Tags['Crawl-Request-Queue'] or 'none'
 
 -- Update ACL Roles --
 Handlers.add('Update-Roles', 'Update-Roles', function (msg)
@@ -205,77 +196,68 @@ Handlers.add('Remove-Document', 'Remove-Document', function (msg)
   })
 end)
 
--- Add Crawler --
-Handlers.add('Add-Crawler', 'Add-Crawler', function (msg)
-  acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Add-Crawler' })
-  assert(type(msg.Tags['Crawler-Id']) == 'string', 'Crawler-Id is required')
-  local existingCrawler = utils.find(
-    function(crawler) return crawler.CrawlerId == msg.Tags['Crawler-Id'] end,
-    crawlers
-  )
-  assert(not existingCrawler, 'Crawler-Id already exists')
+-- Request-Crawl --
+-- Nest owner/admin submits Arweave TX IDs for crawling. The nest forwards the
+-- request to its configured crawl-request-queue, self-authenticating as the
+-- nest process.
+-- Tags: TX-Id (required), Path (optional)
+-- Data: Alternative batch format — newline-separated TX-Id values
+Handlers.add('Request-Crawl', 'Request-Crawl', function (msg)
+  acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Request-Crawl' })
+  assert(crawl_request_queue ~= 'none', 'No Crawl-Request-Queue configured')
 
-  table.insert(crawlers, {
-    CrawlerId = msg.Tags['Crawler-Id'],
-    Owner = msg.From
-  })
-  acl.updateRoles({ Grant = { [msg.Tags['Crawler-Id']] = { 'Index-Document' } } })
-
-  Send({
-    Target = msg.From,
-    Action = 'Crawler-Added',
-    Data = 'OK',
-    ['Crawler-Id'] = msg.Tags['Crawler-Id']
-  })
-  Send({ device = 'patch@1.0', crawlers = crawlers })
-end)
-
--- Remove Crawler --
-Handlers.add('Remove-Crawler', 'Remove-Crawler', function (msg)
-  acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Remove-Crawler' })
-  assert(type(msg.Tags['Crawler-Id']) == 'string', 'Crawler-Id is required')
-  local existingCrawlerIndex = nil
-  local existingCrawler = nil
-  for i, crawler in ipairs(crawlers) do
-    if crawler.CrawlerId == msg.Tags['Crawler-Id'] then
-      existingCrawlerIndex = i
-      existingCrawler = crawler
-      break
+  local txIds = {}
+  if type(msg.Tags['TX-Id']) == 'string' and #msg.Tags['TX-Id'] > 0 then
+    table.insert(txIds, { tx_id = msg.Tags['TX-Id'], path = msg.Tags['Path'] or '' })
+  elseif type(msg.Data) == 'string' and msg.Data ~= '' then
+    for line in msg.Data:gmatch('[^\n]+') do
+      local trimmed = line:match('^%s*(.-)%s*$')
+      if trimmed ~= '' then
+        table.insert(txIds, { tx_id = trimmed, path = '' })
+      end
     end
   end
-  assert(existingCrawler, 'Crawler-Id does not exist')
+  assert(#txIds > 0, 'At least one TX-Id is required (via TX-Id tag or newline-separated Data)')
 
-  table.remove(crawlers, existingCrawlerIndex)
-  acl.updateRoles({ Revoke = { [msg.Tags['Crawler-Id']] = { 'Index-Document' } } })
+  for _, entry in ipairs(txIds) do
+    Send({
+      Target = crawl_request_queue,
+      Action = 'Request-Crawl',
+      ['TX-Id'] = entry.tx_id,
+      ['Path'] = entry.path
+    })
+  end
 
   Send({
     Target = msg.From,
-    Action = 'Crawler-Removed',
+    Action = 'Crawl-Forwarded',
     Data = 'OK',
-    ['Crawler-Id'] = msg.Tags['Crawler-Id']
+    ['TX-Id-Count'] = tostring(#txIds)
   })
-  Send({ device = 'patch@1.0', crawlers = crawlers })
 end)
 
--- Request Crawl --
-Handlers.add('Request-Crawl', 'Request-Crawl', function (msg)
-  assert(type(msg.Tags['URL']) == 'string', 'URL is required')
+-- Crawl-Requested Response Handler --
+-- When the queue acknowledges our Request-Crawl, it includes the list of
+-- registered crawler IDs. We auto-grant Index-Document permission to each
+-- so they can deliver content directly.
+Handlers.add('Crawl-Requested', 'Crawl-Requested', function (msg)
+  -- Only accept from our configured queue
+  if msg.From ~= crawl_request_queue then return end
 
-  table.insert(crawl_requests, { URL = msg.Tags['URL'], RequestedBy = msg.From })
+  local ok, crawlerIds = pcall(json.decode, msg.Data)
+  if not ok or type(crawlerIds) ~= 'table' then return end
 
-  Send({ Target = msg.From, Action = 'Crawl-Requested', Data = 'OK', URL = msg.Tags['URL'] })
-  Send({ device = 'patch@1.0', crawl_requests = crawl_requests })
-end)
-
--- Cron --
-Handlers.add('Cron', 'Cron', function (msg)
-  acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Cron' })
-
-  if #crawl_requests > 0 then
-    Send({ Target = crawlers[math.random(1, #crawlers)].CrawlerId, Action = 'Crawl', URL = crawl_requests[1].URL })
-    crawl_requests[1].Status = 'in_progress'
-    Send({ device = 'patch@1.0', crawl_requests = crawl_requests })
+  for _, crawlerId in ipairs(crawlerIds) do
+    if type(crawlerId) == 'string' and #crawlerId > 0 then
+      -- Idempotent: grant Index-Document role
+      if not acl.roles['Index-Document'] then
+        acl.roles['Index-Document'] = {}
+      end
+      acl.roles['Index-Document'][crawlerId] = true
+    end
   end
+
+  Send({ device = 'patch@1.0', acl = acl })
 end)
 
 -- Optional Registration with Nest Registry --
@@ -299,6 +281,5 @@ Send({
   average_document_term_length = average_document_term_length,
   registration_code = registration_code,
   nest_registry = nest_registry,
-  crawlers = crawlers,
-  crawl_requests = crawl_requests
+  crawl_request_queue = crawl_request_queue
 })

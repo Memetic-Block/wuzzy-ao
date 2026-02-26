@@ -7,6 +7,29 @@ nests = nests or {}
 registration_codes = registration_codes or {}
 registration_code_required = registration_code_required ~= false
 
+--- @type string  Process ID of the crawl-request-queue to notify on nest changes
+crawl_request_queue = crawl_request_queue or ao.env.Process.Tags['Crawl-Request-Queue'] or 'none'
+
+-- Notify the crawl-request-queue that a nest was registered.
+local function notifyNestRegistered(nestId)
+  if crawl_request_queue == 'none' then return end
+  Send({
+    Target = crawl_request_queue,
+    Action = 'Notify-Nest-Registered',
+    ['Nest-Id'] = nestId
+  })
+end
+
+-- Notify the crawl-request-queue that one or more nests were unregistered.
+local function notifyNestsUnregistered(nestIds)
+  if crawl_request_queue == 'none' then return end
+  Send({
+    Target = crawl_request_queue,
+    Action = 'Notify-Nest-Unregistered',
+    Data = json.encode(nestIds)
+  })
+end
+
 local MAX_PAGE_SIZE = 1000
 local DEFAULT_PAGE_SIZE = 100
 
@@ -205,6 +228,7 @@ Handlers.add('Register-Nest', 'Register-Nest', function (msg)
   end
 
   Send({ Target = msg.From, Action = 'Register-Nest-Response', Data = 'OK' })
+  notifyNestRegistered(msg.From)
   if registration_codes_updated then
     Send({ device = 'patch@1.0', nests = nests, registration_codes = registration_codes })
   else
@@ -221,6 +245,7 @@ Handlers.add('Unregister', 'Unregister', function (msg)
   table.remove(nests, idx)
 
   Send({ Target = msg.From, Action = 'Unregister-Response', Data = 'OK' })
+  notifyNestsUnregistered({ msg.From })
   Send({ device = 'patch@1.0', nests = nests })
 end)
 
@@ -237,13 +262,18 @@ Handlers.add('Batch-Unregister', 'Batch-Unregister', function (msg)
   for _, nestId in ipairs(nestIds) do
     idsToRemove[nestId] = true
   end
+  local removedIds = {}
   for i = #nests, 1, -1 do
     if idsToRemove[nests[i].id] then
+      table.insert(removedIds, nests[i].id)
       table.remove(nests, i)
     end
   end
 
   Send({ Target = msg.From, Action = 'Batch-Unregister-Response', Data = 'OK' })
+  if #removedIds > 0 then
+    notifyNestsUnregistered(removedIds)
+  end
   Send({ device = 'patch@1.0', nests = nests })
 end)
 
@@ -344,11 +374,35 @@ Handlers.add('View-State', 'View-State', function (msg)
   })
 end)
 
+-- Set-Crawl-Request-Queue
+-- Owner/admin configures or updates the crawl-request-queue process ID.
+-- Tags: Crawl-Request-Queue (required)
+Handlers.add('Set-Crawl-Request-Queue', 'Set-Crawl-Request-Queue', function (msg)
+  acl.assertHasOneOfRole(msg.From, { 'owner', 'admin' })
+  local queueId = msg.Tags['Crawl-Request-Queue']
+  assert(type(queueId) == 'string' and #queueId > 0, 'Crawl-Request-Queue tag is required')
+
+  crawl_request_queue = queueId
+
+  -- Sync all currently registered nests to the new queue
+  for _, nest in ipairs(nests) do
+    Send({
+      Target = crawl_request_queue,
+      Action = 'Notify-Nest-Registered',
+      ['Nest-Id'] = nest.id
+    })
+  end
+
+  Send({ Target = msg.From, Action = 'Set-Crawl-Request-Queue-Response', Data = 'OK' })
+  Send({ device = 'patch@1.0', crawl_request_queue = crawl_request_queue })
+end)
+
 -- Initial state patch --
 Send({
   device = 'patch@1.0',
   acl = acl,
   nests = nests,
   registration_codes = registration_codes,
-  registration_code_required = registration_code_required
+  registration_code_required = registration_code_required,
+  crawl_request_queue = crawl_request_queue
 })
