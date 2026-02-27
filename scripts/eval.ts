@@ -1,10 +1,7 @@
 import 'dotenv/config'
-// @ts-ignore
-import { connect, createSigner } from '@permaweb/aoconnect/node'
-// import { connect, createSigner, message } from '@permaweb/aoconnect'
 import Arweave from 'arweave'
 import { loadWallet, resolveAuthority } from './util/helpers'
-import { readFileSync } from 'fs'
+import { doEval } from './tools/eval'
 
 const WALLET_PATH = process.env.WALLET_PATH || 'wallet.json'
 const HB_URL = process.env.HB_URL || 'https://push.forward.computer'
@@ -29,17 +26,10 @@ if (tagsInput) {
     throw new Error(`Failed to parse TAGS as JSON: ${e.message}`)
   }
 }
-const wallet = loadWallet(WALLET_PATH)
-const signer = createSigner(wallet)
-const ao = connect({
-  MODE: 'mainnet',
-  signer,
-  URL: HB_URL,
-  SCHEDULER
-})
-const arweave = Arweave.init({})
 
-async function doEval() {
+async function evalScript() {
+  const wallet = loadWallet(WALLET_PATH)
+  const arweave = Arweave.init({})
   const address = await arweave.wallets.getAddress(wallet)
   console.log(`Resolving authority for [${HB_URL}]...`)
   const authority = await resolveAuthority(HB_URL)
@@ -51,35 +41,17 @@ async function doEval() {
   console.log(`Process ID:   ${processId}`)
   console.log(`Process Name: ${PROCESS_NAME}`)
 
-  console.log('Reading Eval source from file...')
-  const data = readFileSync(`./dist/${PROCESS_NAME}/process.lua`, 'utf8')
-  
-  console.log(`Executing Eval Action...`)
-  const messageId = await ao.message({
-    process: processId,
-    data,
-    tags: [
-      { name: 'Action', value: 'Eval' },
-      { name: 'App-Name', value: 'Wuzzy' },
-    ...additionalTags
-    ],
-    signer
+  await doEval({
+    wallet,
+    hyperbeamUrl: HB_URL,
+    scheduler,
+    processId,
+    processName: PROCESS_NAME,
+    additionalTags
   })
-  
-  console.log(`Eval Action sent with messageId [${messageId}], checking result...`)
-  const result = await ao.result({
-    process: processId,
-    message: messageId
-  })
-  
-  if (result.Error) {
-    throw new Error(`Eval Action failed with error: ${result.Error}`)
-  }
-  console.log('Eval Action Output.prompt:', result.Output?.prompt)
-  console.log(`Check state: [${HB_URL}/${processId}/now/serialize~json@1.0]`)
 }
 
-doEval()
+evalScript()
   .then(() => process.exit(0))
   .catch(error => {
     console.error(error)

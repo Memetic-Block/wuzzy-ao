@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "bootstrap-dev": "tsx scripts/bootstrap-dev.ts",
     "build": "npm run bundle && tsx scripts/build.ts",
     "bundle": "npm run clean && tsx scripts/bundle.ts",
     "clean": "rimraf [ dist ]",

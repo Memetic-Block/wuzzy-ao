@@ -1,8 +1,7 @@
 import 'dotenv/config'
-// @ts-ignore
-import { connect, createSigner } from '@permaweb/aoconnect/node'
 import Arweave from 'arweave'
 import { loadWallet, resolveAuthority } from './util/helpers'
+import { spawnProcess } from './tools/spawn'
 
 const WALLET_PATH = process.env.WALLET_PATH || 'wallet.json'
 if (!WALLET_PATH) {
@@ -25,18 +24,10 @@ if (tagsInput) {
     throw new Error(`Failed to parse TAGS as JSON: ${e.message}`)
   }
 }
-const wallet = loadWallet(WALLET_PATH)
-const signer = createSigner(wallet)
-const ao = connect({
-  MODE: 'mainnet',
-  signer,
-  GATEWAY_URL,
-  URL: HB_URL,
-  SCHEDULER
-})
-const arweave = Arweave.init({})
 
-async function spawn() {
+async function spawnScript() {
+  const wallet = loadWallet(WALLET_PATH)
+  const arweave = Arweave.init({})
   const address = await arweave.wallets.getAddress(wallet)
   console.log(`Resolving authority for [${HB_URL}]...`)
   const authority = await resolveAuthority(HB_URL)
@@ -48,24 +39,20 @@ async function spawn() {
   console.log(`Authority:    ${authority}`)
   console.log(`Process Name: ${PROCESS_NAME}`)
   console.log(`Tags:         ${JSON.stringify(additionalTags)}`)
-  console.log('Spawning process...')
-  const processId = await ao.spawn({
-    tags: [
-      { name: 'App-Name', value: 'Wuzzy' },
-      { name: 'Name', value: PROCESS_NAME },
-      { name: 'Authority', value: authority },
-      ...additionalTags
-    ],
+
+  await spawnProcess({
+    wallet,
+    hyperbeamUrl: HB_URL,
+    gatewayUrl: GATEWAY_URL,
+    scheduler,
     authority,
     module,
-    signer,
-    data: ''
+    processName: PROCESS_NAME,
+    additionalTags
   })
-  console.log(`Process Id: [${processId}]`)
-  console.log(`Process spawned: [${HB_URL}/${processId}/now/serialize~json@1.0]`)
 }
 
-spawn()
+spawnScript()
   .then(() => process.exit(0))
   .catch(e => {
     console.error(e)
