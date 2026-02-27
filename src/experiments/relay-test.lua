@@ -10,12 +10,9 @@
 -- end)
 
 Handlers.add('GET-Result', function(msg) return ao.isTrusted(msg) and msg.Tags['Status'] == '200' end, function (msg)
-  print('Received GET-Result from ' .. msg.From)
-  if msg.Body then
-    print('GET response body: ' .. msg.Body)
-  else
-    print('No GET response body received')
-  end
+  print('Received GET-Result From ' .. msg.From)
+  print('GET response Body: ' .. msg.Body)
+  print('GET response Data: ' .. msg.Data)
 end)
 
 Handlers.add('GET-Failed', function(msg) return ao.isTrusted(msg) and msg.Tags['Status'] ~= '200' end, function (msg)
@@ -53,3 +50,4 @@ end)
 -- Send({ target = id, action = 'POST', url = 'https://jsonplaceholder.typicode.com/posts', data = '{"title": "foo", "body": "bar", "userId": 1}' })
 
 -- Send({ target = ao.id, ['relay-method'] = 'GET', ['relay-path'] = 'https://arweave.net/info', resolve = '~relay@1.0/call' })
+-- Send({ target = ao.id, ['relay-method'] = 'GET', ['relay-path'] = 'https://memeticblock.com/case-studies/anyone-protocol', resolve = '~relay@1.0/call/to~json@1.0' })
