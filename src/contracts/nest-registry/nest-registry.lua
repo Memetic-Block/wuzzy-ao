@@ -3,6 +3,7 @@ local json = require('json')
 local crypto = require('.crypto')
 acl = require('..common.acl')
 
+nest_registry_owner = nest_registry_owner or Owner
 nests = nests or {}
 registration_codes = registration_codes or {}
 registration_code_required = registration_code_required ~= false
@@ -401,6 +402,7 @@ end)
 Send({
   device = 'patch@1.0',
   acl = acl,
+  nest_registry_owner = nest_registry_owner,
   nests = nests,
   registration_codes = registration_codes,
   registration_code_required = registration_code_required,
