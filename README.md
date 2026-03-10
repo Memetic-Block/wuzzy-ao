@@ -4,182 +4,151 @@ A decentralized search engine built on AO (Actor Oriented) architecture, providi
 
 ## Overview
 
-Wuzzy AO consists of smart contracts (processes) written in Lua that run on the AO network. The system enables decentralized web crawling, content indexing, and search functionality through a network of autonomous processes.
+Wuzzy AO consists of Lua processes that run on the AO network. Four core processes coordinate to enable decentralized web crawling, content indexing, and full-text search across the permaweb.
 
-Take a look at the [documentation](https://docs_wuzzy.arweave.net)!
+Check out the [documentation](https://docs_wuzzy.arweave.net) and the [Quickstart Guide](https://docs_wuzzy.arweave.net/guide/index.html).
 
 ## Architecture
 
-The system is composed of several core components:
+The system is composed of four core processes plus a shared access control library:
 
-### Core Contracts
+### Processes
 
-- **WuzzyCrawler** (`wuzzy-crawler`): Autonomous web crawling processes that fetch and parse web content
-- **WuzzyNest** (`wuzzy-nest`): Central indexing and search processes that store and query crawled content
-- **WuzzyNestRegistry** (`wuzzy-nest-registry`): (Optional) Registry for tracking nests
+- **Nest** — Core indexing and storage process. Holds crawled documents and provides BM25-scored full-text search. Automatically trusts crawlers announced by the queue.
+- **Nest Registry** — Directory of registered nest processes. Manages one-time registration codes (SHA2-512 hashed) and pushes registration/unregistration events to the queue.
+- **Crawl Request Queue** — Coordination hub that deduplicates crawl work using a subscriber-based model (crawl once, deliver to many). Maintains an authoritative set of registered nests and distributes tasks to crawlers.
+- **Crawler** — Hybrid process that claims work from the queue and fetches content. Supports two content source modes: *relay* (HyperBEAM on-chain fetch) and *oracle* (off-chain delivery). Delivers content directly to subscriber nests — content never flows through the queue.
+
+### Shared
+
+- **ACL** (`src/contracts/common/acl.lua`) — Role-based access control library used by all processes.
+
+### Message Flow
+
+```
+Nest Registry                    Crawl Request Queue
+  │  ▲                              ▲    │
+  │  │ Register-Nest (on init)      │    │ Claim-Crawl-Request
+  │  │                              │    ▼
+  │  └──── Nest ──Request-Crawl──►  │  Crawler
+  │                                 │    │
+  └─ Notify-Nest-Registered ───────┘    │ Index-Document
+                                         │ (direct to each subscriber nest)
+                                         ▼
+                                    Nest(s) — documents indexed
+```
+
+1. **Registration** — A nest self-registers with the registry on init using a one-time code. The registry notifies the queue, which adds the nest to its trusted set.
+2. **Crawl request** — A nest forwards a `Request-Crawl` (Arweave TX-Id + Path) to the queue. The queue deduplicates: if the target is already queued or in-progress, it appends the nest as a subscriber.
+3. **Fetch & deliver** — A crawler claims the next queued task, fetches content, and sends `Index-Document` directly to every subscriber nest. It then reports completion to the queue (status only, no content payload).
+
+For detailed handler tables and data models, see [docs/architecture](docs/architecture).
 
 ## Features
 
-- **Decentralized Crawling**: Distributed web crawlers that can be spawned and managed independently
-- **Content Indexing**: Full-text search indexing with BM25 scoring algorithm
-- **Access Control**: Fine-grained permissions system for process interactions
-- **Content Storage**: Automatically archives crawled site content on Arweave
-- **Search API**: Query interface for searching indexed content
+- **Subscriber-based deduplication** — Multiple nests requesting the same target are collapsed into a single work item
+- **BM25 full-text search** — Relevance-scored search across indexed documents
+- **Dual content source modes** — Crawlers support HyperBEAM relay (on-chain) and off-chain oracle delivery
+- **Registry-vouched trust** — Only registered nests can submit crawl requests
+- **Automatic crawler trust** — Nests auto-grant `Index-Document` permission to crawlers endorsed by the queue
+- **Role-based ACL** — Fine-grained permissions across all processes
+- **Arweave archiving** — Crawled content is persisted on the permaweb
+- **Read-only views** — Lightweight view modules for querying nest and registry state
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 22+
-- AO CLI tools
-- Arweave wallet
-- Lua 5.3 & busted (for spec tests)
-
-### Quickstart Guide
-Check out the [Wuzzy Docs Quickstart Guide](https://docs_wuzzy.arweave.net/guide/index.html)
+- Node.js (LTS)
+- Arweave wallet (JWK)
 
 ### Installation
 
 ```bash
-# Install dependencies
 npm install
-
-# Bundle Lua process code
-npm run bundle
-
-# Run tests (requires Lua 5.3 & busted)
-npm test
 ```
 
-### Building Contracts
+### Building
 
-The bundle script bundles Lua source code for convenient loading into an AO process:
+Bundle Lua source into loadable process files:
 
 ```bash
-# Bundle Lua files
 npm run bundle
 ```
 
-Each process will be bundled into the `dist` directory under its name and called `process.lua`.  For example: `dist/wuzzy-nest/process.lua`
+Each process is bundled into `dist/<process-name>/process.lua`.
+
+### Development Bootstrap
+
+Spawn a linked nest-registry and crawl-request-queue for local development:
+
+```bash
+npm run bootstrap-dev
+```
+
+This outputs the process IDs you'll need to spawn nests and crawlers against.
 
 ### Deployment
 
-Deploy contracts to the AO network with the AOS CLI. For example, to deploy a Wuzzy Nest:
+Use the provided scripts to spawn and load processes:
 
 ```bash
-aos my-process-name --url https://some.hyperbeam.node
-```
-```bash
-.load dist/wuzzy-nest/process.lua
-```
+# Spawn a new AO process
+npx tsx scripts/spawn.ts
 
-## Contract Details
-
-Check out the [Wuzzy API Docs](https://docs_wuzzy.arweave.net/api/index.html)
-
-### WuzzyCrawler
-
-The crawler process is responsible for:
-- Accepting crawl requests from authorized sources
-- Fetching web content from specified URLs
-- Parsing HTML content and extracting metadata
-- Submitting parsed content to associated nest processes
-
-**Key Features:**
-- URL validation and normalization
-- HTML parsing with metadata extraction
-- Rate limiting and queue management
-- Content type detection
-- Error handling and retry logic
-
-### WuzzyNest
-
-The nest process provides:
-- Content indexing and storage
-- Full-text search capabilities
-- Document management
-- Crawler registration and management
-
-**Search Algorithms:**
-- Simple text matching
-- BM25 relevance scoring
-- Content-based ranking
-
-### WuzzyNestRegistry
-
-Manages relationships between:
-- Nest processes and their associated crawlers
-- Access permissions and ownership
-- Process discovery and routing
-
-## Development
-
-### Project Structure
-
-```
-src/
-├── contracts/          # Main contract implementations
-│   ├── wuzzy-crawler/  # Crawler contract
-│   ├── wuzzy-nest/     # Search and indexing contract
-│   ├── wuzzy-nest-registry/ # Registry contract
-│   └── common/         # Shared utilities
-├── lib/                # External libraries
-└── views/              # Contract view modules
-
-scripts/                # Build and deployment scripts
-├── build.ts           # WASM compilation
-├── bundle.ts          # Lua bundling
-├── publish.ts         # Contract publishing
-└── util/              # Utility functions
-
-spec/                   # Test specifications
-test/                   # Test utilities and fixtures
+# Load bundled code into an existing process
+npx tsx scripts/eval.ts
 ```
 
 ### Testing
 
-Tests are written in Lua using the Busted framework:
+Tests use Mocha + Chai (TypeScript):
 
 ```bash
-# Run all tests
 npm test
-
-# Run specific test suites
-busted spec/wuzzy-crawler/
-busted spec/wuzzy-nest/
 ```
 
-### Code Style
+## Scripts
 
-- Follow Lua best practices
-- Use type annotations in comments
-- Maintain consistent indentation
-- Include comprehensive error handling
+| Script | Description |
+|---|---|
+| `scripts/bundle.ts` | Bundle Lua contracts into `dist/` |
+| `scripts/spawn.ts` | Spawn a new AO process |
+| `scripts/eval.ts` | Load bundled Lua code into a process |
+| `scripts/bootstrap-dev.ts` | Bootstrap dev environment (registry + queue) |
+| `scripts/publish.ts` | Publish bundled contract to Arweave |
+| `scripts/publish-view.ts` | Publish view modules to Arweave |
+| `scripts/generate-registration-code.ts` | Generate a registration code + SHA2-512 hash |
+| `scripts/action-message.ts` | Send an action message to a process |
 
-## Contributing
+## Project Structure
 
-1. Fork the repository
-2. Create a feature branch
-3. Write tests for new functionality
-4. Ensure all tests pass
-5. Submit a pull request
+```
+src/
+├── contracts/
+│   ├── nest/                     # Indexing & search process
+│   ├── nest-registry/            # Nest directory process
+│   ├── crawl-request-queue/      # Work coordination process
+│   ├── crawler/                  # Content fetching process
+│   ├── common/acl.lua            # Shared access control
+│   └── lib/                      # AO runtime & URL libraries
+├── views/                        # Read-only view modules
+└── experiments/                  # Experimental scripts
+scripts/                          # Build & deployment tooling
+operations/                       # Nomad job configs
+docs/                             # Architecture documentation
+```
 
 ## License
 
-AGPLv3 License - see LICENSE file for details
+AGPLv3
 
 ## Related Projects
 
-- [Wuzzy Site Repo](https://github.com/memetic-block/wuzzy-site) - Frontend web application
-- [Wuzzy Docs Repo](https://github.com/memetic-block/wuzzy-docs) - Documentation site
+- [Wuzzy Site](https://github.com/memetic-block/wuzzy-site) — Frontend web application
+- [Wuzzy Docs](https://github.com/memetic-block/wuzzy-docs) — Documentation site
 
 ## Support
 
-For questions and support:
-- Check the [documentation](https://docs_wuzzy.arweave.net)
-- Open an issue on GitHub
-- Contact the development team
-
----
-
-Built with ❤️ for the decentralized web
+- [Documentation](https://docs_wuzzy.arweave.net)
+- [Open an issue](https://github.com/memetic-block/wuzzy-ao/issues)

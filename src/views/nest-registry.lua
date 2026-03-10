@@ -24,8 +24,10 @@ function registry_info(state, req)
 
   local total_registration_codes = 0
   for code, _ in pairs(state.registration_codes) do
-    total_registration_codes = total_registration_codes + 1
-    result['registration_code_'..total_registration_codes] = code
+    if code ~= 'commitments' then
+      total_registration_codes = total_registration_codes + 1
+      result['registration_code_'..total_registration_codes] = code
+    end
   end
   result.total_registration_codes = total_registration_codes
 
