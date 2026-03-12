@@ -9,6 +9,7 @@ local json = require('json')
 local utils = require('.utils')
 local neturl = require('..lib.neturl')
 local terms = require('..lib.terms')
+local bm25 = require('..lib.bm25')
 acl = require('..common.acl')
 
 --- @class Document
@@ -296,6 +297,45 @@ Handlers.add('Crawl-Requested', 'Crawl-Requested', function (msg)
   end
 
   Send({ device = 'patch@1.0', acl = acl })
+end)
+
+-- Search --
+Handlers.add('Search', 'Search', function (msg)
+  local query = msg.Data
+  assert(type(query) == 'string' and query ~= '', 'Search query is required in Data')
+
+  local results = bm25.search(
+    query,
+    term_index,
+    documents,
+    total_documents,
+    average_document_term_length
+  )
+
+  -- Enrich results with document metadata
+  local docMap = {}
+  for _, doc in ipairs(documents) do
+    docMap[doc.DocumentId] = doc
+  end
+
+  local enriched = {}
+  for _, result in ipairs(results) do
+    local doc = docMap[result.DocumentId]
+    enriched[#enriched + 1] = {
+      DocumentId  = result.DocumentId,
+      Score       = result.Score,
+      Title       = doc and doc.Title or nil,
+      Description = doc and doc.Description or nil,
+      URL         = doc and doc.URL or nil,
+      Domain      = doc and doc.Domain or nil
+    }
+  end
+
+  Send({
+    Target = msg.From,
+    Action = 'Search-Result',
+    Data = json.encode(enriched)
+  })
 end)
 
 -- Optional Registration with Nest Registry --
