@@ -9,6 +9,7 @@
 --   "oracle" — waits for an off-chain oracle to deliver content via Deliver-Content
 
 local json = require('json')
+local manifest = require('..lib.manifest')
 acl = require('..common.acl')
 
 --- @type string  Process ID of the crawl-request-queue
@@ -151,12 +152,56 @@ Handlers.add('Deliver-Content', 'Deliver-Content', function (msg)
   -- In oracle mode, only owner/admin/Oracle role can deliver
   if content_source == 'oracle' then
     acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Oracle' })
+  else
+    -- Optionally, we could enforce that msg.From is the relay device ID
+    -- something like acl.assertDevice(msg.From, 'relay@1.0')
+    -- for now, throw if content_source isn't oracle
+    assert(content_source == 'oracle', 'Content must be delivered by relay device in relay mode')
   end
 
   assert(current_task ~= nil, 'No active crawl task')
   assert(type(msg.Data) == 'string' and #msg.Data > 0, 'Content (Data) is required')
 
   local contentType = msg.Tags['Content-Type'] or 'text/html'
+
+  -- If this is an Arweave manifest, parse it and queue sub-paths for crawling
+  -- instead of delivering the raw manifest JSON to nests.
+  if manifest.isManifestContentType(contentType) then
+    local parsed, parseErr = manifest.parse(msg.Data)
+    assert(parsed, 'Invalid manifest: ' .. (parseErr or 'unknown error'))
+
+    local paths = manifest.enumerate(parsed)
+
+    Send({
+      Target = crawl_request_queue,
+      Action = 'Discover-Crawl-Paths',
+      Data = json.encode({
+        tx_id = current_task.tx_id,
+        paths = paths,
+        subscribers = current_task.subscribers
+      })
+    })
+
+    -- Mark the manifest crawl task itself as complete
+    Send({
+      Target = crawl_request_queue,
+      Action = 'Complete-Crawl-Request',
+      ['Canonical-Id'] = current_task.canonical_id
+    })
+
+    local completedId = current_task.canonical_id
+    current_task = nil
+
+    Send({
+      Target = msg.From,
+      Action = 'Content-Delivered',
+      Data = 'OK',
+      ['Canonical-Id'] = completedId
+    })
+    Send({ device = 'patch@1.0', current_task = current_task })
+    return
+  end
+
   local title = msg.Tags['Document-Title'] or ''
   local description = msg.Tags['Document-Description'] or ''
 

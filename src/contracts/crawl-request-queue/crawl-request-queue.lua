@@ -452,6 +452,131 @@ Handlers.add('Fail-Crawl-Request', 'Fail-Crawl-Request', function (msg)
   Send({ device = 'patch@1.0', crawl_requests = crawl_requests })
 end)
 
+-- Discover Crawl Paths --
+-- Called by a crawler when delivered content is an Arweave manifest.
+-- Queues each sub-path as a new crawl request, carrying over the original
+-- subscribers so the actual content eventually reaches subscriber nests.
+-- Data: JSON { tx_id: string, paths: [{path, id}], subscribers: CrawlSubscriber[] }
+Handlers.add('Discover-Crawl-Paths', 'Discover-Crawl-Paths', function (msg)
+  assert(
+    utils.find(function(c) return c.crawler_id == msg.From end, crawlers),
+    'Only registered crawlers can discover crawl paths'
+  )
+
+  local ok, payload = pcall(json.decode, msg.Data)
+  assert(ok and type(payload) == 'table', 'Data must be valid JSON')
+  assert(type(payload.tx_id) == 'string' and #payload.tx_id > 0, 'tx_id is required')
+  assert(type(payload.paths) == 'table' and #payload.paths > 0, 'paths array is required')
+  assert(type(payload.subscribers) == 'table' and #payload.subscribers > 0, 'subscribers array is required')
+
+  local queued = 0
+  -- Collect unique subscriber nest IDs to notify
+  local nestsToNotify = {}
+
+  for _, pathEntry in ipairs(payload.paths) do
+    assert(type(pathEntry.path) == 'string', 'each path entry must have a path string')
+    local cid = canonicalId(payload.tx_id, pathEntry.path)
+
+    local existingIdx = crawl_index[cid]
+    local existing = existingIdx and crawl_requests[existingIdx] or nil
+
+    if existing then
+      if existing.status == 'queued' or existing.status == 'in_progress' then
+        -- Append any new subscribers
+        for _, sub in ipairs(payload.subscribers) do
+          local alreadySubscribed = false
+          for _, existingSub in ipairs(existing.subscribers) do
+            if existingSub.nest_id == sub.nest_id then
+              alreadySubscribed = true
+              break
+            end
+          end
+          if not alreadySubscribed then
+            table.insert(existing.subscribers, sub)
+          end
+        end
+      elseif existing.status == 'completed' then
+        if existing.completed_at
+          and (msg.Timestamp - existing.completed_at) < RECRAWL_AFTER
+        then
+          -- Still fresh, skip
+          goto continue
+        end
+        -- Re-queue stale completed entry
+        existing.status = 'queued'
+        existing.assigned_to = nil
+        existing.claimed_at = nil
+        existing.completed_at = nil
+        existing.retries = 0
+        existing.error = nil
+        existing.subscribers = {}
+        for _, sub in ipairs(payload.subscribers) do
+          table.insert(existing.subscribers, sub)
+        end
+        queued = queued + 1
+      elseif existing.status == 'failed' then
+        -- Retry failed entry
+        existing.status = 'queued'
+        existing.assigned_to = nil
+        existing.claimed_at = nil
+        existing.completed_at = nil
+        existing.retries = 0
+        existing.error = nil
+        existing.subscribers = {}
+        for _, sub in ipairs(payload.subscribers) do
+          table.insert(existing.subscribers, sub)
+        end
+        queued = queued + 1
+      end
+    else
+      -- New crawl request for this sub-path
+      local request = {
+        canonical_id = cid,
+        tx_id = payload.tx_id,
+        path = pathEntry.path,
+        subscribers = {},
+        assigned_to = nil,
+        claimed_at = nil,
+        completed_at = nil,
+        retries = 0,
+        error = nil,
+        status = 'queued'
+      }
+      for _, sub in ipairs(payload.subscribers) do
+        table.insert(request.subscribers, sub)
+      end
+      table.insert(crawl_requests, request)
+      crawl_index[cid] = #crawl_requests
+      queued = queued + 1
+    end
+
+    -- Track nests to notify
+    for _, sub in ipairs(payload.subscribers) do
+      nestsToNotify[sub.nest_id] = true
+    end
+
+    ::continue::
+  end
+
+  -- Notify each unique subscriber nest so they can update crawler ACLs
+  local cids = crawlerIds()
+  for nestId, _ in pairs(nestsToNotify) do
+    Send({
+      Target = nestId,
+      Action = 'Crawl-Requested',
+      Data = json.encode(cids)
+    })
+  end
+
+  Send({
+    Target = msg.From,
+    Action = 'Discover-Crawl-Paths-Response',
+    Data = json.encode({ queued = queued }),
+    ['TX-Id'] = payload.tx_id
+  })
+  Send({ device = 'patch@1.0', crawl_requests = crawl_requests })
+end)
+
 -- Reclaim Stale Crawl Requests --
 Handlers.add('Reclaim-Stale', 'Reclaim-Stale', function (msg)
   acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Reclaim-Stale' })
