@@ -3,8 +3,7 @@
 --- Supports manifest spec versions 0.1.0 and 0.2.0.
 --- v0.2.0 adds an optional top-level `fallback` field for unmatched paths.
 ---
---- @module manifest
---- @alias  M
+--- @submodule manifest_parser
 
 local json = require('json')
 
@@ -60,10 +59,10 @@ local json = require('json')
 -- Module
 -- ---------------------------------------------------------------------------
 
-local M = {}
+local manifest_parser = {}
 
 --- @type string
-M.version = '1.0'
+manifest_parser.version = '1.0'
 
 --- Supported manifest spec versions
 --- @type table<ManifestVersion, boolean>
@@ -120,9 +119,10 @@ end
 --- Accepts a raw JSON string or an already-decoded table.
 --- @param data string|RawManifest
 --- @return boolean
-function M.isManifest(data)
+function manifest_parser.isManifest(data)
   local t = data
   if type(data) == 'string' then
+    ---@diagnostic disable-next-line: cast-local-type
     t = safeDecode(data)
   end
   if type(t) ~= 'table' then return false end
@@ -135,7 +135,7 @@ end
 --- Check whether a Content-Type string indicates an Arweave manifest.
 --- @param contentType string
 --- @return boolean
-function M.isManifestContentType(contentType)
+function manifest_parser.isManifestContentType(contentType)
   if type(contentType) ~= 'string' then return false end
   return contentType:lower():find(MANIFEST_CONTENT_TYPE, 1, true) ~= nil
 end
@@ -149,9 +149,10 @@ end
 --- @param data string|RawManifest
 --- @return boolean ok
 --- @return string|nil err
-function M.validate(data)
+function manifest_parser.validate(data)
   local t = data
   if type(data) == 'string' then
+    ---@diagnostic disable-next-line: cast-local-type
     t = safeDecode(data)
     if t == nil then return false, 'invalid JSON' end
   end
@@ -222,14 +223,15 @@ end
 --- @param data string|RawManifest
 --- @return ParsedManifest|nil manifest
 --- @return string|nil err
-function M.parse(data)
+function manifest_parser.parse(data)
   local t = data
   if type(data) == 'string' then
+    ---@diagnostic disable-next-line: cast-local-type
     t = safeDecode(data)
     if t == nil then return nil, 'invalid JSON' end
   end
 
-  local ok, err = M.validate(t)
+  local ok, err = manifest_parser.validate(t)
   if not ok then return nil, err end
 
   --- @type ManifestPathEntry[]
@@ -259,7 +261,7 @@ end
 --- Return a flat array of all path entries from a parsed manifest.
 --- @param manifest ParsedManifest
 --- @return ManifestPathEntry[]
-function M.enumerate(manifest)
+function manifest_parser.enumerate(manifest)
   --- @type ManifestPathEntry[]
   local entries = {}
   for _, entry in ipairs(manifest.paths) do
@@ -278,7 +280,7 @@ end
 --- @param path string
 --- @return ArweaveTxId|nil id
 --- @return string|nil err
-function M.resolve(manifest, path)
+function manifest_parser.resolve(manifest, path)
   path = normalizePath(path)
 
   for _, entry in ipairs(manifest.paths) do
@@ -299,8 +301,8 @@ end
 --- @param manifest ParsedManifest
 --- @return ArweaveTxId|nil id
 --- @return string|nil err
-function M.resolveIndex(manifest)
-  return M.resolve(manifest, manifest.index.path)
+function manifest_parser.resolveIndex(manifest)
+  return manifest_parser.resolve(manifest, manifest.index.path)
 end
 
-return M
+return manifest_parser

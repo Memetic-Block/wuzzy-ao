@@ -7,17 +7,17 @@
 ---
 --- Depends on the `terms` sibling module for query tokenisation.
 ---
---- @module bm25
+--- @submodule bm25
 
 local terms = require('..lib.terms')
 
-local M = {}
+local bm25 = {}
 
 --- Default BM25 tuning parameters (standard Okapi BM25 values).
 --- @type number
-M.k1 = 1.2
+bm25.k1 = 1.2
 --- @type number
-M.b = 0.75
+bm25.b = 0.75
 
 --- Compute the BM25 inverse document frequency for a single term.
 ---
@@ -27,7 +27,7 @@ M.b = 0.75
 --- @param totalDocuments integer  total number of documents in the corpus (N)
 --- @param documentFrequency integer  number of documents containing the term (n)
 --- @return number idf
-function M.idf(totalDocuments, documentFrequency)
+function bm25.idf(totalDocuments, documentFrequency)
   return math.log(
     (totalDocuments - documentFrequency + 0.5) / (documentFrequency + 0.5) + 1
   )
@@ -42,7 +42,7 @@ end
 --- @param k1 number                  term-frequency saturation parameter
 --- @param b number                   length-normalisation parameter
 --- @return number score
-function M.score(termFrequency, idf, documentLength, averageDocumentLength, k1, b)
+function bm25.score(termFrequency, idf, documentLength, averageDocumentLength, k1, b)
   local numerator = termFrequency * (k1 + 1)
   local denominator = termFrequency + k1 * (1 - b + b * (documentLength / averageDocumentLength))
   return idf * numerator / denominator
@@ -57,10 +57,10 @@ end
 --- @param average_document_term_length number              average TermCount across the corpus
 --- @param opts? { k1?: number, b?: number, limit?: number }  optional overrides
 --- @return { DocumentId: string, Score: number }[]         results sorted by score descending
-function M.search(query, term_index, documents, total_documents, average_document_term_length, opts)
+function bm25.search(query, term_index, documents, total_documents, average_document_term_length, opts)
   opts = opts or {}
-  local k1 = opts.k1 or M.k1
-  local b  = opts.b  or M.b
+  local k1 = opts.k1 or bm25.k1
+  local b  = opts.b  or bm25.b
   local limit = opts.limit
 
   if total_documents == 0 or not query or query == '' then
@@ -95,11 +95,11 @@ function M.search(query, term_index, documents, total_documents, average_documen
       local df = 0
       for _ in pairs(postings) do df = df + 1 end
 
-      local termIdf = M.idf(total_documents, df)
+      local termIdf = bm25.idf(total_documents, df)
 
       for docId, tf in pairs(postings) do
         local dl = docLength[docId] or 0
-        local s = M.score(tf, termIdf, dl, average_document_term_length, k1, b)
+        local s = bm25.score(tf, termIdf, dl, average_document_term_length, k1, b)
         scores[docId] = (scores[docId] or 0) + s
       end
     end
@@ -122,4 +122,4 @@ function M.search(query, term_index, documents, total_documents, average_documen
   return results
 end
 
-return M
+return bm25

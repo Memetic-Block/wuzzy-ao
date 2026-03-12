@@ -3,9 +3,9 @@
 --- Provides term extraction utilities used for document indexing and
 --- BM25-compatible inverted index construction.
 ---
---- @module terms
+--- @submodule terms_parser
 
-local M = {}
+local terms_parser = {}
 
 --- Token pattern: sequences of characters that are neither whitespace nor
 --- punctuation. Matches the same tokens previously counted inline by nest.lua.
@@ -14,7 +14,7 @@ local TOKEN_PATTERN = '[^%s%p]+'
 --- Parse text into a list of lowercased terms.
 --- @param text string
 --- @return string[]
-function M.parseTerms(text)
+function terms_parser.parseTerms(text)
   local terms = {}
   for token in text:gmatch(TOKEN_PATTERN) do
     terms[#terms + 1] = token:lower()
@@ -25,7 +25,7 @@ end
 --- Count the number of terms in a text string.
 --- @param text string
 --- @return integer
-function M.countTerms(text)
+function terms_parser.countTerms(text)
   local count = 0
   for _ in text:gmatch(TOKEN_PATTERN) do
     count = count + 1
@@ -36,7 +36,7 @@ end
 --- Build a frequency map of lowercased terms in the text.
 --- @param text string
 --- @return table<string, number>  term → occurrence count
-function M.getTermFrequencies(text)
+function terms_parser.getTermFrequencies(text)
   local freqs = {}
   for token in text:gmatch(TOKEN_PATTERN) do
     local term = token:lower()
@@ -45,4 +45,4 @@ function M.getTermFrequencies(text)
   return freqs
 end
 
-return M
+return terms_parser
