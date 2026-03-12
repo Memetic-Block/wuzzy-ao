@@ -8,6 +8,7 @@
 local json = require('json')
 local utils = require('.utils')
 local neturl = require('..lib.neturl')
+local terms = require('..lib.terms')
 acl = require('..common.acl')
 
 --- @class Document
@@ -39,6 +40,10 @@ total_content_length = total_content_length or 0
 
 --- @type number
 average_document_term_length = average_document_term_length or 0
+
+--- Inverted index: term → { documentId → term frequency }
+--- @type table<string, table<string, number>>
+term_index = term_index or {}
 
 --- @type string
 registration_code = registration_code or ao.env.Process.Tags['Registration-Code'] or 'none'
@@ -96,7 +101,7 @@ Handlers.add('Index-Document', 'Index-Document', function (msg)
   end
 
   assert(msg.Data and #msg.Data > 0, 'Missing Document Content (Data)')
-  local termCount = select(2, string.gsub(msg.Data, '[^%s%p]+', ''))
+  local termCount = terms.countTerms(msg.Data)
   local oldTermCount = existingDocument and existingDocument.TermCount or 0
   total_term_count = total_term_count + termCount - oldTermCount
 
@@ -111,6 +116,26 @@ Handlers.add('Index-Document', 'Index-Document', function (msg)
     average_document_term_length = total_term_count / total_documents
   else
     average_document_term_length = 0
+  end
+
+  -- Update inverted index: remove old entries then add new ones
+  if existingDocument then
+    local oldFreqs = terms.getTermFrequencies(existingDocument.Content)
+    for term, _ in pairs(oldFreqs) do
+      if term_index[term] then
+        term_index[term][documentId] = nil
+        if next(term_index[term]) == nil then
+          term_index[term] = nil
+        end
+      end
+    end
+  end
+  local newFreqs = terms.getTermFrequencies(msg.Data)
+  for term, freq in pairs(newFreqs) do
+    if not term_index[term] then
+      term_index[term] = {}
+    end
+    term_index[term][documentId] = freq
   end
 
   ---@type Document
@@ -148,7 +173,8 @@ Handlers.add('Index-Document', 'Index-Document', function (msg)
     total_documents = total_documents,
     total_term_count = total_term_count,
     total_content_length = total_content_length,
-    average_document_term_length = average_document_term_length
+    average_document_term_length = average_document_term_length,
+    term_index = term_index
   })
 end)
 
@@ -180,6 +206,17 @@ Handlers.add('Remove-Document', 'Remove-Document', function (msg)
     average_document_term_length = 0
   end
 
+  -- Remove document from inverted index
+  local docFreqs = terms.getTermFrequencies(document.Content)
+  for term, _ in pairs(docFreqs) do
+    if term_index[term] then
+      term_index[term][documentId] = nil
+      if next(term_index[term]) == nil then
+        term_index[term] = nil
+      end
+    end
+  end
+
   Send({
     Target = msg.From,
     Action = 'Remove-Document-Result',
@@ -192,7 +229,8 @@ Handlers.add('Remove-Document', 'Remove-Document', function (msg)
     total_documents = total_documents,
     total_term_count = total_term_count,
     total_content_length = total_content_length,
-    average_document_term_length = average_document_term_length
+    average_document_term_length = average_document_term_length,
+    term_index = term_index
   })
 end)
 
@@ -279,6 +317,7 @@ Send({
   total_term_count = total_term_count,
   total_content_length = total_content_length,
   average_document_term_length = average_document_term_length,
+  term_index = term_index,
   registration_code = registration_code,
   nest_registry = nest_registry,
   crawl_request_queue = crawl_request_queue
