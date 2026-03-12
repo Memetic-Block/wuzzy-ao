@@ -1,26 +1,83 @@
--- arweave/manifest.lua - validate, parse and resolve Arweave path manifests
---
--- Supports manifest spec versions 0.1.0 and 0.2.0.
--- v0.2.0 adds an optional top-level `fallback` field for unmatched paths.
---
--- @module manifest
--- @alias  M
+--- manifest.lua - validate, parse and resolve Arweave path manifests
+---
+--- Supports manifest spec versions 0.1.0 and 0.2.0.
+--- v0.2.0 adds an optional top-level `fallback` field for unmatched paths.
+---
+--- @module manifest
+--- @alias  M
 
 local json = require('json')
 
+-- ---------------------------------------------------------------------------
+-- Type definitions
+-- ---------------------------------------------------------------------------
+
+--- @alias ArweaveTxId string  # 43-character base64url Arweave transaction ID
+
+--- @alias ManifestVersion
+---| '"0.1.0"'  # Base path manifest spec
+---| '"0.2.0"'  # Adds optional fallback for unmatched paths
+
+--- @class RawManifestPathEntry
+--- @field id ArweaveTxId  # Transaction ID the path resolves to
+
+--- @class RawManifestIndex
+--- @field path string  # Key into the paths table that serves as the default entry
+
+--- @class RawManifestFallback
+--- @field id ArweaveTxId  # Transaction ID to use when no path matches (v0.2.0 only)
+
+--- Raw Arweave path manifest as decoded from JSON (before parsing).
+--- @class RawManifest
+--- @field manifest  string                            # Must be "arweave/paths"
+--- @field version   ManifestVersion                   # Spec version
+--- @field index     RawManifestIndex                  # Default path entry
+--- @field paths     table<string, RawManifestPathEntry>  # Path -> TX ID mapping
+--- @field fallback  RawManifestFallback|nil           # Fallback TX ID (v0.2.0 only)
+
+--- A single path entry in a parsed manifest.
+--- @class ManifestPathEntry
+--- @field path string       # Relative path within the manifest
+--- @field id   ArweaveTxId  # Transaction ID the path resolves to
+
+--- Index reference in a parsed manifest.
+--- @class ManifestIndex
+--- @field path string       # The path key that serves as the default entry
+--- @field id   ArweaveTxId  # Transaction ID the index path resolves to
+
+--- Fallback reference in a parsed manifest.
+--- @class ManifestFallback
+--- @field id ArweaveTxId  # Transaction ID used when no path matches
+
+--- Parsed and validated Arweave path manifest, as returned by `M.parse()`.
+--- @class ParsedManifest
+--- @field version  ManifestVersion       # Spec version
+--- @field index    ManifestIndex          # Resolved index entry
+--- @field fallback ManifestFallback|nil   # Fallback entry (v0.2.0 only)
+--- @field paths    ManifestPathEntry[]    # All path entries, sorted by path
+
+-- ---------------------------------------------------------------------------
+-- Module
+-- ---------------------------------------------------------------------------
+
 local M = {}
+
+--- @type string
 M.version = '1.0'
 
 --- Supported manifest spec versions
+--- @type table<ManifestVersion, boolean>
 local SUPPORTED_VERSIONS = {
   ['0.1.0'] = true,
   ['0.2.0'] = true,
 }
 
 --- Expected value of the `manifest` field
+--- @type string
 local MANIFEST_TYPE = 'arweave/paths'
 
 --- Content-Type header set by Arweave gateways for manifest transactions
+--- @type string
 local MANIFEST_CONTENT_TYPE = 'application/x.arweave-manifest+json'
 
 -- ---------------------------------------------------------------------------
@@ -36,9 +93,9 @@ local function isValidTxId(id)
   return id:match('^[A-Za-z0-9_-]+$') ~= nil
 end
 
---- Safely decode JSON, returning the table or nil.
+--- Safely decode JSON, returning the decoded table or nil.
 --- @param raw string
---- @return table|nil
+--- @return RawManifest|nil
 local function safeDecode(raw)
   if type(raw) ~= 'string' then return nil end
   local ok, result = pcall(json.decode, raw)
@@ -61,7 +118,7 @@ end
 
 --- Check whether `data` looks like an Arweave path manifest.
 --- Accepts a raw JSON string or an already-decoded table.
---- @param data string|table
+--- @param data string|RawManifest
 --- @return boolean
 function M.isManifest(data)
   local t = data
@@ -89,8 +146,9 @@ end
 
 --- Validate an Arweave path manifest structure.
 --- Returns `true` on success, or `false, errorMessage` on failure.
---- @param data string|table
---- @return boolean, string|nil
+--- @param data string|RawManifest
+--- @return boolean ok
+--- @return string|nil err
 function M.validate(data)
   local t = data
   if type(data) == 'string' then
@@ -160,14 +218,10 @@ end
 -- ---------------------------------------------------------------------------
 
 --- Parse and validate an Arweave path manifest.
---- Returns a structured manifest object on success, or `nil, errorMessage`.
----
---- Returned shape:
----   { version, index = { path, id }, fallback = { id } | nil,
----     paths = { { path = "...", id = "..." }, ... } }
----
---- @param data string|table
---- @return table|nil, string|nil
+--- Returns a structured `ParsedManifest` on success, or `nil, errorMessage`.
+--- @param data string|RawManifest
+--- @return ParsedManifest|nil manifest
+--- @return string|nil err
 function M.parse(data)
   local t = data
   if type(data) == 'string' then
@@ -178,6 +232,7 @@ function M.parse(data)
   local ok, err = M.validate(t)
   if not ok then return nil, err end
 
+  --- @type ManifestPathEntry[]
   local paths = {}
   for path, entry in pairs(t.paths) do
     paths[#paths + 1] = { path = path, id = entry.id }
@@ -186,6 +241,7 @@ function M.parse(data)
   -- Sort for deterministic ordering
   table.sort(paths, function(a, b) return a.path < b.path end)
 
+  --- @type ParsedManifest
   local result = {
     version  = t.version,
     index    = { path = t.index.path, id = t.paths[t.index.path].id },
@@ -200,10 +256,11 @@ function M.parse(data)
   return result
 end
 
---- Return a flat array of all { path, id } entries from a parsed manifest.
---- @param manifest table  A manifest returned by M.parse()
---- @return table[]
+--- Return a flat array of all path entries from a parsed manifest.
+--- @param manifest ParsedManifest
+--- @return ManifestPathEntry[]
 function M.enumerate(manifest)
+  --- @type ManifestPathEntry[]
   local entries = {}
   for _, entry in ipairs(manifest.paths) do
     entries[#entries + 1] = { path = entry.path, id = entry.id }
@@ -217,9 +274,10 @@ end
 
 --- Resolve a path within a parsed manifest to its TX ID.
 --- Returns the TX ID on success, or `nil, errorMessage`.
---- @param manifest table  A manifest returned by M.parse()
+--- @param manifest ParsedManifest
 --- @param path string
---- @return string|nil, string|nil
+--- @return ArweaveTxId|nil id
+--- @return string|nil err
 function M.resolve(manifest, path)
   path = normalizePath(path)
 
@@ -238,8 +296,9 @@ function M.resolve(manifest, path)
 end
 
 --- Resolve the index path of a parsed manifest to its TX ID.
---- @param manifest table  A manifest returned by M.parse()
---- @return string|nil, string|nil
+--- @param manifest ParsedManifest
+--- @return ArweaveTxId|nil id
+--- @return string|nil err
 function M.resolveIndex(manifest)
   return M.resolve(manifest, manifest.index.path)
 end
