@@ -41,7 +41,7 @@ current_task = current_task or nil
 -- Update ACL Roles --
 Handlers.add('Update-Roles', 'Update-Roles', function (msg)
   acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Update-Roles' })
-  acl = acl.updateRoles(require('json').decode(msg.Data), acl)
+  acl = acl.updateRoles(json.decode(msg.Data), acl)
   Send({ Target = msg.From, Action = 'Update-Roles-Response', Data = 'OK' })
   Send({ device = 'patch@1.0', acl = acl })
 end)

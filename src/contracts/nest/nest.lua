@@ -55,10 +55,16 @@ nest_registry = nest_registry or ao.env.Process.Tags['Nest-Registry'] or 'none'
 --- @type string
 crawl_request_queue = crawl_request_queue or ao.env.Process.Tags['Crawl-Request-Queue'] or 'none'
 
+--- @type string
+nest_creator = Owner
+
+--- @type string
+nest_id = ao.id
+
 -- Update ACL Roles --
 Handlers.add('Update-Roles', 'Update-Roles', function (msg)
   acl.assertHasOneOfRole(msg.From, { 'owner', 'admin', 'Update-Roles' })
-  acl = acl.updateRoles(require('json').decode(msg.Data), acl)
+  acl = acl.updateRoles(json.decode(msg.Data), acl)
   Send({ Target = msg.From, Action = 'Update-Roles-Response', Data = 'OK' })
   Send({ device = 'patch@1.0', acl = acl })
 end)
@@ -360,5 +366,7 @@ Send({
   term_index = term_index,
   registration_code = registration_code,
   nest_registry = nest_registry,
-  crawl_request_queue = crawl_request_queue
+  crawl_request_queue = crawl_request_queue,
+  nest_creator = nest_creator,
+  nest_id = nest_id
 })
