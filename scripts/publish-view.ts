@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { createReadStream, readFileSync, statSync } from 'fs'
-import { ArweaveSigner, TurboFactory, TurboSigner } from '@ardrive/turbo-sdk'
+import { ArweaveSigner, TurboAuthenticatedConfiguration, TurboFactory, TurboSigner } from '@ardrive/turbo-sdk'
 
 const VIEW_VERSION = process.env.VIEW_VERSION || 'dev'
 const VIEW_NAME = process.env.VIEW_NAME || process.argv[2] || ''
@@ -13,6 +13,8 @@ if (!WALLET_PATH) {
 }
 const JWK = JSON.parse(readFileSync(WALLET_PATH, 'utf-8'))
 const SIGNER = new ArweaveSigner(JWK)
+const GATEWAY_URL = process.env.GATEWAY_URL
+const BUNDLER_URL = process.env.BUNDLER_URL
 
 export async function publish(
   viewName: string,
@@ -23,7 +25,14 @@ export async function publish(
   console.info(`Using view version: ${viewVersion}`)
   const bundledLuaPath = `./src/views/${viewName}.lua`
   const bundledLuaSize = statSync(bundledLuaPath).size
-  const turbo = TurboFactory.authenticated({ signer })
+  const turboOpts: TurboAuthenticatedConfiguration = { signer }
+  if (GATEWAY_URL || BUNDLER_URL) {
+    console.info(`Using gateway: ${GATEWAY_URL}`)
+    console.info(`Using bundler: ${BUNDLER_URL}`)
+    turboOpts.gatewayUrl = GATEWAY_URL
+    turboOpts.uploadServiceConfig = { url: BUNDLER_URL }
+  }
+  const turbo = TurboFactory.authenticated(turboOpts)
   const uploadResult = await turbo.uploadFile({
     fileStreamFactory: () => createReadStream(bundledLuaPath),
     fileSizeFactory: () => bundledLuaSize,
